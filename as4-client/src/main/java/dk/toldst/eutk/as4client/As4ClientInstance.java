@@ -1,20 +1,22 @@
 package dk.toldst.eutk.as4client;
 
+import org.apache.wss4j.common.crypto.Crypto;
+
 import java.net.URL;
 
 public class As4ClientInstance implements As4Client {
 
-    private String cryptoPath;
+    private Crypto crypto;
     private String username;
     private String password;
     private URL url;
 
-    public String getCryptoPath() {
-        return cryptoPath;
+    public Crypto getCrypto() {
+        return crypto;
     }
 
-    public void setCryptoPath(String cryptoPath) {
-        this.cryptoPath = cryptoPath;
+    public void setCrypto(Crypto crypto) {
+        this.crypto = crypto;
     }
 
     public String getUsername() {
