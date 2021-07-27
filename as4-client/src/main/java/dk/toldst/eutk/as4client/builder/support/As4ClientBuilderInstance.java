@@ -1,7 +1,7 @@
 package dk.toldst.eutk.as4client.builder.support;
 
+import dk.toldst.eutk.as4client.As4ClientInstance;
 import dk.toldst.eutk.as4client.As4Client;
-import dk.toldst.eutk.as4client.As4ClientInterface;
 import dk.toldst.eutk.as4client.builder.As4ClientBuilder;
 import dk.toldst.eutk.as4client.builder.interfaces.As4SetCrypto;
 import dk.toldst.eutk.as4client.builder.interfaces.As4SetEndpoint;
@@ -12,59 +12,60 @@ import java.net.URL;
 
 public class As4ClientBuilderInstance implements As4ClientBuilder {
 
-    private String fpath;
-    private String Username;
-    private String Password;
-    private URL Url;
+    private As4SetUsernameTokenDetailsInstance as4SetUsernameTokenDetailsInstance;
+    private As4SetCryptoInstance as4SetCryptoInstance;
+    private As4SetEndpointInstance as4SetEndpointInstance;
 
     //Username -> Client
-    public As4ClientInterface build() {
-        return new As4Client(fpath, Username, Password, Url);
+    public As4Client build() {
+        As4ClientInstance as4ClientInstance = new As4ClientInstance();
+        as4ClientInstance.setCryptoPath(as4SetCryptoInstance.path);
+        as4ClientInstance.setPassword(as4SetUsernameTokenDetailsInstance.password);
+        as4ClientInstance.setUsername(as4SetUsernameTokenDetailsInstance.username);
+        as4ClientInstance.setUrl(as4SetEndpointInstance.url);
+        return as4ClientInstance;
     }
 
     private class As4SetUsernameTokenDetailsInstance implements As4SetUsernameTokenDetails {
+        private String username;
+        private String password;
+
 
         @Override
         public As4ClientBuilder setUserNameTokenDetails(String username, String password) {
-            Username = username;
-            Password = password;
+            this.username = username;
+            this.password = password;
             return As4ClientBuilderInstance.this;
         }
     }
 
     //Crypto -> User
-    private class AsSetCryptoInstance implements As4SetCrypto {
+    private class As4SetCryptoInstance implements As4SetCrypto {
+        private String path;
         @Override
         public As4SetUsernameTokenDetails setCrypto(String filepath) {
-            fpath = filepath;
-            return new As4SetUsernameTokenDetailsInstance();
+            path = filepath;
+            as4SetUsernameTokenDetailsInstance = new As4SetUsernameTokenDetailsInstance();
+            return as4SetUsernameTokenDetailsInstance;
         }
     }
-
-    private AsSetCryptoInstance as4SetCryptoInstance = new AsSetCryptoInstance();
 
     //Endpoint -> Crypto
-    private class AsSetEndpointInstance implements As4SetEndpoint {
+    private class As4SetEndpointInstance implements As4SetEndpoint {
+        private URL url;
         @Override
         public As4SetCrypto setEndpoint(URL url) {
-            Url = url;
-            return new AsSetCryptoInstance();
+            this.url = url;
+            as4SetCryptoInstance = new As4SetCryptoInstance();
+            return as4SetCryptoInstance;
         }
     }
-
-    private AsSetEndpointInstance as4SetEndpointInstance = new AsSetEndpointInstance();
 
     //Builder -> Endpoint
     public As4SetEndpoint builder() {
-        return new AsSetEndpointInstance();
+        as4SetEndpointInstance = new As4SetEndpointInstance();
+        return as4SetEndpointInstance;
     }
 
-    //Builder -> Endpoint -> Crypto -> Username -> Build
-    public void test() throws MalformedURLException {
-        As4ClientInterface id = this.builder().
-                setEndpoint(new URL("Bla")).
-                setCrypto("bla").
-                setUserNameTokenDetails("bla", "bla").
-                build();
-    }
+
 }
