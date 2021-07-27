@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id("com.github.bjornvester.xjc") version "1.6.0"
 }
 
 group 'dk.toldst.eutk'

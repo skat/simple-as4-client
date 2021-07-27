@@ -1,3 +1,5 @@
 /as4-client/build/
 /example/build/
 /.gradle/
+/.idea/
+/example/build/
