@@ -1,2 +1,4 @@
 rootProject.name = 'simple-as4-client'
+include 'as4-client',  'example'
+include 'client'
 

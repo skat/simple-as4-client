@@ -12,6 +12,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/as4-client" />
+            <option value="$PROJECT_DIR$/client" />
+            <option value="$PROJECT_DIR$/example" />
           </set>
         </option>
       </GradleProjectSettings>

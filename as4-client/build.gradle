@@ -1,23 +1,14 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'dk.toldst.dms.dms-devops-plugin' version '0.1.4' apply false
-    id 'org.springframework.boot' version '2.3.4.RELEASE' apply false
 }
 
-group 'org.example'
+group 'dk.toldst.eutk'
 version '1.0-SNAPSHOT'
-
-
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation "org.springframework.boot:spring-boot-starter-validation"
-    implementation "org.springframework:spring-oxm"
     implementation group: 'org.apache.santuario', name: 'xmlsec', version: '2.2.1'
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.8'
     implementation 'jakarta.xml.ws:jakarta.xml.ws-api:3.0.0'
