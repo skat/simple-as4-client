@@ -1,6 +1,9 @@
 package dk.toldst.eutk.as4client;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.UUID;
 
 public class As4ClientInstance implements As4Client {
 
@@ -39,5 +42,22 @@ public class As4ClientInstance implements As4Client {
 
     public void setUrl(URL url) {
         this.url = url;
+    }
+
+
+    @Override
+    public String executePush(String service, String action, String message) {
+        String messageId = UUID.randomUUID().toString();
+
+
+
+
+
+        return null;
+    }
+
+    @Override
+    public String executePull() {
+        return null;
     }
 }

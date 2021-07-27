@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+               jaxb:version="2.1">
+    <jaxb:bindings xmlns="http://java.sun.com/xml/ns/jaxb" version="2.1" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc">
+        <jaxb:globalBindings>
+            <xjc:javaType name="java.time.LocalDateTime" xmlType="xsd:dateTime" adapter="com.migesok.jaxb.adapter.javatime.LocalDateTimeXmlAdapter" />
+        </jaxb:globalBindings>
+    </jaxb:bindings>
+</jaxb:bindings>

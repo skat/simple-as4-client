@@ -16,7 +16,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
     private As4SetCryptoInstance as4SetCryptoInstance;
     private As4SetEndpointInstance as4SetEndpointInstance;
 
-    //Username -> Client
+    //Builder -> Client
     public As4Client build() {
         As4ClientInstance as4ClientInstance = new As4ClientInstance();
         as4ClientInstance.setCryptoPath(as4SetCryptoInstance.path);
@@ -26,10 +26,10 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
         return as4ClientInstance;
     }
 
+    //Username -> Builder
     private class As4SetUsernameTokenDetailsInstance implements As4SetUsernameTokenDetails {
         private String username;
         private String password;
-
 
         @Override
         public As4ClientBuilder setUserNameTokenDetails(String username, String password) {
