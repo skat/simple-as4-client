@@ -3,6 +3,9 @@ package dk.toldst.eutk.as4client;
 import org.apache.wss4j.common.crypto.Crypto;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.UUID;
 
 public class As4ClientInstance implements As4Client {
 
@@ -41,5 +44,22 @@ public class As4ClientInstance implements As4Client {
 
     public void setUrl(URL url) {
         this.url = url;
+    }
+
+
+    @Override
+    public String executePush(String service, String action, String message) {
+        String messageId = UUID.randomUUID().toString();
+
+
+
+
+
+        return null;
+    }
+
+    @Override
+    public String executePull() {
+        return null;
     }
 }

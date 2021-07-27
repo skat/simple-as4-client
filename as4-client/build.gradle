@@ -19,6 +19,13 @@ dependencies {
 
 }
 
+xjc {
+    bindingFiles = project.files("$projectDir/src/main/resources/bindings/binding.xjb")
+    //outputJavaDir "here"
+    //xjcVersion "2.3.3"
+}
+
+
 test {
     useJUnitPlatform()
 }
