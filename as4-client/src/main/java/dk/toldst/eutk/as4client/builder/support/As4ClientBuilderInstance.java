@@ -52,6 +52,11 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
     private class As4SetCryptoInstance implements As4SetCrypto {
         private Crypto crypto;
 
+        /**
+         * Use this for generic loading of crypto properties. This should be used if your project doesn't have resource loading, or similar.
+         * @param filepath the file to read security properties from.
+         * @return Next step in the builder pattern.
+         */
         @Override
         public As4SetUsernameTokenDetails setCrypto(String filepath) {
             Properties cryptoProperties;
@@ -62,6 +67,19 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
             } catch (WSSecurityException e) {
                 //TODO BRJ Fix this catch
             }
+
+            as4SetUsernameTokenDetailsInstance = new As4SetUsernameTokenDetailsInstance();
+            return as4SetUsernameTokenDetailsInstance;
+        }
+
+        /**
+         * Use this to set the crypto, if your project has the ability to load resources.
+         * @param cryptoProps
+         * @return
+         */
+        @Override
+        public As4SetUsernameTokenDetails setCrypto(Crypto cryptoProps) {
+            crypto = cryptoProps;
 
             as4SetUsernameTokenDetailsInstance = new As4SetUsernameTokenDetailsInstance();
             return as4SetUsernameTokenDetailsInstance;
