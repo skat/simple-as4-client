@@ -8,11 +8,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
@@ -29,11 +25,8 @@ import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.transform.dom.DOMResult;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.StringReader;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.List;
 
@@ -42,13 +35,11 @@ public class As4HttpClient {
     public static final String EBMS_3_0_NAMESPACE_URI =
             "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/";
 
-    private final As4Properties as4Properties;
     private final JaxbThreadSafe marshaller;
     private final SecurityService securityService;
     private final As4ClientInstance as4ClientInstance;
 
-    public As4HttpClient(As4Properties as4Properties, JaxbThreadSafe marshaller, SecurityService securityService, As4ClientInstance as4ClientInstance) {
-        this.as4Properties = as4Properties;
+    public As4HttpClient(JaxbThreadSafe marshaller, SecurityService securityService, As4ClientInstance as4ClientInstance) {
         this.marshaller = marshaller;
         this.securityService = securityService;
         this.as4ClientInstance = as4ClientInstance;
@@ -86,7 +77,7 @@ public class As4HttpClient {
         HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
         HttpsURLConnection.setDefaultHostnameVerifier(new TrustAllHosts());
         HttpsURLConnection httpsConnection = null;
-        URL url = new URL(as4Properties.getEndpoint());
+        URL url = as4ClientInstance.getEndpoint();
         httpsConnection = (HttpsURLConnection) url.openConnection();
         httpsConnection.setHostnameVerifier(new TrustAllHosts());
         httpsConnection.connect();*/
@@ -96,7 +87,7 @@ public class As4HttpClient {
                 soapConnectionFactory.createConnection(), securityService);
 
         SOAPMessage soapMessage = createSOAPMessage(messaging, as4Message);
-        return soapConnection.call(soapMessage, as4Properties.getEndpoint());
+        return soapConnection.call(soapMessage, as4ClientInstance.getEndpoint());
     }
 
     private SOAPMessage createSOAPMessage(Messaging messaging, As4Message as4Message) throws Exception {
@@ -130,7 +121,9 @@ public class As4HttpClient {
             // TODO:
             // insert functionality that checks for the "CompressionType=application/gzip" property and
             // gzip the contents before adding it to the attachement (spec: GZIP [RFC1952])
-            byte[] data = Base64.getDecoder().decode(attachment.getContent());// Base64Utils.decodeFromString(attachment.getContent());
+
+            //byte[] data = Base64.getDecoder().decode(attachment.getContent());
+            byte[] data = attachment.getContent().getBytes(StandardCharsets.UTF_8);
             attachmentPart.setRawContent(new ByteArrayInputStream(data), "application/octet-stream");
             attachmentPart.addMimeHeader("Content-Transfer-Encoding", "binary");
             soapMessage.addAttachmentPart(attachmentPart);

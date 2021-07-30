@@ -24,9 +24,10 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
     public As4Client build() {
         As4ClientInstance as4ClientInstance = new As4ClientInstance();
         as4ClientInstance.setCrypto(as4SetCryptoInstance.crypto);
-        as4ClientInstance.setPassword(as4SetUsernameTokenDetailsInstance.password);
-        as4ClientInstance.setUsername(as4SetUsernameTokenDetailsInstance.username);
-        as4ClientInstance.setUrl(as4SetEndpointInstance.url);
+        as4ClientInstance.setCryptoProperties(as4SetCryptoInstance.cryptoProperties);
+        as4ClientInstance.setSecurityPassword(as4SetUsernameTokenDetailsInstance.password);
+        as4ClientInstance.setSecurityUsername(as4SetUsernameTokenDetailsInstance.username);
+        as4ClientInstance.setEndpoint(as4SetEndpointInstance.url);
         return as4ClientInstance;
     }
 
@@ -52,6 +53,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
     //Crypto -> User
     private class As4SetCryptoInstance implements As4SetCrypto {
         private Crypto crypto;
+        private Properties cryptoProperties;
 
         /**
          * Use this for generic loading of crypto properties. This should be used if your project doesn't have resource loading, or similar.
@@ -60,7 +62,6 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
          */
         @Override
         public As4SetUsernameTokenDetails setCrypto(String filepath) {
-            Properties cryptoProperties;
             System.out.println("running crypto setup");
             try {
                 Init.init();

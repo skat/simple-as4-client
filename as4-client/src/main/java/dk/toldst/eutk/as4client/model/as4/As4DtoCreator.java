@@ -17,10 +17,6 @@ import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.SignalMessage;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.To;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.UserMessage;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
@@ -28,15 +24,12 @@ import java.util.UUID;
 
 public class As4DtoCreator {
 
-    private final As4Properties as4Properties;
-    private final As4ClientInstance clientInstance;
+    private final As4ClientInstance as4ClientInstance;
 
-    public As4DtoCreator(As4Properties as4Properties, As4ClientInstance clientInstance) {
-        this.as4Properties = as4Properties;
-        this.clientInstance = clientInstance;
+    public As4DtoCreator(As4ClientInstance as4clientInstance) {
+        this.as4ClientInstance = as4clientInstance;
 
     }
-
 
     public UserMessage createUserMessaging(String service, String action, String conversationId, As4Message payload,
                                            String messageId) {
@@ -73,7 +66,7 @@ public class As4DtoCreator {
 
     private MessageInfo createMessageInfo(String messageId) {
         MessageInfo messageInfo = new MessageInfo();
-        messageInfo.setMessageId(messageId + "@" + as4Properties.getLocalHostName());
+        messageInfo.setMessageId(messageId + "@" + as4ClientInstance.getLocalHostName());
         LocalDateTime date =  LocalDateTime.now();
         messageInfo.setTimestamp(date);
         return messageInfo;
@@ -134,18 +127,18 @@ public class As4DtoCreator {
     private PartyInfo createPartyInfo() {
         PartyId fromParty = new PartyId();
         fromParty.setType("string");
-        fromParty.setValue(as4Properties.getFrom().getId());
+        fromParty.setValue(as4ClientInstance.getFrom().getId());
 
         PartyId toParty = new PartyId();
         toParty.setType("string");
-        toParty.setValue(as4Properties.getTo().getId());
+        toParty.setValue(as4ClientInstance.getTo().getId());
 
         From from = new From();
-        from.setRole(as4Properties.getFrom().getRole());
+        from.setRole(as4ClientInstance.getFrom().getRole());
         from.getPartyId().add(fromParty);
 
         To to = new To();
-        to.setRole(as4Properties.getTo().getRole());
+        to.setRole(as4ClientInstance.getTo().getRole());
         to.getPartyId().add(toParty);
 
         PartyInfo partyInfo = new PartyInfo();
@@ -156,7 +149,7 @@ public class As4DtoCreator {
 
     private String createId(String messageId) {
         return String.format("%s-%s@%s", messageId, UUID.randomUUID(),
-                as4Properties.getLocalHostName());
+                as4ClientInstance.getLocalHostName());
     }
 
     public SignalMessage createPullRequest(String mpc, String messageId) {
