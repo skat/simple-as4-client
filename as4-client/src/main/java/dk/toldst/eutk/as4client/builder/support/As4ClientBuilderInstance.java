@@ -45,7 +45,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
         JaxbThreadSafe jaxbThreadSafe = new JaxbThreadSafe(jaxbContext);
         As4HttpClient as4HttpClient = new As4HttpClient(jaxbThreadSafe, securityService, as4SetEndpointInstance.url);
 
-        As4DtoCreator as4DtoCreator = new As4DtoCreator("SKAT-MFT-AS4",      as4SetUsernameTokenDetailsInstance.username + "_AS4");
+        As4DtoCreator as4DtoCreator = new As4DtoCreator(as4SetUsernameTokenDetailsInstance.username + "_AS4", "SKAT-MFT-AS4");
         As4ClientInstance as4Client = new As4ClientInstance(as4DtoCreator, as4HttpClient);
         return as4Client;
     }

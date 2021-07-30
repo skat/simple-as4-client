@@ -25,8 +25,8 @@ public class As4DtoCreator {
 
     PartyInfo partyInfo;
 
-    public As4DtoCreator(String to, String from) {
-        setPartyInfo(to, from);
+    public As4DtoCreator(String from, String to) {
+        setPartyInfo(from, to);
     }
 
     private void setPartyInfo(String fromPartyIdentifier, String toPartyIdentifier) {
