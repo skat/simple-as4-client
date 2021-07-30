@@ -9,6 +9,7 @@ import dk.toldst.eutk.as4client.builder.interfaces.As4SetUsernameTokenDetails;
 import org.apache.wss4j.common.crypto.Crypto;
 import org.apache.wss4j.common.crypto.CryptoFactory;
 import org.apache.wss4j.common.ext.WSSecurityException;
+import org.apache.xml.security.Init;
 
 import java.net.URL;
 import java.util.Properties;
@@ -60,14 +61,17 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
         @Override
         public As4SetUsernameTokenDetails setCrypto(String filepath) {
             Properties cryptoProperties;
+            System.out.println("running crypto setup");
             try {
+                Init.init();
                 cryptoProperties = CryptoFactory
                         .getProperties(filepath, CryptoFactory.class.getClassLoader());
                 crypto = CryptoFactory.getInstance(cryptoProperties);
+                System.out.println(crypto == null);
             } catch (WSSecurityException e) {
+                int i = 0;
                 //TODO BRJ Fix this catch
             }
-
             as4SetUsernameTokenDetailsInstance = new As4SetUsernameTokenDetailsInstance();
             return as4SetUsernameTokenDetailsInstance;
         }
