@@ -5,6 +5,7 @@ import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.CollaborationInfo
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.From;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.MessageInfo;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.MessageProperties;
+import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.PartInfo;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.PartProperties;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.PartyId;
@@ -51,8 +52,8 @@ public class As4DtoCreator {
         partyInfo.setTo(to);
     }
 
-    public UserMessage createUserMessaging(String service, String action, String conversationId, As4Message payload,
-                                           String messageId) {
+    public Messaging createMessaging(String service, String action, String conversationId, As4Message payload,
+                                     String messageId) {
         MessageInfo messageInfo = createMessageInfo(messageId);
         CollaborationInfo collaborationInfo = createCollaborationInfo(service, action, conversationId);
         MessageProperties messageProperties = createMessageProperties(payload.getMessageProperties());
@@ -65,7 +66,11 @@ public class As4DtoCreator {
         userMessage.setMessageProperties(messageProperties);
         userMessage.setPayloadInfo(payloadInfo);
 
-        return userMessage;
+        Messaging messaging= new Messaging();
+        messaging.setMustUnderstandAttributeS12(true);
+        messaging.getUserMessage().add(userMessage);
+
+        return messaging;
     }
 
     private MessageProperties createMessageProperties(Map<String, String> messageProperties) {

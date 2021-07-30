@@ -1,22 +1,17 @@
 package dk.toldst.eutk.as4client;
 
 import com.google.common.io.CharStreams;
-import org.apache.wss4j.common.crypto.Crypto;
 
 import dk.toldst.eutk.as4client.model.as4.*;
-import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
 import org.apache.wss4j.common.util.XMLUtils;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.UserMessage;
 import java.nio.charset.StandardCharsets;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.soap.AttachmentPart;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 
 import javax.xml.transform.TransformerException;
 
@@ -48,11 +43,7 @@ public class As4ClientInstance implements As4Client {
         as4Message.setMessageProperties(Map.of("procedureType", "H7", "lang","EN"));
         as4Message.getAttachments().add(part);
 
-        UserMessage userMessage = as4DtoCreator.createUserMessaging(service, action, "placeholder", as4Message, messageId);
-
-        Messaging messaging = new Messaging();
-        messaging.setMustUnderstandAttributeS12(true);
-        messaging.getUserMessage().add(userMessage);
+        Messaging messaging = as4DtoCreator.createMessaging(service, action, "placeholder", as4Message, messageId);
 
         SOAPMessage soapMessage = null;
         try {
