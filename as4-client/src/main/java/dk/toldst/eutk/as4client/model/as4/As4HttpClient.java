@@ -1,6 +1,5 @@
 package dk.toldst.eutk.as4client.model.as4;
 
-import dk.toldst.eutk.as4client.As4ClientInstance;
 import dk.toldst.eutk.as4client.model.as4.As4Message.As4Part;
 import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
@@ -8,7 +7,11 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
@@ -26,7 +29,9 @@ import javax.xml.soap.SOAPMessage;
 import javax.xml.transform.dom.DOMResult;
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.List;
 
@@ -37,21 +42,14 @@ public class As4HttpClient {
 
     private final JaxbThreadSafe marshaller;
     private final SecurityService securityService;
-    private final As4ClientInstance as4ClientInstance;
+    private final URL endpointURL;
 
-    public As4HttpClient(JaxbThreadSafe marshaller, SecurityService securityService, As4ClientInstance as4ClientInstance) {
+    public As4HttpClient(JaxbThreadSafe marshaller, SecurityService securityService, URL endpointURL) {
         this.marshaller = marshaller;
         this.securityService = securityService;
-        this.as4ClientInstance = as4ClientInstance;
+        this.endpointURL = endpointURL;
     }
 
-    public SOAPMessage sendRequest(Messaging messaging, As4Message as4Message) {
-        try {
-            return doSendRequest(messaging, as4Message);
-        } catch (Exception e) {
-            throw new RuntimeException("Something went wrong", e);
-        }
-    }
 
     private static class TrustAllHosts implements HostnameVerifier {
         public boolean verify(String hostname, SSLSession session) {
@@ -59,9 +57,8 @@ public class As4HttpClient {
         }
     }
 
-    private SOAPMessage doSendRequest(Messaging messaging, As4Message as4Message) throws Exception {
+    public SOAPMessage sendRequest(Messaging messaging, As4Message as4Message) throws Exception {
         // The code below is to avoid the certificate check on SIT01
-        /*
         TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
             public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                 return null;
@@ -77,17 +74,17 @@ public class As4HttpClient {
         HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
         HttpsURLConnection.setDefaultHostnameVerifier(new TrustAllHosts());
         HttpsURLConnection httpsConnection = null;
-        URL url = as4ClientInstance.getEndpoint();
+        java.net.URL url = endpointURL;
         httpsConnection = (HttpsURLConnection) url.openConnection();
         httpsConnection.setHostnameVerifier(new TrustAllHosts());
-        httpsConnection.connect();*/
+        httpsConnection.connect();
 
         SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
         SOAPConnection soapConnection = new As4SecurityDecorator(
                 soapConnectionFactory.createConnection(), securityService);
 
         SOAPMessage soapMessage = createSOAPMessage(messaging, as4Message);
-        return soapConnection.call(soapMessage, as4ClientInstance.getEndpoint());
+        return soapConnection.call(soapMessage, endpointURL);
     }
 
     private SOAPMessage createSOAPMessage(Messaging messaging, As4Message as4Message) throws Exception {

@@ -1,6 +1,5 @@
 package dk.toldst.eutk.as4client.model.as4;
 
-import dk.toldst.eutk.as4client.As4ClientInstance;
 import dk.toldst.eutk.as4client.model.as4.As4Message.As4Part;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.CollaborationInfo;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.From;
@@ -24,17 +23,37 @@ import java.util.UUID;
 
 public class As4DtoCreator {
 
-    private final As4ClientInstance as4ClientInstance;
+    PartyInfo partyInfo;
 
-    public As4DtoCreator(As4ClientInstance as4clientInstance) {
-        this.as4ClientInstance = as4clientInstance;
+    public As4DtoCreator(String to, String from) {
+        setPartyInfo(to, from);
+    }
 
+    private void setPartyInfo(String fromPartyIdentifier, String toPartyIdentifier) {
+        PartyId fromParty = new PartyId();
+        fromParty.setType("string");
+        fromParty.setValue(fromPartyIdentifier);
+
+        PartyId toParty = new PartyId();
+        toParty.setType("string");
+        toParty.setValue(toPartyIdentifier);
+
+        From from = new From();
+        from.setRole("http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator");
+        from.getPartyId().add(fromParty);
+
+        To to = new To();
+        to.setRole("http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder");
+        to.getPartyId().add(toParty);
+
+        partyInfo = new PartyInfo();
+        partyInfo.setFrom(from);
+        partyInfo.setTo(to);
     }
 
     public UserMessage createUserMessaging(String service, String action, String conversationId, As4Message payload,
                                            String messageId) {
         MessageInfo messageInfo = createMessageInfo(messageId);
-        PartyInfo partyInfo = createPartyInfo();
         CollaborationInfo collaborationInfo = createCollaborationInfo(service, action, conversationId);
         MessageProperties messageProperties = createMessageProperties(payload.getMessageProperties());
         PayloadInfo payloadInfo = createPayloadInfo(payload, messageId);
@@ -66,7 +85,7 @@ public class As4DtoCreator {
 
     private MessageInfo createMessageInfo(String messageId) {
         MessageInfo messageInfo = new MessageInfo();
-        messageInfo.setMessageId(messageId + "@" + as4ClientInstance.getLocalHostName());
+        messageInfo.setMessageId(messageId);
         LocalDateTime date =  LocalDateTime.now();
         messageInfo.setTimestamp(date);
         return messageInfo;
@@ -124,32 +143,8 @@ public class As4DtoCreator {
         return collaborationInfo;
     }
 
-    private PartyInfo createPartyInfo() {
-        PartyId fromParty = new PartyId();
-        fromParty.setType("string");
-        fromParty.setValue(as4ClientInstance.getFrom().getId());
-
-        PartyId toParty = new PartyId();
-        toParty.setType("string");
-        toParty.setValue(as4ClientInstance.getTo().getId());
-
-        From from = new From();
-        from.setRole(as4ClientInstance.getFrom().getRole());
-        from.getPartyId().add(fromParty);
-
-        To to = new To();
-        to.setRole(as4ClientInstance.getTo().getRole());
-        to.getPartyId().add(toParty);
-
-        PartyInfo partyInfo = new PartyInfo();
-        partyInfo.setFrom(from);
-        partyInfo.setTo(to);
-        return partyInfo;
-    }
-
     private String createId(String messageId) {
-        return String.format("%s-%s@%s", messageId, UUID.randomUUID(),
-                as4ClientInstance.getLocalHostName());
+        return String.format("%s-%s", messageId, UUID.randomUUID());
     }
 
     public SignalMessage createPullRequest(String mpc, String messageId) {

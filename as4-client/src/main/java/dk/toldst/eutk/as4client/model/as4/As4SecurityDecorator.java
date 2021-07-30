@@ -13,7 +13,6 @@ import java.io.IOException;
  */
 public class As4SecurityDecorator extends SOAPConnection {
 
-
     private final SOAPConnection soapConnection;
     private final SecurityService securityService;
     //private final static Logger LOGGER = LogManager.getLogger(As4SecurityDecorator.class.getName());
