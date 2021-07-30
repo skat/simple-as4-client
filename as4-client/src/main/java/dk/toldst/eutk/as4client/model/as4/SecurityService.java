@@ -1,6 +1,5 @@
 package dk.toldst.eutk.as4client.model.as4;
 
-import dk.toldst.eutk.as4client.As4ClientInstance;
 import org.apache.wss4j.common.WSEncryptionPart;
 import org.apache.wss4j.common.WSS4JConstants;
 import org.apache.wss4j.common.crypto.Crypto;
@@ -28,14 +27,16 @@ import static org.apache.wss4j.common.crypto.WSProviderConfig.addJceProvider;
 
 public class SecurityService {
 
-    static {
-        Security.removeProvider("ApacheXMLDSig");
-        addJceProvider("ApacheXMLDSig", SantuarioUtil.getSantuarioProvider());
-    }
-    private final As4ClientInstance as4ClientInstance;
+    private String username;
+    private String password;
+    private Crypto crypto;
+    private Properties properties;
 
-    public SecurityService(As4ClientInstance as4ClientInstance) {
-        this.as4ClientInstance = as4ClientInstance;
+    public SecurityService(String username, String password, Crypto crypto, Properties properties) {
+        this.username = username;
+        this.password = password;
+        this.crypto = crypto;
+        this.properties = properties;
         System.setProperty("org.apache.xml.security.ignoreLineBreaks", "true");
         org.apache.xml.security.Init.init();
         if(Security.getProvider(WSConstants.SWA_ATTACHMENT_CONTENT_SIG_TRANS) == null) {
@@ -43,15 +44,20 @@ public class SecurityService {
         }
     }
 
+    static {
+        Security.removeProvider("ApacheXMLDSig");
+        addJceProvider("ApacheXMLDSig", SantuarioUtil.getSantuarioProvider());
+    }
+
     public String usernameToken(SOAPMessage soapMessage) {
         try {
             // build header
-            WSSecHeader secHeader = new WSSecHeader(as4ClientInstance.getSoapMessageActor(), soapMessage.getSOAPHeader().getOwnerDocument());
+            WSSecHeader secHeader = new WSSecHeader("ebms", soapMessage.getSOAPHeader().getOwnerDocument());
             secHeader.insertSecurityHeader();
 
             WSSecUsernameToken usernametoken = new WSSecUsernameToken(secHeader);
             usernametoken.setPasswordType(WSConstants.PASSWORD_DIGEST);
-            usernametoken.setUserInfo(as4ClientInstance.getSecurityUsername(), as4ClientInstance.getSecurityPassword());
+            usernametoken.setUserInfo(username, password);
             usernametoken.addCreated();
             usernametoken.addNonce();
             usernametoken.build();
@@ -66,9 +72,6 @@ public class SecurityService {
 
     public void signAndEncryptAs4(SOAPMessage soapMessage, String usernameTokenId) {
         try {
-            Crypto crypto = as4ClientInstance.getCrypto();
-            Properties properties = as4ClientInstance.getCryptoProperties();
-
             // build header
             WSSecHeader secHeader = new WSSecHeader(soapMessage.getSOAPHeader().getOwnerDocument());
             secHeader.insertSecurityHeader();

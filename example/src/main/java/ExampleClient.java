@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 public class ExampleClient {
     public static void main(String[] args) throws IOException, TransformerException {
         As4Client client = new As4ClientBuilderInstance().builder().
-            setEndpoint(new URL("http://localhost:8384/exchange/CVR_13116482_UID_50151991"))
+            setEndpoint(new URL("https://secureftpgatewaytest.skat.dk:6384/exchange/CVR_13116482_UID_50151991"))
                 .setCrypto("security/as4crypto-holodeck.properties")
                 .setUserNameTokenDetails("CVR_13116482_UID_50151991", "HBNRsvph68").
                 build();

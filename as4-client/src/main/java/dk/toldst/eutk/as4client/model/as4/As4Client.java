@@ -36,7 +36,12 @@ public class As4Client {
         messaging.setMustUnderstandAttributeS12(true);
         messaging.getUserMessage().add(userMessage);
 
-        SOAPMessage soapMessage = as4HttpClient.sendRequest(messaging, as4Message);
+        SOAPMessage soapMessage = null;
+        try {
+            soapMessage = as4HttpClient.sendRequest(messaging, as4Message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return getResponseString(soapMessage);
     }
@@ -49,7 +54,12 @@ public class As4Client {
         messaging.setMustUnderstandAttributeS12(true);
         messaging.getSignalMessage().add(signal);
 
-        SOAPMessage soapMessage = as4HttpClient.sendRequest(messaging, new As4Message());
+        SOAPMessage soapMessage = null;
+        try {
+            soapMessage = as4HttpClient.sendRequest(messaging, new As4Message());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return getResponseString(soapMessage);
     }
