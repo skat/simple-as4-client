@@ -8,7 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class main {
+public class ExampleClient {
     public static void main(String[] args) throws IOException, TransformerException {
         As4Client client = new As4ClientBuilderInstance().builder().
             setEndpoint(new URL("http://localhost:8384/exchange/CVR_13116482_UID_50151991"))
