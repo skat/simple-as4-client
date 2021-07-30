@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+               jaxb:version="2.1">
+    <jaxb:bindings schemaLocation="../schemas/H7/toldsystemet_H7_v1.1.7.xsd" >
+        <jaxb:schemaBindings>
+            <jaxb:package name="test"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+    <jaxb:bindings schemaLocation="../schemas/I2/toldsystemet_I2_v1.1.7.xsd" >
+        <jaxb:schemaBindings>
+            <jaxb:package name="test2"/>
+        </jaxb:schemaBindings>
+    </jaxb:bindings>
+</jaxb:bindings>
