@@ -27,13 +27,6 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
 
     //Username -> Client
     public As4Client build() {
-        As4ClientInstance as4Client = new As4ClientInstance();
-
-        as4Client.setCrypto(as4SetCryptoInstance.crypto);
-        as4Client.setCryptoProperties(as4SetCryptoInstance.cryptoProperties);
-        as4Client.setSecurityPassword(as4SetUsernameTokenDetailsInstance.password);
-        as4Client.setSecurityUsername(as4SetUsernameTokenDetailsInstance.username);
-        as4Client.setAs4DtoCreator(new As4DtoCreator("SKAT-MFT-AS4",      as4SetUsernameTokenDetailsInstance.username + "_AS4"));
 
         JAXBContext jaxbContext = null;
         try {
@@ -42,12 +35,18 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
             e.printStackTrace();
         }
 
-        SecurityService securityService = new SecurityService();
+        SecurityService securityService = new SecurityService(
+                as4SetUsernameTokenDetailsInstance.username,
+                as4SetUsernameTokenDetailsInstance.password,
+                as4SetCryptoInstance.crypto,
+                as4SetCryptoInstance.cryptoProperties
+        );
 
         JaxbThreadSafe jaxbThreadSafe = new JaxbThreadSafe(jaxbContext);
         As4HttpClient as4HttpClient = new As4HttpClient(jaxbThreadSafe, securityService, as4SetEndpointInstance.url);
 
-        as4Client.setAs4HttpClient(as4HttpClient);
+        As4DtoCreator as4DtoCreator = new As4DtoCreator("SKAT-MFT-AS4",      as4SetUsernameTokenDetailsInstance.username + "_AS4");
+        As4ClientInstance as4Client = new As4ClientInstance(as4DtoCreator, as4HttpClient);
         return as4Client;
     }
 

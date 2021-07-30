@@ -24,60 +24,11 @@ import java.util.*;
 
 public class As4ClientInstance implements As4Client {
 
-    private Crypto crypto;
-    private String securityUsername;
-    private String securityPassword;
-
-    private Properties cryptoProperties;
-
     private As4DtoCreator as4DtoCreator;
     private As4HttpClient as4HttpClient;
 
-    public Crypto getCrypto() {
-        return crypto;
-    }
-
-    public void setCrypto(Crypto crypto) {
-        this.crypto = crypto;
-    }
-
-    public String getSecurityUsername() {
-        return securityUsername;
-    }
-
-    public void setSecurityUsername(String securityUsername) {
-        this.securityUsername = securityUsername;
-    }
-
-    public String getSecurityPassword() {
-        return securityPassword;
-    }
-
-    public void setSecurityPassword(String securityPassword) {
-        this.securityPassword = securityPassword;
-    }
-
-    public Properties getCryptoProperties() {
-        return cryptoProperties;
-    }
-
-    public void setCryptoProperties(Properties cryptoProperties) {
-        this.cryptoProperties = cryptoProperties;
-    }
-
-    public As4DtoCreator getAs4DtoCreator() {
-        return as4DtoCreator;
-    }
-
-    public void setAs4DtoCreator(As4DtoCreator as4DtoCreator) {
+    public As4ClientInstance(As4DtoCreator as4DtoCreator, As4HttpClient as4HttpClient) {
         this.as4DtoCreator = as4DtoCreator;
-    }
-
-    public As4HttpClient getAs4HttpClient() {
-        return as4HttpClient;
-    }
-
-    public void setAs4HttpClient(As4HttpClient as4HttpClient) {
         this.as4HttpClient = as4HttpClient;
     }
 

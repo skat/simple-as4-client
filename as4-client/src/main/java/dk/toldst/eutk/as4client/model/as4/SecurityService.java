@@ -32,49 +32,21 @@ public class SecurityService {
     private Crypto crypto;
     private Properties properties;
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
+    public SecurityService(String username, String password, Crypto crypto, Properties properties) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Crypto getCrypto() {
-        return crypto;
-    }
-
-    public void setCrypto(Crypto crypto) {
         this.crypto = crypto;
-    }
-
-    public Properties getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Properties properties) {
         this.properties = properties;
-    }
-
-    static {
-        Security.removeProvider("ApacheXMLDSig");
-        addJceProvider("ApacheXMLDSig", SantuarioUtil.getSantuarioProvider());
-    }
-
-    public SecurityService() {
         System.setProperty("org.apache.xml.security.ignoreLineBreaks", "true");
         org.apache.xml.security.Init.init();
         if(Security.getProvider(WSConstants.SWA_ATTACHMENT_CONTENT_SIG_TRANS) == null) {
             Security.addProvider(new AttachmentContentSignatureTransformProvider());
         }
+    }
+
+    static {
+        Security.removeProvider("ApacheXMLDSig");
+        addJceProvider("ApacheXMLDSig", SantuarioUtil.getSantuarioProvider());
     }
 
     public String usernameToken(SOAPMessage soapMessage) {
