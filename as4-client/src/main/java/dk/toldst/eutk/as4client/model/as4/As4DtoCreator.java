@@ -32,11 +32,11 @@ public class As4DtoCreator {
     }
 
     private void setPartyInfo(String fromPartyIdentifier, String toPartyIdentifier) {
-        SetFromParty(fromPartyIdentifier, "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator");
-        SetToParty(toPartyIdentifier, "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder");
+        setFromParty(fromPartyIdentifier, "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator");
+        setToParty(toPartyIdentifier, "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder");
     }
 
-    public void SetToParty(String toPartyIdentifier, String toPartyRole) {
+    public void setToParty(String toPartyIdentifier, String toPartyRole) {
         PartyId toParty = new PartyId();
         toParty.setType("string");
         toParty.setValue(toPartyIdentifier);
@@ -48,7 +48,7 @@ public class As4DtoCreator {
         partyInfo.setTo(to);
     }
 
-    public void SetFromParty(String fromPartyIdentifier, String fromPartyRole) {
+    public void setFromParty(String fromPartyIdentifier, String fromPartyRole) {
         PartyId fromParty = new PartyId();
         fromParty.setType("string");
         fromParty.setValue(fromPartyIdentifier);

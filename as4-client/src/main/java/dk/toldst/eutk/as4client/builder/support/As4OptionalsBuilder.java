@@ -60,10 +60,10 @@ public class As4OptionalsBuilder implements As4Optionals {
             client.getAs4HttpClient().getSecurityService().setActor(actor);
         }
         if(fromPartyIdentifier != null && fromPartyRole != null){
-            client.getAs4DtoCreator().SetFromParty(fromPartyIdentifier, fromPartyRole);
+            client.getAs4DtoCreator().setFromParty(fromPartyIdentifier, fromPartyRole);
         }
         if(toPartyIdentifier != null && toPartyRole != null){
-            client.getAs4DtoCreator().SetToParty(toPartyIdentifier, toPartyRole);
+            client.getAs4DtoCreator().setToParty(toPartyIdentifier, toPartyRole);
         }
         return client;
 
