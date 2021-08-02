@@ -25,6 +25,14 @@ public class As4ClientInstance implements As4Client {
     private As4DtoCreator as4DtoCreator;
     private As4HttpClient as4HttpClient;
 
+    public As4DtoCreator getAs4DtoCreator() {
+        return as4DtoCreator;
+    }
+
+    public As4HttpClient getAs4HttpClient() {
+        return as4HttpClient;
+    }
+
     public As4ClientInstance(As4DtoCreator as4DtoCreator, As4HttpClient as4HttpClient) {
         this.as4DtoCreator = as4DtoCreator;
         this.as4HttpClient = as4HttpClient;
@@ -43,7 +51,7 @@ public class As4ClientInstance implements As4Client {
         As4Message.As4Part part = new As4Message.As4Part();
         part.setContent(message);
         part.setProperties(Collections.singletonMap("original-file-name", "declaration.xml"));
-        as4Message.setMessageProperties(Map.of("procedureType", "H7", "lang","EN"));
+        as4Message.setMessageProperties(Map.of("procedureType", "H7"));
         as4Message.getAttachments().add(part);
 
         Messaging messaging = as4DtoCreator.createMessaging(service, action, "placeholder", as4Message, messageId);

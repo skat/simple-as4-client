@@ -32,6 +32,12 @@ public class SecurityService {
     private Crypto crypto;
     private Properties properties;
 
+    public void setActor(String actor) {
+        this.actor = actor;
+    }
+
+    private String actor = "ebms";
+
     public SecurityService(String username, String password, Crypto crypto, Properties properties) {
         this.username = username;
         this.password = password;
@@ -52,7 +58,7 @@ public class SecurityService {
     public String usernameToken(SOAPMessage soapMessage) {
         try {
             // build header
-            WSSecHeader secHeader = new WSSecHeader("ebms", soapMessage.getSOAPHeader().getOwnerDocument());
+            WSSecHeader secHeader = new WSSecHeader(actor, soapMessage.getSOAPHeader().getOwnerDocument());
             secHeader.insertSecurityHeader();
 
             WSSecUsernameToken usernametoken = new WSSecUsernameToken(secHeader);
