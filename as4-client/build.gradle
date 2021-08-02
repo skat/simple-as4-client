@@ -23,15 +23,8 @@ dependencies {
     implementation group: 'org.apache.santuario', name: 'xmlsec', version: '2.2.1'
     implementation 'jakarta.xml.ws:jakarta.xml.ws-api:3.0.0'
     implementation group: 'javax.xml.soap', name: 'javax.xml.soap-api', version: '1.4.0'
-    implementation 'org.apache.wss4j:wss4j-ws-security-dom:2.3.1'
-    implementation 'org.apache.wss4j:wss4j-ws-security-common:2.3.1'
-    implementation 'org.apache.wss4j:wss4j:2.3.1'
-
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
-
-
     implementation group: 'com.sun.xml.messaging.saaj', name: 'saaj-impl', version: '1.4.0'
-
 }
 
 xjc {

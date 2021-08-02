@@ -1,6 +1,5 @@
-package dk.toldst.eutk.as4client.model.as4;
+package dk.toldst.eutk.as4client.as4;
 
-import dk.toldst.eutk.as4client.model.as4.As4Message.As4Part;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.CollaborationInfo;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.From;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.MessageInfo;
@@ -105,7 +104,7 @@ public class As4DtoCreator {
             payloadInfo.getPartInfo().add(partInfo);
         }
 
-        for (As4Part as4Part : as4Message.getAttachments()) {
+        for (As4Message.As4Part as4Part : as4Message.getAttachments()) {
             PartInfo partInfo = new PartInfo();
             partInfo.setPartProperties(createPartProperties(as4Part.getProperties()));
 

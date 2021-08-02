@@ -1,4 +1,4 @@
-package dk.toldst.eutk.as4client.model.as4;
+package dk.toldst.eutk.as4client.as4;
 
 import java.util.ArrayList;
 import java.util.List;
