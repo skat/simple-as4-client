@@ -48,7 +48,7 @@ public class As4HttpClient {
     }
 
     private final URL endpointURL;
-    private Boolean disableSSL;
+    private Boolean disableSSL = false;
 
     public Boolean getDisableSSL() {
         return disableSSL;
@@ -62,7 +62,6 @@ public class As4HttpClient {
         this.marshaller = marshaller;
         this.securityService = securityService;
         this.endpointURL = endpointURL;
-        disableSSL = false;
     }
 
     private static class TrustAllHosts implements HostnameVerifier {
