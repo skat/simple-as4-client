@@ -20,7 +20,7 @@ dependencies {
 }
 
 ext {
-    javaMainClass = "main"
+    javaMainClass = "ExampleClient"
 }
 application {
     mainClassName = javaMainClass
