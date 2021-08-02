@@ -3,6 +3,7 @@ package dk.toldst.eutk.as4client.builder.support;
 import dk.toldst.eutk.as4client.As4Client;
 import dk.toldst.eutk.as4client.As4ClientInstance;
 import dk.toldst.eutk.as4client.builder.As4ClientBuilder;
+import dk.toldst.eutk.as4client.builder.interfaces.As4Optionals;
 import dk.toldst.eutk.as4client.builder.interfaces.As4SetCrypto;
 import dk.toldst.eutk.as4client.builder.interfaces.As4SetEndpoint;
 import dk.toldst.eutk.as4client.builder.interfaces.As4SetUsernameTokenDetails;
@@ -48,6 +49,11 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
         As4DtoCreator as4DtoCreator = new As4DtoCreator(as4SetUsernameTokenDetailsInstance.username + "_AS4", "SKAT-MFT-AS4");
         As4ClientInstance as4Client = new As4ClientInstance(as4DtoCreator, as4HttpClient);
         return as4Client;
+    }
+
+    @Override
+    public As4Optionals optionals() {
+        return new As4OptionalsBuilder(this);
     }
 
     //Builder -> Endpoint

@@ -40,7 +40,7 @@ public class As4ClientInstance implements As4Client {
         As4Message.As4Part part = new As4Message.As4Part();
         part.setContent(message);
         part.setProperties(Collections.singletonMap("original-file-name", "declaration.xml"));
-        as4Message.setMessageProperties(Map.of("procedureType", "H7", "lang","EN"));
+        as4Message.setMessageProperties(Map.of("procedureType", "H7"));
         as4Message.getAttachments().add(part);
 
         Messaging messaging = as4DtoCreator.createMessaging(service, action, "placeholder", as4Message, messageId);
