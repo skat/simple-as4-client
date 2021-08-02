@@ -1,13 +1,14 @@
 package dk.toldst.eutk.as4client.builder.support;
 
 import dk.toldst.eutk.as4client.As4Client;
+import dk.toldst.eutk.as4client.As4ClientInstance;
 import dk.toldst.eutk.as4client.builder.As4ClientBuilder;
 import dk.toldst.eutk.as4client.builder.interfaces.As4Optionals;
 
 public class As4OptionalsBuilder implements As4Optionals {
     private As4ClientBuilder as4ClientBuilderInstance;
     private String actor;
-    private boolean disableSSl;
+    private boolean disableSSl = false;
     private String toParty;
     private String fromParty;
 
@@ -42,6 +43,12 @@ public class As4OptionalsBuilder implements As4Optionals {
 
     @Override
     public As4Client build() {
-        return as4ClientBuilderInstance.build();
+        //Change stuff
+        As4ClientInstance client = (As4ClientInstance) as4ClientBuilderInstance.build();
+        client.getAs4HttpClient().setDisableSSL(disableSSl);
+
+
+        return client;
+
     }
 }

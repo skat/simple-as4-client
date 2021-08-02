@@ -22,6 +22,14 @@ public class As4ClientInstance implements As4Client {
     private As4DtoCreator as4DtoCreator;
     private As4HttpClient as4HttpClient;
 
+    public As4DtoCreator getAs4DtoCreator() {
+        return as4DtoCreator;
+    }
+
+    public As4HttpClient getAs4HttpClient() {
+        return as4HttpClient;
+    }
+
     public As4ClientInstance(As4DtoCreator as4DtoCreator, As4HttpClient as4HttpClient) {
         this.as4DtoCreator = as4DtoCreator;
         this.as4HttpClient = as4HttpClient;

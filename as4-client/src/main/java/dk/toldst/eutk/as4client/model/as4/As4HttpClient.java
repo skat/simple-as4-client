@@ -43,13 +43,21 @@ public class As4HttpClient {
     private final JaxbThreadSafe marshaller;
     private final SecurityService securityService;
     private final URL endpointURL;
+    private Boolean disableSSL;
+
+    public Boolean getDisableSSL() {
+        return disableSSL;
+    }
+
+    public void setDisableSSL(Boolean disableSSL) {
+        this.disableSSL = disableSSL;
+    }
 
     public As4HttpClient(JaxbThreadSafe marshaller, SecurityService securityService, URL endpointURL) {
         this.marshaller = marshaller;
         this.securityService = securityService;
         this.endpointURL = endpointURL;
     }
-
 
     private static class TrustAllHosts implements HostnameVerifier {
         public boolean verify(String hostname, SSLSession session) {
@@ -59,25 +67,29 @@ public class As4HttpClient {
 
     public SOAPMessage sendRequest(Messaging messaging, As4Message as4Message) throws Exception {
         // The code below is to avoid the certificate check on SIT01
-        TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                return null;
+        if(!disableSSL) {
+            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                }
+
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                }
             }
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {
-            }
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {
-            }
+            };
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(new TrustAllHosts());
+            HttpsURLConnection httpsConnection = null;
+            java.net.URL url = endpointURL;
+            httpsConnection = (HttpsURLConnection) url.openConnection();
+            httpsConnection.setHostnameVerifier(new TrustAllHosts());
+            httpsConnection.connect();
         }
-        };
-        SSLContext sc = SSLContext.getInstance("SSL");
-        sc.init(null, trustAllCerts, new java.security.SecureRandom());
-        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        HttpsURLConnection.setDefaultHostnameVerifier(new TrustAllHosts());
-        HttpsURLConnection httpsConnection = null;
-        java.net.URL url = endpointURL;
-        httpsConnection = (HttpsURLConnection) url.openConnection();
-        httpsConnection.setHostnameVerifier(new TrustAllHosts());
-        httpsConnection.connect();
 
         SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
         SOAPConnection soapConnection = new As4SecurityDecorator(
