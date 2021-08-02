@@ -8,11 +8,16 @@ import java.nio.charset.StandardCharsets;
 
 public class ExampleClient {
     public static void main(String[] args) throws IOException, TransformerException {
+        String username = "CVR_13116482_UID_50151991";
         As4Client client = new As4ClientBuilderInstance().builder().
-            setEndpoint(new URL("https://secureftpgatewaytest.skat.dk:6384/exchange/CVR_13116482_UID_50151991"))
+            setEndpoint(new URL("http://localhost:8384/exchange/" + username))
                 .setCrypto("security/as4crypto-holodeck.properties")
-                .setUserNameTokenDetails("CVR_13116482_UID_50151991", "HBNRsvph68")
-                .optionals().noSSL()
+                .setUserNameTokenDetails(username, "HBNRsvph68")
+                .optionals()
+                .noSSL()
+                .fromParty(username + "_AS4", "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator")
+                .toParty("SKAT-MFT-AS4","http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder")
+                .setActor("ebms")
                 .build();
 
         String content = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +

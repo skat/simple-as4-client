@@ -27,29 +27,37 @@ public class As4DtoCreator {
     PartyInfo partyInfo;
 
     public As4DtoCreator(String from, String to) {
+        partyInfo = new PartyInfo();
         setPartyInfo(from, to);
     }
 
     private void setPartyInfo(String fromPartyIdentifier, String toPartyIdentifier) {
-        PartyId fromParty = new PartyId();
-        fromParty.setType("string");
-        fromParty.setValue(fromPartyIdentifier);
+        SetFromParty(fromPartyIdentifier, "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator");
+        SetToParty(toPartyIdentifier, "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder");
+    }
 
+    public void SetToParty(String toPartyIdentifier, String toPartyRole) {
         PartyId toParty = new PartyId();
         toParty.setType("string");
         toParty.setValue(toPartyIdentifier);
 
-        From from = new From();
-        from.setRole("http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator");
-        from.getPartyId().add(fromParty);
-
         To to = new To();
-        to.setRole("http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder");
+        to.setRole(toPartyRole);
         to.getPartyId().add(toParty);
 
-        partyInfo = new PartyInfo();
-        partyInfo.setFrom(from);
         partyInfo.setTo(to);
+    }
+
+    public void SetFromParty(String fromPartyIdentifier, String fromPartyRole) {
+        PartyId fromParty = new PartyId();
+        fromParty.setType("string");
+        fromParty.setValue(fromPartyIdentifier);
+
+        From from = new From();
+        from.setRole(fromPartyRole);
+        from.getPartyId().add(fromParty);
+
+        partyInfo.setFrom(from);
     }
 
     public Messaging createMessaging(String service, String action, String conversationId, As4Message payload,

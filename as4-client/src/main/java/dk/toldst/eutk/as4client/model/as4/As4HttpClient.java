@@ -42,6 +42,11 @@ public class As4HttpClient {
 
     private final JaxbThreadSafe marshaller;
     private final SecurityService securityService;
+
+    public SecurityService getSecurityService() {
+        return securityService;
+    }
+
     private final URL endpointURL;
     private Boolean disableSSL;
 
@@ -57,6 +62,7 @@ public class As4HttpClient {
         this.marshaller = marshaller;
         this.securityService = securityService;
         this.endpointURL = endpointURL;
+        disableSSL = false;
     }
 
     private static class TrustAllHosts implements HostnameVerifier {
