@@ -1,12 +1,8 @@
-package dk.toldst.eutk.as4client.model.as4;
-
-import org.apache.wss4j.common.util.XMLUtils;
+package dk.toldst.eutk.as4client.as4;
 
 import javax.xml.soap.SOAPConnection;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
-import javax.xml.transform.TransformerException;
-import java.io.IOException;
 
 /**
  * TODO: It's technically a decorator, but it is more like an interceptor. Name changing in the future?

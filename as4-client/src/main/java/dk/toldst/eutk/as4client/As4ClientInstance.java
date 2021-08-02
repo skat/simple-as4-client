@@ -2,10 +2,13 @@ package dk.toldst.eutk.as4client;
 
 import com.google.common.io.CharStreams;
 
-import dk.toldst.eutk.as4client.model.as4.*;
+import dk.toldst.eutk.as4client.as4.As4DtoCreator;
+import dk.toldst.eutk.as4client.as4.As4HttpClient;
+import dk.toldst.eutk.as4client.as4.As4Message;
+import dk.toldst.eutk.as4client.as4.*;
 import org.apache.wss4j.common.util.XMLUtils;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.UserMessage;
+
 import java.nio.charset.StandardCharsets;
 import javax.xml.soap.AttachmentPart;
 import javax.xml.soap.SOAPException;

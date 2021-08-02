@@ -1,4 +1,4 @@
-package dk.toldst.eutk.as4client.model.as4;
+package dk.toldst.eutk.as4client.as4;
 
 import org.apache.wss4j.common.ext.Attachment;
 import org.apache.wss4j.common.ext.AttachmentRequestCallback;

@@ -1,6 +1,5 @@
-package dk.toldst.eutk.as4client.model.as4;
+package dk.toldst.eutk.as4client.as4;
 
-import dk.toldst.eutk.as4client.model.as4.As4Message.As4Part;
 import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
 import org.w3c.dom.Node;
@@ -127,8 +126,8 @@ public class As4HttpClient {
     }
 
 
-    private void insertAttachments(SOAPMessage soapMessage, List<As4Part> attachments) throws SOAPException {
-        for (As4Part attachment : attachments) {
+    private void insertAttachments(SOAPMessage soapMessage, List<As4Message.As4Part> attachments) throws SOAPException {
+        for (As4Message.As4Part attachment : attachments) {
             AttachmentPart attachmentPart = soapMessage.createAttachmentPart();
             attachmentPart.setContentId(attachment.getId());
 
