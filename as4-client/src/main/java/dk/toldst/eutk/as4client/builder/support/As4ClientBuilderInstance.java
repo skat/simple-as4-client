@@ -3,14 +3,21 @@ package dk.toldst.eutk.as4client.builder.support;
 import dk.toldst.eutk.as4client.As4Client;
 import dk.toldst.eutk.as4client.As4ClientInstance;
 import dk.toldst.eutk.as4client.builder.As4ClientBuilder;
+import dk.toldst.eutk.as4client.builder.interfaces.As4Optionals;
 import dk.toldst.eutk.as4client.builder.interfaces.As4SetCrypto;
 import dk.toldst.eutk.as4client.builder.interfaces.As4SetEndpoint;
 import dk.toldst.eutk.as4client.builder.interfaces.As4SetUsernameTokenDetails;
+import dk.toldst.eutk.as4client.as4.As4DtoCreator;
+import dk.toldst.eutk.as4client.as4.As4HttpClient;
+import dk.toldst.eutk.as4client.as4.SecurityService;
+import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
 import org.apache.wss4j.common.crypto.Crypto;
 import org.apache.wss4j.common.crypto.CryptoFactory;
 import org.apache.wss4j.common.ext.WSSecurityException;
+import org.apache.xml.security.Init;
 
-import java.net.URL;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import java.util.Properties;
 
 public class As4ClientBuilderInstance implements As4ClientBuilder {
@@ -21,12 +28,32 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
 
     //Username -> Client
     public As4Client build() {
-        As4ClientInstance as4ClientInstance = new As4ClientInstance();
-        as4ClientInstance.setCrypto(as4SetCryptoInstance.crypto);
-        as4ClientInstance.setPassword(as4SetUsernameTokenDetailsInstance.password);
-        as4ClientInstance.setUsername(as4SetUsernameTokenDetailsInstance.username);
-        as4ClientInstance.setUrl(as4SetEndpointInstance.url);
-        return as4ClientInstance;
+
+        JAXBContext jaxbContext = null;
+        try {
+            jaxbContext = JAXBContext.newInstance("org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704");
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+
+        SecurityService securityService = new SecurityService(
+                as4SetUsernameTokenDetailsInstance.username,
+                as4SetUsernameTokenDetailsInstance.password,
+                as4SetCryptoInstance.crypto,
+                as4SetCryptoInstance.cryptoProperties
+        );
+
+        JaxbThreadSafe jaxbThreadSafe = new JaxbThreadSafe(jaxbContext);
+
+        As4HttpClient as4HttpClient = new As4HttpClient(jaxbThreadSafe, securityService, as4SetEndpointInstance.url);
+        As4DtoCreator as4DtoCreator = new As4DtoCreator(as4SetUsernameTokenDetailsInstance.username + "_AS4", "SKAT-MFT-AS4");
+        As4ClientInstance as4Client = new As4ClientInstance(as4DtoCreator, as4HttpClient);
+        return as4Client;
+    }
+
+    @Override
+    public As4Optionals optionals() {
+        return new As4OptionalsBuilder(this);
     }
 
     //Builder -> Endpoint
@@ -51,6 +78,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
     //Crypto -> User
     private class As4SetCryptoInstance implements As4SetCrypto {
         private Crypto crypto;
+        private Properties cryptoProperties;
 
         /**
          * Use this for generic loading of crypto properties. This should be used if your project doesn't have resource loading, or similar.
@@ -59,15 +87,17 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
          */
         @Override
         public As4SetUsernameTokenDetails setCrypto(String filepath) {
-            Properties cryptoProperties;
+            System.out.println("running crypto setup");
             try {
+                Init.init();
                 cryptoProperties = CryptoFactory
                         .getProperties(filepath, CryptoFactory.class.getClassLoader());
                 crypto = CryptoFactory.getInstance(cryptoProperties);
+                System.out.println(crypto == null);
             } catch (WSSecurityException e) {
+                int i = 0;
                 //TODO BRJ Fix this catch
             }
-
             as4SetUsernameTokenDetailsInstance = new As4SetUsernameTokenDetailsInstance();
             return as4SetUsernameTokenDetailsInstance;
         }
@@ -88,10 +118,10 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
 
     //Endpoint -> Crypto
     private class As4SetEndpointInstance implements As4SetEndpoint {
-        private URL url;
+        private java.net.URL url;
 
         @Override
-        public As4SetCrypto setEndpoint(URL url) {
+        public As4SetCrypto setEndpoint(java.net.URL url) {
             this.url = url;
             as4SetCryptoInstance = new As4SetCryptoInstance();
             return as4SetCryptoInstance;

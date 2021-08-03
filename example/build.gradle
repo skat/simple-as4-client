@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-
+    id "application"
 }
 
 group 'dk.toldst.eutk'
@@ -13,10 +13,18 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-    implementation project(':as4-client')
+    implementation 'org.apache.wss4j:wss4j-ws-security-dom:2.3.1'
+    implementation 'org.apache.wss4j:wss4j-ws-security-common:2.3.1'
+    implementation 'org.apache.wss4j:wss4j:2.3.1'
+    compile project(':as4-client')
 }
 
-
+ext {
+    javaMainClass = "ExampleClient"
+}
+application {
+    mainClassName = javaMainClass
+}
 
 test {
     useJUnitPlatform()
