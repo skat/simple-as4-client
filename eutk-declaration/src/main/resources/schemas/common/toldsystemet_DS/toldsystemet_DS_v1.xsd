@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:6"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:tns="urn:wco:datamodel:WCO:Declaration_DS:DMS:2"
            targetNamespace="urn:wco:datamodel:WCO:Declaration_DS:DMS:2" elementFormDefault="qualified" version="1.1.7">
     <xs:import namespace="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:6"
                schemaLocation="../UNECE/UnqualifiedDataType_6_DMS.xsd"/>
@@ -20,17 +19,6 @@
                 <xs:pattern value=".*[^\s].*"/>
             </xs:restriction>
         </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="AdditionalDocumentEffectiveDateTimeType">
-        <xs:annotation>
-            <xs:documentation>
-                <WCOID>276</WCOID>
-                <WCOFormat>an..35</WCOFormat>
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice>
-            <xs:element name="DateTimeString" type="tns:DateTimeString" />
-        </xs:choice>
     </xs:complexType>
     <xs:complexType name="AdditionalDocumentIdentificationIDType">
         <xs:annotation>
@@ -154,17 +142,6 @@
                 <xs:pattern value=".*[^\s].*"/>
             </xs:restriction>
         </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="PreviousDocumentAcceptanceDateTimeType">
-        <xs:annotation>
-            <xs:documentation>
-                <WCOID>023</WCOID>
-                <WCOFormat>an..35</WCOFormat>
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice>
-            <xs:element name="DateTimeString" type="tns:DateTimeString" />
-        </xs:choice>
     </xs:complexType>
     <xs:complexType name="AdditionalInformationStatementCodeType">
         <xs:annotation>
@@ -1053,17 +1030,6 @@
             </xs:restriction>
         </xs:simpleContent>
     </xs:complexType>
-    <xs:complexType name="DeclarationAcceptanceDateTimeType">
-        <xs:annotation>
-            <xs:documentation>
-                <WCOID>023</WCOID>
-                <WCOFormat>an..35</WCOFormat>
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice>
-            <xs:element name="DateTimeString" type="tns:DateTimeString" />
-        </xs:choice>
-    </xs:complexType>
     <xs:complexType name="DeclarationDeclarationOfficeIDType">
         <xs:annotation>
             <xs:documentation>
@@ -1165,17 +1131,6 @@
                 <xs:fractionDigits value="3"/>
             </xs:restriction>
         </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="DeclarationIssueDateTimeType">
-        <xs:annotation>
-            <xs:documentation>
-                <WCOID>D011</WCOID>
-                <WCOFormat>an..35</WCOFormat>
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice>
-            <xs:element name="DateTimeString" type="tns:DateTimeString" />
-        </xs:choice>
     </xs:complexType>
     <xs:complexType name="DeclarationIssueLocationIdentificationIDType">
         <xs:annotation>
@@ -1669,17 +1624,6 @@
             </xs:restriction>
         </xs:simpleContent>
     </xs:complexType>
-    <xs:complexType name="GoodsShipmentExitDateTimeType">
-        <xs:annotation>
-            <xs:documentation>
-                <WCOID>024</WCOID>
-                <WCOFormat>an..35</WCOFormat>
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice>
-            <xs:element name="DateTimeString" type="tns:DateTimeString" />
-        </xs:choice>
-    </xs:complexType>
     <xs:complexType name="GoodsShipmentTransactionNatureCodeType">
         <xs:annotation>
             <xs:documentation>
@@ -1833,17 +1777,6 @@
                 <xs:pattern value=".*[^\s].*"/>
             </xs:restriction>
         </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="InvoiceIssueDateTimeType">
-        <xs:annotation>
-            <xs:documentation>
-                <WCOID>D015</WCOID>
-                <WCOFormat>an..35</WCOFormat>
-            </xs:documentation>
-        </xs:annotation>
-        <xs:choice>
-            <xs:element name="DateTimeString" type="tns:DateTimeString" />
-        </xs:choice>
     </xs:complexType>
     <xs:complexType name="InvoiceLineItemChargeAmountType">
         <xs:annotation>
@@ -2729,286 +2662,5 @@
                 <xs:fractionDigits value="6"/>
             </xs:restriction>
         </xs:simpleContent>
-    </xs:complexType>
-
-    <xs:complexType name="DateTimeString">
-        <xs:simpleContent>
-            <xs:restriction base="udt:DateTimeType">
-                <xs:maxLength value="35"/>
-            </xs:restriction>
-        </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="PreviousDocument">
-        <xs:sequence>
-            <xs:element name="SequenceNumeric" type="tns:PreviousDocumentSequenceNumericType"
-                        minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        Fill in the sequential number of document.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="CategoryCode" type="tns:PreviousDocumentCategoryCodeType"
-                        minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        Possible codes:
-                        - 'X': Summary declaration
-                        - 'Y': Initial declaration
-                        - 'Z': Preceding declaration
-
-                        See also https://www.skat.dk/skat.aspx?oId=1658884 under the "Dok
-                        kat"-column.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="ID" type="tns:PreviousDocumentIdentificationIDType" minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        Use the MRN number of a previous document to refer to the previous
-                        document.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="TypeCode" type="tns:PreviousDocumentTypeCodeType" minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        TypeCode should be filled according to type of document, see
-                        https://www.skat.dk/skat.aspx?oId=1658884 under "Dok art"-column.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="LineNumeric" type="tns:PreviousDocumentLineNumericType"
-                        minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        Item number pertaining to the previous Customs filing
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="AdditionalDocument">
-        <xs:sequence>
-            <xs:element name="SequenceNumeric" type="tns:AdditionalDocumentSequenceNumericType" minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        Fill in the sequential number of the document.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="CategoryCode" type="tns:AdditionalDocumentCategoryCodeType" minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        This is the letter part of the document code, eg. for a 'Commercial invoice'/'Handels faktura', which is 'N380',
-                        the letter 'N' should be filled here.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="ID" type="tns:AdditionalDocumentIdentificationIDType" minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        Fill in the ID number of the document.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="TypeCode" type="tns:AdditionalDocumentTypeCodeType" minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        This is the number part of the document code, eg. for a 'Commercial invoice'/'Handelsfaktura', which is 'N380',
-                        the numbers '380' should be filled here.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="AdditionalInformation">
-        <xs:sequence>
-            <xs:element name="SequenceNumeric" type="tns:AdditionalInformationSequenceNumericType" minOccurs="1"/>
-            <xs:element name="StatementCode" type="tns:AdditionalInformationStatementCodeType" minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        Code for specifying the additional information.
-                        For codes see: https://svn.taxud.gefeg.com/svn/Documentation/Archive/EUCDM%205.2/EN/EUCDM/Annex-B/i21.htm#1FMain/FData%20groups/TGroup-2/EB-2-2
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="StatementDescription" type="tns:AdditionalInformationStatementDescriptionTextType" minOccurs="0">
-                <xs:annotation>
-                    <xs:documentation>
-                        Free text field describing the additional information provided.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="StatementTypeCode" type="tns:AdditionalInformationStatementTypeCodeType" minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        Code for the type of additional information.
-                        The valid codes for H7 are:
-                        - ABC: Conditions of sale or purchase - Additional information regarding terms and
-                        conditions which apply to the transaction.
-                        - ACA: Documentary requirements - Specification of the documentary requirements.                                                            Documentary requirements
-                        - ACB: Additional information - Self explanatory.
-                        - ACD: Reason - Reason for a request or response.
-                        - AFB: Comment - Denotes that the associated text is a comment.
-                        - CEX: Customs clearance instructions export - Any coded or clear instruction agreed by customer
-                        and carrier regarding the export declaration of the goods.
-                        - CUS: Customs declaration information - Note contains customs declaration information.
-                        - TRR: Requested tariff - Stipulation of the tariffs to be applied showing,
-                        where applicable, special agreement numbers or references. (Tariff Quota Order Number)
-                        - ZZZ: Mutually defined - Note contains information mutually defined by trading partners.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="CustomsValuation">
-        <xs:sequence>
-            <xs:element name="FreightChargeAmount"
-                        type="tns:CustomsValuationFreightChargeAmountType" minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        <type>EUCDM 5.2</type>
-                        <code>4/19</code>
-                        <details>
-                            Transportation cost to final destination - header level.
-
-                            If it the transportation costs are not filled on item level
-                            (.../GovernmentAgencyGoodsItem/CustomsValuation/FreightChargeAmount)
-                            this has to be filled.
-                            If this is filled, it is the total transportation costs for all
-                            the declared items.
-                        </details>
-                        <submission>
-                            If this is filled AND
-                            .../GovernmentAgencyGoodsItem/CustomsValuation/FreightChargeAmount
-                            is also filled for each item, this must be the sum of the
-                            FreightChargeAmount for all items.
-                        </submission>
-                        <amendment>
-                            Can be corrected for an amendment.
-                        </amendment>
-                        <correction>
-                            Can be corrected for a correction.
-                        </correction>
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="DomesticDutyTaxParty">
-        <xs:sequence>
-            <xs:element name="SequenceNumeric" type="tns:DomesticDutyTaxPartySequenceNumericType" minOccurs="1"/>
-            <xs:element name="ID" type="tns:DomesticDutyTaxPartyIdentificationIDType" minOccurs="0"/>
-            <xs:element name="RoleCode" type="tns:DomesticDutyTaxPartyRoleCodeType" minOccurs="0">
-                <xs:annotation>
-                    <xs:documentation>
-                        Role Codes:
-
-                        - 'FR5': Vendor (IOSS) - Taxable person making use of the
-                        special scheme for distance sales of goods imported from
-                        third countries and territories set out in Title XII Chapter
-                        6 Section 4 of Directive 2006/112/EC and holder of the VAT
-                        identification number referred to in Article 369q therein.
-
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="UCR">
-        <xs:sequence>
-            <xs:element name="TraderAssignedReferenceID" type="tns:UCRTraderAssignedReferenceIDType" minOccurs="1"/>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="Address-Require-All">
-        <xs:sequence>
-            <xs:element name="CityName" type="tns:AddressCityNameTextType" minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        City name.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="CountryCode" type="tns:AddressCountryCodeType" minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        Country code.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="Line" type="tns:AddressLineTextType" minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        Address Line.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="PostcodeID" type="tns:AddressPostcodeIDType" minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        Post code.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="Address-Require-Country">
-        <xs:sequence>
-            <xs:element name="TypeCode" type="tns:AddressTypeCodeType"
-                        minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation xml:lang="EN">
-                        Qualifier of identification
-                        Codes relevant for H7:
-                        - 'U': UN/LOCODE
-                        - 'V': Customs office identifier
-                        - 'Z': Free text (Fill in
-                        GoodsLocation/Address/... fields)
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="CityName"
-                        type="tns:AddressCityNameTextType" minOccurs="0">
-                <xs:annotation>
-                    <xs:documentation>
-                        City Name.
-                        Should only be filled when Address/TypeCode is
-                        'Z'.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="CountryCode"
-                        type="tns:AddressCountryCodeType" minOccurs="1">
-                <xs:annotation>
-                    <xs:documentation>
-                        Country code.
-                        The country code should always be filled.
-                        Fill in 'DK'.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="Line" type="tns:AddressLineTextType"
-                        minOccurs="0">
-                <xs:annotation>
-                    <xs:documentation>
-                        Address Line.
-                        Should only be filled when Address/TypeCode is
-                        'Z'.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="PostcodeID"
-                        type="tns:AddressPostcodeIDType" minOccurs="0">
-                <xs:annotation>
-                    <xs:documentation>
-                        Post code.
-                        Should only be filled when Address/TypeCode is
-                        'Z'.
-                    </xs:documentation>
-                </xs:annotation>
-            </xs:element>
-        </xs:sequence>
     </xs:complexType>
 </xs:schema>

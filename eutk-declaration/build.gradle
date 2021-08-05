@@ -28,7 +28,8 @@ test {
 xjc {
     bindingFiles = project.files("$projectDir/src/main/resources/schemas/binding/binding.xjb")
     xsdFiles = project.files(
-            xsdDir.file("schemas/H7/toldsystemet_H7_v1.1.7.xsd")
+            xsdDir.file("schemas/H7/toldsystemet_H7_v1.1.7.xsd"),
+            xsdDir.file("schemas/I2/toldsystemet_I2_v1.1.7.xsd")
     )
     options.add("-XJsr303Annotations")
 }
