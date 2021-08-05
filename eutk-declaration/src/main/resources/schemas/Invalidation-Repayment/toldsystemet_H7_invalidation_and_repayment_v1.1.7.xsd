@@ -10,7 +10,6 @@
                schemaLocation="../common/UNECE/UnqualifiedDataType_6_DMS.xsd"/>
     <xs:import namespace="urn:wco:datamodel:WCO:WCO_DEC_EDS_AUTHORISATION:1"
                schemaLocation="../common/toldsystemet_DS/WCO_DEC_EDS_AUTHORISATION.xsd"/>
-    <xs:element name="Declaration" type="Declaration-Repay"/>
     <xs:complexType name="Declaration-Repay">
         <xs:annotation>
             <xs:documentation>

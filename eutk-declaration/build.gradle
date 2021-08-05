@@ -12,9 +12,13 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation "org.hibernate:hibernate-validator:5.1.2.Final"
+    testImplementation "org.glassfish:javax.el:3.0.0"
     implementation "javax.xml.bind:jaxb-api:2.3.0"
     implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
     implementation "com.sun.activation:jakarta.activation:1.2.1"
+    implementation "javax.validation:validation-api:2.0.1.Final"
+    xjcPlugins "com.github.krasa:krasa-jaxb-tools:1.8"
 }
 
 test {
@@ -22,14 +26,9 @@ test {
 }
 
 xjc {
-
-    generateEpisode.set(true)
+    bindingFiles = project.files("$projectDir/src/main/resources/schemas/binding/binding.xjb")
     xsdFiles = project.files(
-            xsdDir.file("schemas/H7/toldsystemet_H7_v1.1.7.xsd"),
-            xsdDir.file("schemas/I2/toldsystemet_I2_v1.1.7.xsd"),
-            xsdDir.file("schemas/Invalidation/toldsystemet_H7_invalidation_v1.1.7.xsd"),
-            xsdDir.file("schemas/Invalidation-Repayment/toldsystemet_H7_invalidation_and_repayment_v1.1.7.xsd"),
-            xsdDir.file("schemas/Notification/trader-portal-notifications.xsd")
-
+            xsdDir.file("schemas/H7/toldsystemet_H7_v1.1.7.xsd")
     )
+    options.add("-XJsr303Annotations")
 }
