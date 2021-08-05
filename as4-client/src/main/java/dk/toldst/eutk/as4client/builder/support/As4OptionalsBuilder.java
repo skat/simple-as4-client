@@ -11,23 +11,17 @@ import java.net.URISyntaxException;
 public class As4OptionalsBuilder implements As4Optionals {
     private As4ClientBuilder as4ClientBuilderInstance;
     private String actor;
-
     private String toPartyIdentifier;
     private String toPartyRole;
     private String fromPartyIdentifier;
     private String fromPartyRole;
     private String username;
     private URI uri;
-
-
-
     private boolean disableSSl = false;
 
     public As4OptionalsBuilder(As4ClientBuilder as4ClientBuilderInstance) {
         this.as4ClientBuilderInstance = as4ClientBuilderInstance;
     }
-
-
 
     @Override
     public As4Optionals setAbsoluteURI(URI uri){
@@ -67,7 +61,6 @@ public class As4OptionalsBuilder implements As4Optionals {
         return this;
     }
 
-
     @Override
     public As4Client build() throws URISyntaxException {
         //Change stuff
@@ -93,6 +86,5 @@ public class As4OptionalsBuilder implements As4Optionals {
             client.getAs4HttpClient().getSecurityService().setUsername(username);
         }
         return client;
-
     }
 }
