@@ -15,7 +15,6 @@ import dk.toldst.eutk.as4client.userinformation.As4UserInformation;
 import dk.toldst.eutk.as4client.userinformation.As4UserInformationType;
 import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
 import org.apache.http.client.utils.URIBuilder;
-
 import org.apache.wss4j.common.crypto.Crypto;
 import org.apache.wss4j.common.crypto.CryptoFactory;
 import org.apache.wss4j.common.crypto.Merlin;
@@ -121,8 +120,6 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
             return as4SetUsernameTokenDetailsInstance;
         }
 
-
-
         /**
          * Use this to set the crypto, if your project has the ability to load resources.
          * @param cryptoProps
@@ -222,8 +219,4 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
         }
         return userInformation;
     }
-
-
-
-
 }
