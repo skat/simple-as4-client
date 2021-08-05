@@ -14,6 +14,8 @@ import dk.toldst.eutk.as4client.userinformation.AS4Exception;
 import dk.toldst.eutk.as4client.userinformation.As4UserInformation;
 import dk.toldst.eutk.as4client.userinformation.As4UserInformationType;
 import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
+import org.apache.http.client.utils.URIBuilder;
+
 import org.apache.wss4j.common.crypto.Crypto;
 import org.apache.wss4j.common.crypto.CryptoFactory;
 import org.apache.wss4j.common.crypto.Merlin;
@@ -21,6 +23,7 @@ import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.xml.security.Init;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import java.net.URISyntaxException;
 import java.security.KeyStoreException;
 import java.security.cert.X509Certificate;
 import java.util.Properties;
@@ -34,7 +37,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
     private As4SetEndpointInstance as4SetEndpointInstance;
 
     //Username -> Client
-    public As4Client build() {
+    public As4Client build() throws URISyntaxException {
 
         JAXBContext jaxbContext = null;
         try {
@@ -52,8 +55,15 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
 
         JaxbThreadSafe jaxbThreadSafe = new JaxbThreadSafe(jaxbContext);
 
+        URIBuilder builder = new URIBuilder();
+        builder.setPort(as4SetEndpointInstance.urlBase.getPort());
+        builder.setScheme(as4SetEndpointInstance.urlBase.getScheme());
+        builder.setScheme(as4SetEndpointInstance.urlBase.getScheme());
+        builder.setHost(as4SetEndpointInstance.urlBase.getHost());
+        builder.setPathSegments("exchange", as4SetCryptoInstance.username);
+        builder.build();
 
-        As4HttpClient as4HttpClient = new As4HttpClient(jaxbThreadSafe, securityService, as4SetEndpointInstance.urlBase.resolve("/exchange/"+as4SetCryptoInstance.username));
+        As4HttpClient as4HttpClient = new As4HttpClient(jaxbThreadSafe, securityService, builder.build());
         As4DtoCreator as4DtoCreator = new As4DtoCreator(as4SetCryptoInstance.username + "_AS4", "SKAT-MFT-AS4");
         As4ClientInstance as4Client = new As4ClientInstance(as4DtoCreator, as4HttpClient);
         return as4Client;

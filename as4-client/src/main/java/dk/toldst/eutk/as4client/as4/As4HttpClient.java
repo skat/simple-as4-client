@@ -47,7 +47,8 @@ public class As4HttpClient {
         return securityService;
     }
 
-    private final URI endpointURI;
+    private URI endpointURI;
+
     private Boolean disableSSL = false;
 
     public Boolean getDisableSSL() {
@@ -56,6 +57,14 @@ public class As4HttpClient {
 
     public void setDisableSSL(Boolean disableSSL) {
         this.disableSSL = disableSSL;
+    }
+
+    public URI getEndpointURI() {
+        return endpointURI;
+    }
+
+    public void setEndpointURI(URI endpointURI) {
+        this.endpointURI = endpointURI;
     }
 
     public As4HttpClient(JaxbThreadSafe marshaller, SecurityService securityService, URI endpointURI) {

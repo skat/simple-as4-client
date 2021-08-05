@@ -11,14 +11,16 @@ import java.nio.charset.StandardCharsets;
 public class ExampleClient {
     public static void main(String[] args) throws IOException, TransformerException, URISyntaxException {
         As4Client client = new As4ClientBuilderInstance().builder().
-            setEndpoint(new URI("http://localhost:8384"))
+            setEndpoint(new URI("http://wrongurlfortest.com:8384"))
                 .setCrypto("security/as4crypto-holodeck.properties")
                 .setPassword("HBNRsvph68")
                 .optionals()
                 .noSSL()
-                /*.fromParty("CVR_13116482_UID_50151991" + "_AS4", "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator")
+                .fromParty("CVR_13116482_UID_50151991" + "_AS4", "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator")
                 .toParty("SKAT-MFT-AS4","http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder")
-                .setActor("ebms") */
+                .setActor("ebms")
+                .setAbsoluteURI(new URI("http://localhost:8384/exchange/CVR_13116482_UID_50151991"))
+                .setUsername("CVR_13116482_UID_50151991")
                 .build();
 
         String content = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
