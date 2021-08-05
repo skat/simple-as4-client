@@ -5,12 +5,12 @@ package dk.toldst.eutk.as4client.userinformation;
  * User: brj@netcompany.com
  * Date: 2017-01-05
  */
-public class B2BException extends Exception {
-    public B2BException(String s) {
+public class AS4Exception extends Exception {
+    public AS4Exception(String s) {
         super(s);
     }
 
-    public B2BException(String s, Exception e) {
+    public AS4Exception(String s, Exception e) {
         super(s,e);
     }
 }

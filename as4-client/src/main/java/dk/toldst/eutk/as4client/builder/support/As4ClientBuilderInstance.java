@@ -10,7 +10,7 @@ import dk.toldst.eutk.as4client.builder.interfaces.As4SetPasswordTokenDetails;
 import dk.toldst.eutk.as4client.as4.As4DtoCreator;
 import dk.toldst.eutk.as4client.as4.As4HttpClient;
 import dk.toldst.eutk.as4client.as4.SecurityService;
-import dk.toldst.eutk.as4client.userinformation.B2BException;
+import dk.toldst.eutk.as4client.userinformation.AS4Exception;
 import dk.toldst.eutk.as4client.userinformation.As4UserInformation;
 import dk.toldst.eutk.as4client.userinformation.As4UserInformationType;
 import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
@@ -21,7 +21,6 @@ import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.xml.security.Init;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import java.net.URI;
 import java.security.KeyStoreException;
 import java.security.cert.X509Certificate;
 import java.util.Properties;
@@ -101,10 +100,10 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
                         .getProperties(filepath, CryptoFactory.class.getClassLoader());
                 crypto = CryptoFactory.getInstance(cryptoProperties);
 
-                var a = new X509Certificate[] { (X509Certificate)(((Merlin) crypto).getKeyStore().getCertificate(cryptoProperties.getProperty("org.apache.wss4j.crypto.merlin.keystore.alias"))) };
-                var userInfo = mapCertificateToUserInformation(a);
+                var certificates = new X509Certificate[] { (X509Certificate)(((Merlin) crypto).getKeyStore().getCertificate(cryptoProperties.getProperty("org.apache.wss4j.crypto.merlin.keystore.alias"))) };
+                var userInfo = mapCertificateToUserInformation(certificates);
                 username = mapUserInformationToUsernameString(userInfo);
-            } catch (WSSecurityException | KeyStoreException | B2BException e) {
+            } catch (WSSecurityException | KeyStoreException | AS4Exception e) {
                 int i = 0;
                 //TODO BRJ Fix this catch
             }
@@ -142,35 +141,27 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
 
     public static String mapUserInformationToUsernameString(As4UserInformation information)
     {
-        String res = "";
-        res += "CVR_" + information.getCvr() + "_";
-        switch (information.getType()) {
-            case RID:
-                res += "RID"; break;
-            case UID:
-                res += "UID"; break;
-            case PID:
-                res += "PID"; break;
-            case FID:
-                res += "FID"; break;
-            case NID:
-                res += "NID"; break;
-        }
-        res += "_" +  information.getId();
-        return res;
+        StringBuilder res = new StringBuilder();
+        res.append("CVR_");
+        res.append(information.getCvr());
+        res.append("_");
+        res.append(information.getType().name());
+        res.append("_");
+        res.append(information.getId());
+        return res.toString();
     }
 
 
-    public static As4UserInformation mapCertificateToUserInformation(final X509Certificate[] certificates) throws B2BException {
+    public static As4UserInformation mapCertificateToUserInformation(final X509Certificate[] certificates) throws AS4Exception {
         if (certificates == null || certificates.length < 1 || certificates[0] == null) {
-            throw new B2BException("The certificate array does not have any certificates");
+            throw new AS4Exception("The certificate array does not have any certificates");
         }
         // Get first certificate in chain and extract the serial number
         final X509Certificate certificate = certificates[0];
         String serialNumber;
         serialNumber = certificate.getSubjectDN().getName();
         if (!(serialNumber.contains("SERIALNUMBER") || serialNumber.startsWith("CN=CVR:"))) {
-            throw new B2BException("Attribute for serial number was not found in the certificate");
+            throw new AS4Exception("Attribute for serial number was not found in the certificate");
         }
         // We support all four types of OCES certificates. Examples:
         // SERIALNUMBER = CVR:30808460-UID:1237552804997
@@ -213,7 +204,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
                             userInformation = new As4UserInformation(As4UserInformationType.NID, null, cvr);
                         } else {
                             // This is probably not an OCES certificate
-                            throw new B2BException("Could not find a supported OCES type (RID, UID, PID or FID) in the serial number: " + serialNumber);
+                            throw new AS4Exception("Could not find a supported OCES type (RID, UID, PID or FID) in the serial number: " + serialNumber);
                         }
                     }
                 }
