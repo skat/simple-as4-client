@@ -5,19 +5,34 @@ import dk.toldst.eutk.as4client.As4ClientInstance;
 import dk.toldst.eutk.as4client.builder.As4ClientBuilder;
 import dk.toldst.eutk.as4client.builder.interfaces.As4Optionals;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 public class As4OptionalsBuilder implements As4Optionals {
     private As4ClientBuilder as4ClientBuilderInstance;
     private String actor;
-
     private String toPartyIdentifier;
     private String toPartyRole;
     private String fromPartyIdentifier;
     private String fromPartyRole;
-
+    private String username;
+    private URI uri;
     private boolean disableSSl = false;
 
     public As4OptionalsBuilder(As4ClientBuilder as4ClientBuilderInstance) {
         this.as4ClientBuilderInstance = as4ClientBuilderInstance;
+    }
+
+    @Override
+    public As4Optionals setAbsoluteURI(URI uri){
+        this.uri = uri;
+        return this;
+    }
+
+    @Override
+    public As4Optionals setUsername(String username) {
+        this.username = username;
+        return this;
     }
 
     @Override
@@ -46,9 +61,8 @@ public class As4OptionalsBuilder implements As4Optionals {
         return this;
     }
 
-
     @Override
-    public As4Client build() {
+    public As4Client build() throws URISyntaxException {
         //Change stuff
         As4ClientInstance client = (As4ClientInstance) as4ClientBuilderInstance.build();
         if(disableSSl)
@@ -65,7 +79,12 @@ public class As4OptionalsBuilder implements As4Optionals {
         if(toPartyIdentifier != null && toPartyRole != null){
             client.getAs4DtoCreator().setToParty(toPartyIdentifier, toPartyRole);
         }
+        if(uri != null){
+            client.getAs4HttpClient().setEndpointURI(uri);
+        }
+        if(username != null){
+            client.getAs4HttpClient().getSecurityService().setUsername(username);
+        }
         return client;
-
     }
 }

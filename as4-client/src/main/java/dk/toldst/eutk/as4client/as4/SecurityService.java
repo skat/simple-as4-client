@@ -32,6 +32,10 @@ public class SecurityService {
     private Crypto crypto;
     private Properties properties;
 
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
     public void setActor(String actor) {
         this.actor = actor;
     }
