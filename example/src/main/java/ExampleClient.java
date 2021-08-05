@@ -3,21 +3,22 @@ import dk.toldst.eutk.as4client.builder.support.As4ClientBuilderInstance;
 
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class ExampleClient {
-    public static void main(String[] args) throws IOException, TransformerException {
-        String username = "CVR_13116482_UID_50151991";
+    public static void main(String[] args) throws IOException, TransformerException, URISyntaxException {
         As4Client client = new As4ClientBuilderInstance().builder().
-            setEndpoint(new URL("http://localhost:8384/exchange/" + username))
+            setEndpoint(new URI("http://localhost:8384"))
                 .setCrypto("security/as4crypto-holodeck.properties")
-                .setUserNameTokenDetails(username, "HBNRsvph68")
+                .setPassword("HBNRsvph68")
                 .optionals()
                 .noSSL()
-                .fromParty(username + "_AS4", "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator")
+                /*.fromParty("CVR_13116482_UID_50151991" + "_AS4", "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator")
                 .toParty("SKAT-MFT-AS4","http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder")
-                .setActor("ebms")
+                .setActor("ebms") */
                 .build();
 
         String content = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +

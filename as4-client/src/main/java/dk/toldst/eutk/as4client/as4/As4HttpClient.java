@@ -28,6 +28,7 @@ import javax.xml.soap.SOAPMessage;
 import javax.xml.transform.dom.DOMResult;
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
@@ -46,7 +47,7 @@ public class As4HttpClient {
         return securityService;
     }
 
-    private final URL endpointURL;
+    private final URI endpointURI;
     private Boolean disableSSL = false;
 
     public Boolean getDisableSSL() {
@@ -57,10 +58,10 @@ public class As4HttpClient {
         this.disableSSL = disableSSL;
     }
 
-    public As4HttpClient(JaxbThreadSafe marshaller, SecurityService securityService, URL endpointURL) {
+    public As4HttpClient(JaxbThreadSafe marshaller, SecurityService securityService, URI endpointURI) {
         this.marshaller = marshaller;
         this.securityService = securityService;
-        this.endpointURL = endpointURL;
+        this.endpointURI = endpointURI;
     }
 
     private static class TrustAllHosts implements HostnameVerifier {
@@ -88,8 +89,8 @@ public class As4HttpClient {
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
             HttpsURLConnection.setDefaultHostnameVerifier(new TrustAllHosts());
-            HttpsURLConnection httpsConnection = null;
-            java.net.URL url = endpointURL;
+            HttpsURLConnection httpsConnection;
+            java.net.URL url = endpointURI.toURL();
             httpsConnection = (HttpsURLConnection) url.openConnection();
             httpsConnection.setHostnameVerifier(new TrustAllHosts());
             httpsConnection.connect();
@@ -100,7 +101,7 @@ public class As4HttpClient {
                 soapConnectionFactory.createConnection(), securityService);
 
         SOAPMessage soapMessage = createSOAPMessage(messaging, as4Message);
-        return soapConnection.call(soapMessage, endpointURL);
+        return soapConnection.call(soapMessage, endpointURI.toURL());
     }
 
     private SOAPMessage createSOAPMessage(Messaging messaging, As4Message as4Message) throws Exception {
