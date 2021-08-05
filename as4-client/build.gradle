@@ -12,8 +12,6 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     implementation 'org.apache.wss4j:wss4j-ws-security-dom:2.3.1'
     implementation 'org.apache.wss4j:wss4j-ws-security-common:2.3.1'
     implementation 'org.apache.wss4j:wss4j:2.3.1'
@@ -22,6 +20,20 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
     implementation group: 'com.sun.xml.messaging.saaj', name: 'saaj-impl', version: '1.4.0'
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+}
+
+// https://medium.com/@shanemyrick/publishing-to-github-packages-with-gradle-and-github-actions-4ad842634c4e
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/skat/simple-as4")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }
 
 xjc {
