@@ -17,7 +17,7 @@ dependencies {
     implementation 'org.apache.wss4j:wss4j-ws-security-dom:2.3.1'
     implementation 'org.apache.wss4j:wss4j-ws-security-common:2.3.1'
     implementation 'org.apache.wss4j:wss4j:2.3.1'
-    compile project(':as4-client')
+    implementation project(':as4-client')
 }
 
 ext {
