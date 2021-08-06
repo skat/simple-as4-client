@@ -2,9 +2,6 @@ import dk.skat.mft.dms_declaration_status._1.StatusResponseType;
 import dk.toldst.eutk.as4client.As4Client;
 import dk.toldst.eutk.as4client.builder.support.As4ClientBuilderInstance;
 import dk.toldst.eutk.as4client.userinformation.AS4Exception;
-
-import javax.xml.transform.TransformerException;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
