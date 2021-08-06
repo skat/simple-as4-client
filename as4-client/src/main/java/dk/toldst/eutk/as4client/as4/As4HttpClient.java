@@ -42,10 +42,6 @@ public class As4HttpClient {
 
     private final JaxbThreadSafe marshaller;
 
-    public JaxbThreadSafe getMarshaller() {
-        return marshaller;
-    }
-
     private final SecurityService securityService;
 
     public SecurityService getSecurityService() {
