@@ -1,4 +1,6 @@
-package dk.toldst.eutk.utility.jaxb;
+package dk.toldst.eutk.utility.optional;
+
+import dk.toldst.eutk.utility.jaxb.Marshalling;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -12,7 +14,8 @@ import java.io.Writer;
 import java.util.concurrent.Callable;
 
 /**
- * Simpler thread-safe jaxb marshalling - unmarshalling
+ * Use only if your framework does not supply a jaxb solution.
+ * If you use Spring  JAXB2Marshaller, or MOXy, implement the Marshalling interface, and supply in the builder.
  */
 public class JaxbThreadSafe implements Marshalling {
     private final ThreadLocal<Unmarshaller> unmarshaller;
@@ -51,7 +54,6 @@ public class JaxbThreadSafe implements Marshalling {
     @Override
     public void marshal(Object jaxbElement, File output) throws JAXBException {
         marshaller.get().marshal(jaxbElement, output);
-
     }
 
     @Override

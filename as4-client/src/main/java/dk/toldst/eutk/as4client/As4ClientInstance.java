@@ -1,23 +1,22 @@
 package dk.toldst.eutk.as4client;
 
 import com.google.common.io.CharStreams;
-
 import dk.toldst.eutk.as4client.as4.As4DtoCreator;
 import dk.toldst.eutk.as4client.as4.As4HttpClient;
 import dk.toldst.eutk.as4client.as4.As4Message;
 import org.apache.wss4j.common.util.XMLUtils;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
 
-import java.nio.charset.StandardCharsets;
 import javax.xml.soap.AttachmentPart;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
+import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import javax.xml.transform.TransformerException;
-
-import java.util.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Map;
+import java.util.UUID;
 
 public class As4ClientInstance implements As4Client {
 
