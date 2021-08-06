@@ -1,8 +1,8 @@
 package dk.toldst.eutk.declaration;
 
-import dk.toldst.eutk.declaration.obejctfactory.EutkObjectFactory;
-import dk.toldst.eutk.declaration.obejctfactory.ObjectFactoryMarshallerEntry;
-import dk.toldst.eutk.utility.jaxb.Marshalling;
+import dk.toldst.eutk.as4client.utilities.Marshalling;
+import dk.toldst.eutk.declaration.objectfactory.EutkObjectFactory;
+import dk.toldst.eutk.declaration.objectfactory.ObjectFactoryMarshallerEntry;
 
 import javax.xml.bind.JAXBException;
 import java.io.StringWriter;

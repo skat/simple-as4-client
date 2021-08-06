@@ -4,16 +4,14 @@ import dk.skat.mft.dms_declaration_status._1.StatusResponseType;
 import dk.toldst.eutk.as4client.as4.As4DtoCreator;
 import dk.toldst.eutk.as4client.as4.As4HttpClient;
 import dk.toldst.eutk.as4client.as4.As4Message;
-import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
+import dk.toldst.eutk.as4client.utilities.Marshalling;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.soap.AttachmentPart;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
-import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -22,8 +20,15 @@ import java.util.UUID;
 
 public class As4ClientInstance implements As4Client {
 
-    private As4DtoCreator as4DtoCreator;
-    private As4HttpClient as4HttpClient;
+    private final As4DtoCreator as4DtoCreator;
+    private final As4HttpClient as4HttpClient;
+    private Marshalling marshalling;
+
+    public As4ClientInstance(As4DtoCreator as4DtoCreator, As4HttpClient as4HttpClient, Marshalling marshalling) {
+        this.as4DtoCreator = as4DtoCreator;
+        this.as4HttpClient = as4HttpClient;
+        this.marshalling = marshalling;
+    }
 
     public As4DtoCreator getAs4DtoCreator() {
         return as4DtoCreator;
@@ -33,18 +38,13 @@ public class As4ClientInstance implements As4Client {
         return as4HttpClient;
     }
 
-    public As4ClientInstance(As4DtoCreator as4DtoCreator, As4HttpClient as4HttpClient) {
-        this.as4DtoCreator = as4DtoCreator;
-        this.as4HttpClient = as4HttpClient;
-    }
-
     @Override
-    public StatusResponseType executePush(String service, String action, byte[] message) throws IOException, TransformerException {
+    public StatusResponseType executePush(String service, String action, byte[] message) {
         return executePush(service, action, new String(message, StandardCharsets.UTF_8));
     }
 
     @Override
-    public StatusResponseType executePush(String service, String action, String message) throws IOException, TransformerException {
+    public StatusResponseType executePush(String service, String action, String message)  {
         String messageId = UUID.randomUUID().toString();
 
         As4Message as4Message = new As4Message();
@@ -68,18 +68,14 @@ public class As4ClientInstance implements As4Client {
 
     private StatusResponseType getStatus(SOAPMessage soapMessage) {
         StatusResponseType responseType = null;
+        AttachmentPart attachmentPart = soapMessage.getAttachments().next();
+        JAXBElement<StatusResponseType> element = null;
         try {
-
-            JAXBContext jaxbContext = JAXBContext.newInstance("dk.skat.mft.dms_declaration_status._1");
-            JaxbThreadSafe jaxbThreadSafe = new JaxbThreadSafe(jaxbContext);
-            AttachmentPart attachmentPart = soapMessage.getAttachments().next();
-            var element = (JAXBElement<StatusResponseType>) jaxbThreadSafe.unmarshal(attachmentPart.getDataHandler().getInputStream());
-            responseType = element.getValue();
+            element = (JAXBElement<StatusResponseType>) marshalling.unmarshal(attachmentPart.getDataHandler().getInputStream());
+        } catch (JAXBException | IOException | SOAPException e) {
+            e.printStackTrace();
         }
-        catch (IOException | SOAPException | JAXBException | ClassCastException e){
-            //TODO: BRJ FIX
-            int j = 0;
-        }
+        responseType = element.getValue();
         return responseType;
     }
 

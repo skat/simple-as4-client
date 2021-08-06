@@ -9,11 +9,12 @@ import dk.toldst.eutk.as4client.builder.As4ClientBuilder;
 import dk.toldst.eutk.as4client.builder.interfaces.As4Optionals;
 import dk.toldst.eutk.as4client.builder.interfaces.As4SetCrypto;
 import dk.toldst.eutk.as4client.builder.interfaces.As4SetEndpoint;
+import dk.toldst.eutk.as4client.builder.interfaces.As4SetJaxb;
 import dk.toldst.eutk.as4client.builder.interfaces.As4SetPasswordTokenDetails;
 import dk.toldst.eutk.as4client.userinformation.AS4Exception;
 import dk.toldst.eutk.as4client.userinformation.As4UserInformation;
 import dk.toldst.eutk.as4client.userinformation.As4UserInformationType;
-import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
+import dk.toldst.eutk.as4client.utilities.Marshalling;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.wss4j.common.crypto.Crypto;
 import org.apache.wss4j.common.crypto.CryptoFactory;
@@ -21,8 +22,6 @@ import org.apache.wss4j.common.crypto.Merlin;
 import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.xml.security.Init;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import java.net.URISyntaxException;
 import java.security.KeyStoreException;
 import java.security.cert.X509Certificate;
@@ -35,25 +34,16 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
     private As4SetPasswordTokenDetailsInstance as4SetUsernameTokenDetailsInstance;
     private As4SetCryptoInstance as4SetCryptoInstance;
     private As4SetEndpointInstance as4SetEndpointInstance;
+    private As4SetJaxbInstance as4SetJaxbInstance;
 
     //Username -> Client
     public As4Client build() throws URISyntaxException {
-
-        JAXBContext jaxbContext = null;
-        try {
-            jaxbContext = JAXBContext.newInstance("org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704");
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-
         SecurityService securityService = new SecurityService(
                 as4SetCryptoInstance.username,
                 as4SetUsernameTokenDetailsInstance.password,
                 as4SetCryptoInstance.crypto,
                 as4SetCryptoInstance.cryptoProperties
         );
-
-        JaxbThreadSafe jaxbThreadSafe = new JaxbThreadSafe(jaxbContext);
 
         URIBuilder builder = new URIBuilder();
         builder.setPort(as4SetEndpointInstance.urlBase.getPort());
@@ -63,9 +53,9 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
         builder.setPathSegments("exchange", as4SetCryptoInstance.username);
         builder.build();
 
-        As4HttpClient as4HttpClient = new As4HttpClient(jaxbThreadSafe, securityService, builder.build());
+        As4HttpClient as4HttpClient = new As4HttpClient(as4SetJaxbInstance.marshalling, securityService, builder.build());
         As4DtoCreator as4DtoCreator = new As4DtoCreator(as4SetCryptoInstance.username + "_AS4", "SKAT-MFT-AS4");
-        As4ClientInstance as4Client = new As4ClientInstance(as4DtoCreator, as4HttpClient);
+        As4ClientInstance as4Client = new As4ClientInstance(as4DtoCreator, as4HttpClient, as4SetJaxbInstance.marshalling);
         return as4Client;
     }
 
@@ -140,10 +130,10 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
         private java.net.URI urlBase;
 
         @Override
-        public As4SetCrypto setEndpoint(java.net.URI url) {
+        public As4SetJaxbInstance setEndpoint(java.net.URI url) {
             this.urlBase = url;
-            as4SetCryptoInstance = new As4SetCryptoInstance();
-            return as4SetCryptoInstance;
+            as4SetJaxbInstance = new As4SetJaxbInstance();
+            return as4SetJaxbInstance;
         }
     }
 
@@ -219,5 +209,15 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
             }
         }
         return userInformation;
+    }
+
+    private class As4SetJaxbInstance implements As4SetJaxb {
+        private Marshalling marshalling;
+        @Override
+        public As4SetCrypto setAs4Jaxb(Marshalling marshalling) {
+            this.marshalling = marshalling;
+            as4SetCryptoInstance = new As4SetCryptoInstance();
+            return as4SetCryptoInstance;
+        }
     }
 }

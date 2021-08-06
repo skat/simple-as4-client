@@ -1,7 +1,7 @@
 package dk.toldst.eutk.utility.optional;
 
-import dk.toldst.eutk.declaration.obejctfactory.EutkObjectFactory;
-import dk.toldst.eutk.declaration.obejctfactory.ObjectFactoryMarshallerEntry;
+import dk.toldst.eutk.declaration.objectfactory.EutkObjectFactory;
+import dk.toldst.eutk.declaration.objectfactory.ObjectFactoryMarshallerEntry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

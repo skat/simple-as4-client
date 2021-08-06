@@ -1,6 +1,6 @@
 package dk.toldst.eutk.utility.optional;
 
-import dk.toldst.eutk.utility.jaxb.Marshalling;
+import dk.toldst.eutk.as4client.utilities.Marshalling;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

@@ -1,6 +1,6 @@
-package dk.toldst.eutk.declaration.obejctfactory.h7;
+package dk.toldst.eutk.declaration.objectfactory.h7;
 
-import dk.toldst.eutk.declaration.obejctfactory.EutkObjectFactory;
+import dk.toldst.eutk.declaration.objectfactory.EutkObjectFactory;
 import wco.datamodel.wco.dec_dms._2.DeclarationH7;
 
 import javax.xml.bind.JAXBElement;

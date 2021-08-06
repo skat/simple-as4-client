@@ -18,6 +18,7 @@ dependencies {
     implementation "org.glassfish.jaxb:jaxb-runtime:2.3.2"
     implementation "com.sun.activation:jakarta.activation:1.2.1"
     implementation "javax.validation:validation-api:2.0.1.Final"
+    implementation project(":as4-client")
     xjcPlugins "com.github.krasa:krasa-jaxb-tools:1.8"
 }
 

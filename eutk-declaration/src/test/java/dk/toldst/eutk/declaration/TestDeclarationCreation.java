@@ -1,6 +1,6 @@
 package dk.toldst.eutk.declaration;
 
-import dk.toldst.eutk.declaration.obejctfactory.ObjectFactoryMarshallerEntry;
+import dk.toldst.eutk.declaration.objectfactory.ObjectFactoryMarshallerEntry;
 import dk.toldst.eutk.utility.optional.ObjectFactoryMarshallerThreadSafeEntry;
 import org.junit.jupiter.api.Test;
 import wco.datamodel.wco.dec_dms._2.DeclarationH7;
@@ -18,8 +18,8 @@ public class TestDeclarationCreation {
     public void testH7() throws JAXBException {
 
         List<ObjectFactoryMarshallerEntry> list = Arrays.asList(
-                new ObjectFactoryMarshallerThreadSafeEntry<>(new dk.toldst.eutk.declaration.obejctfactory.h7.ObjectFactory()),
-                new ObjectFactoryMarshallerThreadSafeEntry<>(new dk.toldst.eutk.declaration.obejctfactory.i2.ObjectFactory())
+                new ObjectFactoryMarshallerThreadSafeEntry<>(new dk.toldst.eutk.declaration.objectfactory.h7.ObjectFactory()),
+                new ObjectFactoryMarshallerThreadSafeEntry<>(new dk.toldst.eutk.declaration.objectfactory.i2.ObjectFactory())
         );
 
         DeclarationH7 h7 = new DeclarationH7();

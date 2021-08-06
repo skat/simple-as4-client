@@ -1,6 +1,6 @@
-package dk.toldst.eutk.declaration.obejctfactory;
+package dk.toldst.eutk.declaration.objectfactory;
 
-import dk.toldst.eutk.utility.jaxb.Marshalling;
+import dk.toldst.eutk.as4client.utilities.Marshalling;
 
 public class ObjectFactoryMarshallerEntry<T> {
     private final EutkObjectFactory<T> objectFactory;

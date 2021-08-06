@@ -1,4 +1,4 @@
-package dk.toldst.eutk.utility.jaxb;
+package dk.toldst.eutk.as4client.utilities;
 
 
 import javax.xml.bind.JAXBException;
@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.Writer;
 
 public interface Marshalling {
+    public final String defaultPackages = "org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704:dk.skat.mft.dms_declaration_status._1";
     Object unmarshal(InputStream is) throws JAXBException;
 
     Object unmarshal(File f) throws JAXBException;
