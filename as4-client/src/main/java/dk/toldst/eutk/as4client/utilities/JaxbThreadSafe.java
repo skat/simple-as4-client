@@ -56,5 +56,4 @@ public class JaxbThreadSafe {
     public void marshal(Object jaxbElement, Result result) throws JAXBException {
         marshaller.get().marshal(jaxbElement, result);
     }
-
 }

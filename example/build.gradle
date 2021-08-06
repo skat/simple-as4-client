@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id "application"
+    id 'maven-publish'
 }
 
 group 'dk.toldst.eutk'
@@ -8,6 +9,16 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.github.com/skat/simple-as4-client")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            }
+        }
+    } 
 }
 
 dependencies {
@@ -16,7 +27,8 @@ dependencies {
     implementation 'org.apache.wss4j:wss4j-ws-security-dom:2.3.1'
     implementation 'org.apache.wss4j:wss4j-ws-security-common:2.3.1'
     implementation 'org.apache.wss4j:wss4j:2.3.1'
-    compile project(':as4-client')
+    //implementation "dk.toldst.eutk:as4-client:1.0-SNAPSHOT"
+    implementation project(':as4-client')
 }
 
 ext {
