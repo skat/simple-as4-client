@@ -42,7 +42,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
         try {
             jaxbContext = JAXBContext.newInstance("org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704");
         } catch (JAXBException e) {
-            throw new AS4Exception("Failed to establish JAXBContext with the following message: " + e.getMessage());
+            throw new AS4Exception("Failed to establish JAXBContext" , e);
         }
 
         SecurityService securityService = new SecurityService(
@@ -68,7 +68,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
             as4Client = new As4ClientInstance(as4DtoCreator, as4HttpClient);
         }
         catch (URISyntaxException e){
-            throw new AS4Exception("Attempting to build URI failed with the following message: " + e.getMessage());
+            throw new AS4Exception("Attempting to build URI failed" , e);
         }
         return as4Client;
     }
@@ -118,7 +118,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
                 var userInfo = mapCertificateToUserInformation(certificates);
                 username = mapUserInformationToUsernameString(userInfo);
             } catch (WSSecurityException | KeyStoreException | AS4Exception e) {
-                throw new AS4Exception("Creating crypto and crypto properties failed with the following message: " + e.getMessage());
+                throw new AS4Exception("Creating crypto and crypto properties failed" , e);
             }
             as4SetUsernameTokenDetailsInstance = new As4SetPasswordTokenDetailsInstance();
             return as4SetUsernameTokenDetailsInstance;

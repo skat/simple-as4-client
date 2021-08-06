@@ -56,7 +56,7 @@ public class As4ClientInstance implements As4Client {
         try {
             soapMessage = as4HttpClient.sendRequest(messaging, as4Message);
         } catch (Exception e) {
-            throw new AS4Exception("Failed to send (or receive) message with the following message: " + e.getMessage());
+            throw new AS4Exception("Failed to send (or receive) message" , e);
         }
         return getStatus(soapMessage);
     }
@@ -71,7 +71,7 @@ public class As4ClientInstance implements As4Client {
             responseType = element.getValue();
         }
         catch (IOException | SOAPException | JAXBException | ClassCastException e){
-            throw new AS4Exception("Converting message from XML to StatusResponseType failed with the following message: " + e.getMessage());
+            throw new AS4Exception("Converting message from XML to StatusResponseType failed" , e);
         }
         return responseType;
     }
