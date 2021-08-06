@@ -1,6 +1,8 @@
 import dk.skat.mft.dms_declaration_status._1.StatusResponseType;
 import dk.toldst.eutk.as4client.As4Client;
 import dk.toldst.eutk.as4client.builder.support.As4ClientBuilderInstance;
+import dk.toldst.eutk.as4client.userinformation.AS4Exception;
+
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.net.URI;
@@ -8,7 +10,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 
 public class ExampleClient {
-    public static void main(String[] args) throws IOException, TransformerException, URISyntaxException {
+    public static void main(String[] args) throws URISyntaxException, AS4Exception {
         As4Client client = new As4ClientBuilderInstance().builder().
             setEndpoint(new URI("http://wrongurlfortest.com:8384"))
                 .setCrypto("security/as4crypto-holodeck.properties")

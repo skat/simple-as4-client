@@ -4,6 +4,7 @@ import dk.toldst.eutk.as4client.As4Client;
 import dk.toldst.eutk.as4client.As4ClientInstance;
 import dk.toldst.eutk.as4client.builder.As4ClientBuilder;
 import dk.toldst.eutk.as4client.builder.interfaces.As4Optionals;
+import dk.toldst.eutk.as4client.userinformation.AS4Exception;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -62,7 +63,7 @@ public class As4OptionalsBuilder implements As4Optionals {
     }
 
     @Override
-    public As4Client build() throws URISyntaxException {
+    public As4Client build() throws AS4Exception {
         //Change stuff
         As4ClientInstance client = (As4ClientInstance) as4ClientBuilderInstance.build();
         if(disableSSl)

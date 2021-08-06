@@ -36,13 +36,13 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
     private As4SetEndpointInstance as4SetEndpointInstance;
 
     //Username -> Client
-    public As4Client build() throws URISyntaxException {
+    public As4Client build() throws AS4Exception {
 
-        JAXBContext jaxbContext = null;
+        JAXBContext jaxbContext;
         try {
             jaxbContext = JAXBContext.newInstance("org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704");
         } catch (JAXBException e) {
-            e.printStackTrace();
+            throw new AS4Exception(e.getMessage());
         }
 
         SecurityService securityService = new SecurityService(
@@ -60,11 +60,16 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
         builder.setScheme(as4SetEndpointInstance.urlBase.getScheme());
         builder.setHost(as4SetEndpointInstance.urlBase.getHost());
         builder.setPathSegments("exchange", as4SetCryptoInstance.username);
-        builder.build();
 
-        As4HttpClient as4HttpClient = new As4HttpClient(jaxbThreadSafe, securityService, builder.build());
-        As4DtoCreator as4DtoCreator = new As4DtoCreator(as4SetCryptoInstance.username + "_AS4", "SKAT-MFT-AS4");
-        As4ClientInstance as4Client = new As4ClientInstance(as4DtoCreator, as4HttpClient);
+        As4ClientInstance as4Client;
+        try{
+            As4HttpClient as4HttpClient = new As4HttpClient(jaxbThreadSafe, securityService, builder.build());
+            As4DtoCreator as4DtoCreator = new As4DtoCreator(as4SetCryptoInstance.username + "_AS4", "SKAT-MFT-AS4");
+            as4Client = new As4ClientInstance(as4DtoCreator, as4HttpClient);
+        }
+        catch (URISyntaxException e){
+            throw new AS4Exception(e.getMessage());
+        }
         return as4Client;
     }
 
@@ -101,7 +106,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
          * @return Next step in the builder pattern.
          */
         @Override
-        public As4SetPasswordTokenDetails setCrypto(String filepath) {
+        public As4SetPasswordTokenDetails setCrypto(String filepath) throws AS4Exception {
             System.out.println("running crypto setup");
             try {
                 Init.init();
@@ -113,8 +118,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
                 var userInfo = mapCertificateToUserInformation(certificates);
                 username = mapUserInformationToUsernameString(userInfo);
             } catch (WSSecurityException | KeyStoreException | AS4Exception e) {
-                int i = 0;
-                //TODO BRJ Fix this catch
+                throw new AS4Exception(e.getMessage());
             }
             as4SetUsernameTokenDetailsInstance = new As4SetPasswordTokenDetailsInstance();
             return as4SetUsernameTokenDetailsInstance;

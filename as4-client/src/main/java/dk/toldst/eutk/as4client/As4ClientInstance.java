@@ -3,6 +3,7 @@ import dk.skat.mft.dms_declaration_status._1.StatusResponseType;
 import dk.toldst.eutk.as4client.as4.As4DtoCreator;
 import dk.toldst.eutk.as4client.as4.As4HttpClient;
 import dk.toldst.eutk.as4client.as4.As4Message;
+import dk.toldst.eutk.as4client.userinformation.AS4Exception;
 import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
 import java.nio.charset.StandardCharsets;
@@ -35,12 +36,12 @@ public class As4ClientInstance implements As4Client {
     }
 
     @Override
-    public StatusResponseType executePush(String service, String action, byte[] message) throws IOException, TransformerException {
+    public StatusResponseType executePush(String service, String action, byte[] message) throws AS4Exception {
         return executePush(service, action, new String(message, StandardCharsets.UTF_8));
     }
 
     @Override
-    public StatusResponseType executePush(String service, String action, String message) throws IOException, TransformerException {
+    public StatusResponseType executePush(String service, String action, String message) throws AS4Exception {
         String messageId = UUID.randomUUID().toString();
 
         As4Message as4Message = new As4Message();
@@ -62,8 +63,8 @@ public class As4ClientInstance implements As4Client {
         return getStatus(soapMessage);
     }
 
-    private StatusResponseType getStatus(SOAPMessage soapMessage) {
-        StatusResponseType responseType = null;
+    private StatusResponseType getStatus(SOAPMessage soapMessage) throws AS4Exception {
+        StatusResponseType responseType;
         try {
 
             JAXBContext jaxbContext = JAXBContext.newInstance("dk.skat.mft.dms_declaration_status._1");
@@ -73,8 +74,7 @@ public class As4ClientInstance implements As4Client {
             responseType = element.getValue();
         }
         catch (IOException | SOAPException | JAXBException | ClassCastException e){
-            //TODO: BRJ FIX
-            int j = 0;
+            throw new AS4Exception(e.getMessage());
         }
         return responseType;
     }
