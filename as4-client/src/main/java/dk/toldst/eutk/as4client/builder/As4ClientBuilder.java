@@ -7,6 +7,5 @@ import java.net.URISyntaxException;
 
 public interface As4ClientBuilder {
     As4Client build() throws URISyntaxException;
-
     As4Optionals optionals();
 }

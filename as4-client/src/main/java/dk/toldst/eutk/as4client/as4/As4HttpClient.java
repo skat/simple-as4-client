@@ -41,6 +41,11 @@ public class As4HttpClient {
             "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/";
 
     private final JaxbThreadSafe marshaller;
+
+    public JaxbThreadSafe getMarshaller() {
+        return marshaller;
+    }
+
     private final SecurityService securityService;
 
     public SecurityService getSecurityService() {

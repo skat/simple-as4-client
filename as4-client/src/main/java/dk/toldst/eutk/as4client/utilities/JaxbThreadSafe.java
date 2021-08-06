@@ -1,7 +1,6 @@
 package dk.toldst.eutk.as4client.utilities;
 import javax.xml.bind.*;
 import javax.xml.transform.Result;
-import javax.xml.transform.dom.DOMResult;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -54,5 +53,4 @@ public class JaxbThreadSafe {
     public void marshal( Object jaxbElement, Result result ) throws JAXBException {
         marshaller.get().marshal(jaxbElement, result);
     }
-
 }
