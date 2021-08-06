@@ -53,12 +53,11 @@ public class As4ClientInstance implements As4Client {
 
         Messaging messaging = as4DtoCreator.createMessaging(service, action, "placeholder", as4Message, messageId);
 
-        SOAPMessage soapMessage = null;
+        SOAPMessage soapMessage;
         try {
             soapMessage = as4HttpClient.sendRequest(messaging, as4Message);
         } catch (Exception e) {
-            //TODO BRJ
-            e.printStackTrace();
+            throw new AS4Exception("Failed to send (or receive) message with the following message: " + e.getMessage());
         }
         return getStatus(soapMessage);
     }
@@ -66,7 +65,6 @@ public class As4ClientInstance implements As4Client {
     private StatusResponseType getStatus(SOAPMessage soapMessage) throws AS4Exception {
         StatusResponseType responseType;
         try {
-
             JAXBContext jaxbContext = JAXBContext.newInstance("dk.skat.mft.dms_declaration_status._1");
             JaxbThreadSafe jaxbThreadSafe = new JaxbThreadSafe(jaxbContext);
             AttachmentPart attachmentPart = soapMessage.getAttachments().next();
@@ -74,7 +72,7 @@ public class As4ClientInstance implements As4Client {
             responseType = element.getValue();
         }
         catch (IOException | SOAPException | JAXBException | ClassCastException e){
-            throw new AS4Exception(e.getMessage());
+            throw new AS4Exception("Converting message from XML to StatusResponseType failed with the following message: " + e.getMessage());
         }
         return responseType;
     }
