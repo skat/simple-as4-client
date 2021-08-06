@@ -27,6 +27,6 @@ public class ExampleClient {
                 "</ns2:Declaration>";
 
         StatusResponseType res = client.executePush("DMS.Import", "Declaration.Submit", content.getBytes(StandardCharsets.UTF_8));
-        System.out.println(res.getCode());
+        System.out.println("Result: " + res.getCode() + (res.getMessage() == null ? "" : " Message: " + res.getMessage()));
     }
 }
