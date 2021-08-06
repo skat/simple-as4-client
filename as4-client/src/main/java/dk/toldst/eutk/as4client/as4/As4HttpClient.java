@@ -1,6 +1,6 @@
 package dk.toldst.eutk.as4client.as4;
 
-import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
+import dk.toldst.eutk.as4client.utilities.Marshalling;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -29,7 +29,6 @@ import javax.xml.transform.dom.DOMResult;
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.net.URI;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
@@ -40,7 +39,7 @@ public class As4HttpClient {
     public static final String EBMS_3_0_NAMESPACE_URI =
             "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/";
 
-    private final JaxbThreadSafe marshaller;
+    private final Marshalling marshaller;
 
     private final SecurityService securityService;
 
@@ -68,7 +67,7 @@ public class As4HttpClient {
         this.endpointURI = endpointURI;
     }
 
-    public As4HttpClient(JaxbThreadSafe marshaller, SecurityService securityService, URI endpointURI) {
+    public As4HttpClient(Marshalling marshaller, SecurityService securityService, URI endpointURI) {
         this.marshaller = marshaller;
         this.securityService = securityService;
         this.endpointURI = endpointURI;
