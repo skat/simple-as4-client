@@ -1,22 +1,19 @@
 package dk.toldst.eutk.as4client;
-
-import com.google.common.io.CharStreams;
-
+import dk.skat.mft.dms_declaration_status._1.StatusResponseType;
 import dk.toldst.eutk.as4client.as4.As4DtoCreator;
 import dk.toldst.eutk.as4client.as4.As4HttpClient;
 import dk.toldst.eutk.as4client.as4.As4Message;
-import org.apache.wss4j.common.util.XMLUtils;
+import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
-
 import java.nio.charset.StandardCharsets;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.soap.AttachmentPart;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
 import java.io.IOException;
-import java.io.InputStreamReader;
-
 import javax.xml.transform.TransformerException;
-
 import java.util.*;
 
 public class As4ClientInstance implements As4Client {
@@ -38,12 +35,12 @@ public class As4ClientInstance implements As4Client {
     }
 
     @Override
-    public String executePush(String service, String action, byte[] message) throws IOException, TransformerException {
+    public StatusResponseType executePush(String service, String action, byte[] message) throws IOException, TransformerException {
         return executePush(service, action, new String(message, StandardCharsets.UTF_8));
     }
 
     @Override
-    public String executePush(String service, String action, String message) throws IOException, TransformerException {
+    public StatusResponseType executePush(String service, String action, String message) throws IOException, TransformerException {
         String messageId = UUID.randomUUID().toString();
 
         As4Message as4Message = new As4Message();
@@ -62,26 +59,28 @@ public class As4ClientInstance implements As4Client {
             //TODO BRJ
             e.printStackTrace();
         }
+        return getStatus(soapMessage);
+    }
 
-        return getResponseString(soapMessage);
+    private StatusResponseType getStatus(SOAPMessage soapMessage) {
+        StatusResponseType responseType = null;
+        try {
+
+            JAXBContext jaxbContext = JAXBContext.newInstance("dk.skat.mft.dms_declaration_status._1");
+            JaxbThreadSafe jaxbThreadSafe = new JaxbThreadSafe(jaxbContext);
+            AttachmentPart attachmentPart = soapMessage.getAttachments().next();
+            var element = (JAXBElement<StatusResponseType>) jaxbThreadSafe.unmarshal(attachmentPart.getDataHandler().getInputStream());
+            responseType = element.getValue();
+        }
+        catch (IOException | SOAPException | JAXBException | ClassCastException e){
+            //TODO: BRJ FIX
+            int j = 0;
+        }
+        return responseType;
     }
 
     @Override
-    public String executePull() {
+    public StatusResponseType executePull() {
         return null;
     }
-
-    private String getResponseString(SOAPMessage soapMessage) throws IOException, TransformerException {
-        String responseAttachmentMessage = null;
-        try {
-            AttachmentPart attachmentPart = soapMessage.getAttachments().next();
-            responseAttachmentMessage = CharStreams.toString(new InputStreamReader((attachmentPart).getDataHandler().getDataSource().getInputStream()));
-        } catch (IOException | SOAPException e) {
-            int i = 0;
-        }
-        String responseSOAPmessage = XMLUtils.prettyDocumentToString(soapMessage.getSOAPPart().getOwnerDocument()) + responseAttachmentMessage;
-
-        return responseSOAPmessage + responseAttachmentMessage;
-    }
-
 }

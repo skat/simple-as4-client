@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="urn:dk:skat:mft:DMS.declaration.status:1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:dk:skat:mft:DMS.declaration.status:1">
+  <xs:element name="StatusResponse" type="tns:StatusResponseType"/>
+  <xs:complexType name="StatusResponseType">
+    <xs:all>
+      <xs:element type="xs:string" name="Code"/>
+      <xs:element type="xs:string" name="Message" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+</xs:schema>
