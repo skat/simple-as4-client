@@ -2,14 +2,14 @@ package dk.toldst.eutk.as4client.builder.support;
 
 import dk.toldst.eutk.as4client.As4Client;
 import dk.toldst.eutk.as4client.As4ClientInstance;
+import dk.toldst.eutk.as4client.as4.As4DtoCreator;
+import dk.toldst.eutk.as4client.as4.As4HttpClient;
+import dk.toldst.eutk.as4client.as4.SecurityService;
 import dk.toldst.eutk.as4client.builder.As4ClientBuilder;
 import dk.toldst.eutk.as4client.builder.interfaces.As4Optionals;
 import dk.toldst.eutk.as4client.builder.interfaces.As4SetCrypto;
 import dk.toldst.eutk.as4client.builder.interfaces.As4SetEndpoint;
 import dk.toldst.eutk.as4client.builder.interfaces.As4SetPasswordTokenDetails;
-import dk.toldst.eutk.as4client.as4.As4DtoCreator;
-import dk.toldst.eutk.as4client.as4.As4HttpClient;
-import dk.toldst.eutk.as4client.as4.SecurityService;
 import dk.toldst.eutk.as4client.userinformation.AS4Exception;
 import dk.toldst.eutk.as4client.userinformation.As4UserInformation;
 import dk.toldst.eutk.as4client.userinformation.As4UserInformationType;
@@ -20,6 +20,7 @@ import org.apache.wss4j.common.crypto.CryptoFactory;
 import org.apache.wss4j.common.crypto.Merlin;
 import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.xml.security.Init;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.net.URISyntaxException;

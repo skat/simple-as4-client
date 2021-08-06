@@ -29,7 +29,6 @@ import javax.xml.transform.dom.DOMResult;
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.net.URI;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
 import java.util.Base64;

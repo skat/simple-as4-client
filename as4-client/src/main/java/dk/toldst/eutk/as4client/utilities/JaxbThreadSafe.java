@@ -1,11 +1,14 @@
 package dk.toldst.eutk.as4client.utilities;
-import javax.xml.bind.*;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Result;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.Callable;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
 
 /**
  * Simpler thread-safe jaxb marshalling - unmarshalling
