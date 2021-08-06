@@ -1,4 +1,4 @@
-package dk.toldst.eutk.declaration.obejctfactory;
+package dk.toldst.eutk.declaration.objectfactory;
 
 import dk.toldst.eutk.utility.jaxb.Marshalling;
 
