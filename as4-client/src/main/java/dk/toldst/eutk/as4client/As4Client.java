@@ -9,5 +9,5 @@ import java.io.IOException;
 public interface As4Client {
     StatusResponseType executePush(String service, String action, String message) throws AS4Exception;
     StatusResponseType executePush(String service, String action, byte[] message) throws AS4Exception;
-    StatusResponseType executePull();
+    StatusResponseType executePull() throws AS4Exception;
 }

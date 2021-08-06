@@ -80,7 +80,7 @@ public class As4ClientInstance implements As4Client {
     }
 
     @Override
-    public StatusResponseType executePull() {
+    public StatusResponseType executePull() throws AS4Exception {
         return null;
     }
 }
