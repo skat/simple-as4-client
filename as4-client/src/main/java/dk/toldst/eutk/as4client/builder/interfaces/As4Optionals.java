@@ -13,5 +13,5 @@ public interface As4Optionals {
     As4Optionals fromParty(String fromParty, String fromPartyRole);
     As4Optionals setAbsoluteURI(URI uri);
     As4Optionals setUsername(String username);
-    As4Client build() throws URISyntaxException, AS4Exception;
+    As4Client build() throws AS4Exception;
 }
