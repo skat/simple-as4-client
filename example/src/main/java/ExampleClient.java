@@ -7,9 +7,9 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 
 public class ExampleClient {
-    public static void main(String[] args) throws URISyntaxException, AS4Exception {
+    public static void main(String[] args) throws AS4Exception {
         As4Client client = new As4ClientBuilderInstance().builder().
-            setEndpoint(new URI("http://wrongurlfortest.com:8384"))
+            setEndpoint("http://wrongurlfortest.com:8384")
                 .setCrypto("security/as4crypto-holodeck.properties")
                 .setPassword("HBNRsvph68")
                 .optionals()
@@ -17,7 +17,7 @@ public class ExampleClient {
                 .fromParty("CVR_13116482_UID_50151991" + "_AS4", "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator")
                 .toParty("SKAT-MFT-AS4","http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder")
                 .setActor("ebms")
-                .setAbsoluteURI(new URI("http://localhost:8384/exchange/CVR_13116482_UID_50151991"))
+                .setAbsoluteURI("http://localhost:8384/exchange/CVR_13116482_UID_50151991")
                 .setUsername("CVR_13116482_UID_50151991")
                 .build();
 

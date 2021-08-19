@@ -31,6 +31,18 @@ public class As4OptionalsBuilder implements As4Optionals {
     }
 
     @Override
+    public As4Optionals setAbsoluteURI(String url) throws AS4Exception {
+        URI uri;
+        try{
+            uri = new URI(url);
+        }
+        catch (URISyntaxException e){
+            throw new AS4Exception("Failed to convert string to URI", e);
+        }
+        return setAbsoluteURI(uri);
+    }
+
+    @Override
     public As4Optionals setUsername(String username) {
         this.username = username;
         return this;

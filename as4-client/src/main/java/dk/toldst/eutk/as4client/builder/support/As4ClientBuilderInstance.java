@@ -22,6 +22,7 @@ import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.xml.security.Init;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyStoreException;
 import java.security.cert.X509Certificate;
@@ -147,6 +148,18 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
             this.urlBase = url;
             as4SetCryptoInstance = new As4SetCryptoInstance();
             return as4SetCryptoInstance;
+        }
+
+        @Override
+        public As4SetCrypto setEndpoint(String url) throws AS4Exception {
+            URI uri;
+            try {
+                uri = new URI(url);
+            }
+            catch (URISyntaxException e){
+                throw new AS4Exception("Failed to convert string to URI", e);
+            }
+            return setEndpoint(uri);
         }
     }
 
