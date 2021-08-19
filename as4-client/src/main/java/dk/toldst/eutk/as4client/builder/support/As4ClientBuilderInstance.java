@@ -22,6 +22,7 @@ import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.xml.security.Init;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyStoreException;
 import java.security.cert.X509Certificate;
@@ -36,13 +37,13 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
     private As4SetEndpointInstance as4SetEndpointInstance;
 
     //Username -> Client
-    public As4Client build() throws URISyntaxException {
+    public As4Client build() throws AS4Exception {
 
-        JAXBContext jaxbContext = null;
+        JAXBContext jaxbContext;
         try {
             jaxbContext = JAXBContext.newInstance("org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704");
         } catch (JAXBException e) {
-            e.printStackTrace();
+            throw new AS4Exception("Failed to establish JAXBContext" , e);
         }
 
         SecurityService securityService = new SecurityService(
@@ -60,11 +61,16 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
         builder.setScheme(as4SetEndpointInstance.urlBase.getScheme());
         builder.setHost(as4SetEndpointInstance.urlBase.getHost());
         builder.setPathSegments("exchange", as4SetCryptoInstance.username);
-        builder.build();
 
-        As4HttpClient as4HttpClient = new As4HttpClient(jaxbThreadSafe, securityService, builder.build());
-        As4DtoCreator as4DtoCreator = new As4DtoCreator(as4SetCryptoInstance.username + "_AS4", "SKAT-MFT-AS4");
-        As4ClientInstance as4Client = new As4ClientInstance(as4DtoCreator, as4HttpClient);
+        As4ClientInstance as4Client;
+        try{
+            As4HttpClient as4HttpClient = new As4HttpClient(jaxbThreadSafe, securityService, builder.build());
+            As4DtoCreator as4DtoCreator = new As4DtoCreator(as4SetCryptoInstance.username + "_AS4", "SKAT-MFT-AS4");
+            as4Client = new As4ClientInstance(as4DtoCreator, as4HttpClient);
+        }
+        catch (URISyntaxException e){
+            throw new AS4Exception("Attempting to build URI failed" , e);
+        }
         return as4Client;
     }
 
@@ -101,7 +107,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
          * @return Next step in the builder pattern.
          */
         @Override
-        public As4SetPasswordTokenDetails setCrypto(String filepath) {
+        public As4SetPasswordTokenDetails setCrypto(String filepath) throws AS4Exception {
             System.out.println("running crypto setup");
             try {
                 Init.init();
@@ -113,8 +119,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
                 var userInfo = mapCertificateToUserInformation(certificates);
                 username = mapUserInformationToUsernameString(userInfo);
             } catch (WSSecurityException | KeyStoreException | AS4Exception e) {
-                int i = 0;
-                //TODO BRJ Fix this catch
+                throw new AS4Exception("Creating crypto and crypto properties failed" , e);
             }
             as4SetUsernameTokenDetailsInstance = new As4SetPasswordTokenDetailsInstance();
             return as4SetUsernameTokenDetailsInstance;
@@ -143,6 +148,18 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
             this.urlBase = url;
             as4SetCryptoInstance = new As4SetCryptoInstance();
             return as4SetCryptoInstance;
+        }
+
+        @Override
+        public As4SetCrypto setEndpoint(String url) throws AS4Exception {
+            URI uri;
+            try {
+                uri = new URI(url);
+            }
+            catch (URISyntaxException e){
+                throw new AS4Exception("Failed to convert string to URI", e);
+            }
+            return setEndpoint(uri);
         }
     }
 

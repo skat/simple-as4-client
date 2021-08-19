@@ -1,5 +1,6 @@
 package dk.toldst.eutk.as4client.as4;
 
+import dk.toldst.eutk.as4client.userinformation.AS4Exception;
 import org.apache.wss4j.common.WSEncryptionPart;
 import org.apache.wss4j.common.WSS4JConstants;
 import org.apache.wss4j.common.crypto.Crypto;
@@ -59,7 +60,7 @@ public class SecurityService {
         addJceProvider("ApacheXMLDSig", SantuarioUtil.getSantuarioProvider());
     }
 
-    public String usernameToken(SOAPMessage soapMessage) {
+    public String usernameToken(SOAPMessage soapMessage) throws SOAPException {
         try {
             // build header
             WSSecHeader secHeader = new WSSecHeader(actor, soapMessage.getSOAPHeader().getOwnerDocument());
@@ -74,7 +75,7 @@ public class SecurityService {
             return usernametoken.getId();
 
         } catch (Exception e) {
-            throw new RuntimeException("Could add username token", e);
+            throw new SOAPException(e.getMessage() + " Could add username token ");
         }
 
     }
