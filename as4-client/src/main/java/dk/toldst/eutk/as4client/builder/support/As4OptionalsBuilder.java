@@ -4,7 +4,7 @@ import dk.toldst.eutk.as4client.As4Client;
 import dk.toldst.eutk.as4client.As4ClientInstance;
 import dk.toldst.eutk.as4client.builder.As4ClientBuilder;
 import dk.toldst.eutk.as4client.builder.interfaces.As4Optionals;
-import dk.toldst.eutk.as4client.userinformation.AS4Exception;
+import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 
 import java.net.URI;
 import java.net.URISyntaxException;

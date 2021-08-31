@@ -10,7 +10,7 @@ import dk.toldst.eutk.as4client.builder.interfaces.As4SetPasswordTokenDetails;
 import dk.toldst.eutk.as4client.as4.As4DtoCreator;
 import dk.toldst.eutk.as4client.as4.As4HttpClient;
 import dk.toldst.eutk.as4client.as4.SecurityService;
-import dk.toldst.eutk.as4client.userinformation.AS4Exception;
+import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import dk.toldst.eutk.as4client.userinformation.As4UserInformation;
 import dk.toldst.eutk.as4client.userinformation.As4UserInformationType;
 import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
@@ -31,6 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class As4ClientBuilderInstance implements As4ClientBuilder {
+
 
     private As4SetPasswordTokenDetailsInstance as4SetUsernameTokenDetailsInstance;
     private As4SetCryptoInstance as4SetCryptoInstance;
@@ -74,6 +75,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
         return as4Client;
     }
 
+
     @Override
     public As4Optionals optionals() {
         return new As4OptionalsBuilder(this);
@@ -89,6 +91,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
         private String password;
 
         @Override
+
         public As4ClientBuilder setPassword(String password) {
             this.password = password;
             return As4ClientBuilderInstance.this;
@@ -130,7 +133,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
          * @param cryptoProps
          * @return
          */
-        @Override
+
         public As4SetPasswordTokenDetails setCrypto(Crypto cryptoProps) {
             crypto = cryptoProps;
 
