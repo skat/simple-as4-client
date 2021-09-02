@@ -49,13 +49,13 @@ public class As4ClientTests {
         });
     }
 
+/*
 
     @Test
     void setCryptoToCorrectFileReturnsNotNull() throws AS4Exception {
         //Assert
         Assertions.assertNotNull(as4SetCrypto.setCrypto("security/as4crypto-holodeck.properties"));
     }
-/*
     @Test
     void setAs4SetPasswordTokenDetailsReturnsNotNull() {
         Assertions.assertNotNull(as4ClientBuilder);
