@@ -21,15 +21,43 @@ public interface As4Optionals {
      * @return
      */
     As4Optionals noSSL();
+
+    /**
+     * Overrides the toParty - defaults to SKAT-MFT-AS4
+     * @param toPartyName
+     * @param toPartyRole
+     * @return
+     */
     As4Optionals toParty(String toPartyName, String toPartyRole);
+
+    /**
+     * Overrides the fromParty - defaults to certificate CVR and RID.
+     * @param fromParty
+     * @param fromPartyRole
+     * @return
+     */
     As4Optionals fromParty(String fromParty, String fromPartyRole);
+
+
+    /**
+     * Sets the absolute URI of the client.
+     * @param uri
+     * @return
+     */
     As4Optionals setAbsoluteURI(URI uri);
+
+    /**
+     * Sets the absolute URI of the client.
+     * @param uri
+     * @return
+     * @throws AS4Exception
+     */
     As4Optionals setAbsoluteURI(String uri) throws AS4Exception;
     As4Optionals setUsername(String username);
 
     /**
      * Calls the underlying build function on the builder object.
-     * @return
+     * @return the client
      * @throws AS4Exception
      */
     As4Client build() throws AS4Exception;

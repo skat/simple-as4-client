@@ -17,6 +17,25 @@ public class ExampleClient {
         System.out.println("Result: " + res.getCode() + (res.getMessage() == null ? "" : " Message: " + res.getMessage()));
     }
 
+    /**
+     * This test is meant to show a simple usecase of the simple AS4 client
+     * @return
+     * @throws AS4Exception
+     */
+    public static As4Client SimpleTest() throws AS4Exception {
+        return new As4ClientBuilderInstance().builder()
+                .setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
+                .setCrypto("security/as4crypto-holodeck.properties")
+                .setPassword("HBNRsvph68").build();
+    }
+
+    /**
+     * This test is meant to show an advanced usecase of the simple AS4 client.
+     *  In this case we are using a proxy, overwriting the parties, the actor, and the URL
+     *  Additionally we have disabled SSL (HTTPS) and set the username manually.
+     * @return
+     * @throws AS4Exception
+     */
     public static As4Client AdvancedTest() throws AS4Exception {
         return new As4ClientBuilderInstance().builder()
                 .setEndpoint("http://wrongurlfortest.com:8384")
@@ -31,12 +50,4 @@ public class ExampleClient {
                 .setUsername("CVR_13116482_UID_50151991")
                 .build();
     }
-
-    public static As4Client SimpleTest() throws AS4Exception {
-        return new As4ClientBuilderInstance().builder()
-                .setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
-                .setCrypto("security/as4crypto-holodeck.properties")
-                .setPassword("HBNRsvph68").build();
-    }
-
 }

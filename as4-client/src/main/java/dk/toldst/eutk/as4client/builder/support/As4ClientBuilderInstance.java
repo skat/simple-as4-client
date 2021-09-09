@@ -30,6 +30,9 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * An As4Client Builder class instance.
+ */
 public class As4ClientBuilderInstance implements As4ClientBuilder {
 
 
@@ -38,6 +41,12 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
     private As4SetEndpointInstance as4SetEndpointInstance;
 
     //Username -> Client
+
+    /**
+     * Builds the client with the set parameters.
+     * @return the client
+     * @throws AS4Exception
+     */
     public As4Client build() throws AS4Exception {
 
         JAXBContext jaxbContext;
@@ -82,6 +91,11 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
     }
 
     //Builder -> Endpoint
+
+    /**
+     * Invokes the builder, starting the pipeline process of building a client.
+     * @return an AS4SetEndpoint Instance, on which the endpoint of the client can be set.
+     */
     public As4SetEndpoint builder() {
         as4SetEndpointInstance = new As4SetEndpointInstance();
         return as4SetEndpointInstance;
