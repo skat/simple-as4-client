@@ -10,7 +10,7 @@ import dk.toldst.eutk.as4client.builder.interfaces.As4SetPasswordTokenDetails;
 import dk.toldst.eutk.as4client.as4.As4DtoCreator;
 import dk.toldst.eutk.as4client.as4.As4HttpClient;
 import dk.toldst.eutk.as4client.as4.SecurityService;
-import dk.toldst.eutk.as4client.userinformation.AS4Exception;
+import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import dk.toldst.eutk.as4client.userinformation.As4UserInformation;
 import dk.toldst.eutk.as4client.userinformation.As4UserInformationType;
 import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
@@ -30,13 +30,23 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * An As4Client Builder class instance.
+ */
 public class As4ClientBuilderInstance implements As4ClientBuilder {
+
 
     private As4SetPasswordTokenDetailsInstance as4SetUsernameTokenDetailsInstance;
     private As4SetCryptoInstance as4SetCryptoInstance;
     private As4SetEndpointInstance as4SetEndpointInstance;
 
     //Username -> Client
+
+    /**
+     * Builds the client with the set parameters.
+     * @return the client
+     * @throws AS4Exception
+     */
     public As4Client build() throws AS4Exception {
 
         JAXBContext jaxbContext;
@@ -74,12 +84,18 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
         return as4Client;
     }
 
+
     @Override
     public As4Optionals optionals() {
         return new As4OptionalsBuilder(this);
     }
 
     //Builder -> Endpoint
+
+    /**
+     * Invokes the builder, starting the pipeline process of building a client.
+     * @return an AS4SetEndpoint Instance, on which the endpoint of the client can be set.
+     */
     public As4SetEndpoint builder() {
         as4SetEndpointInstance = new As4SetEndpointInstance();
         return as4SetEndpointInstance;
@@ -89,6 +105,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
         private String password;
 
         @Override
+
         public As4ClientBuilder setPassword(String password) {
             this.password = password;
             return As4ClientBuilderInstance.this;
@@ -130,7 +147,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
          * @param cryptoProps
          * @return
          */
-        @Override
+
         public As4SetPasswordTokenDetails setCrypto(Crypto cryptoProps) {
             crypto = cryptoProps;
 

@@ -2,3 +2,6 @@
 /example/build/
 /.gradle/
 /.idea/
+/example/src/main/resources/
+/eutk-declaration/
+/as4-client/src/test/resources/security/

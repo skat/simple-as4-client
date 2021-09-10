@@ -1,11 +1,14 @@
 plugins {
-    id 'java'
+    id 'java-library'
     id 'maven-publish'
     id("com.github.bjornvester.xjc") version "1.6.0"
+    id 'maven'
+    id 'signing'
 }
 
-group 'dk.toldst.eutk'
-version '1.0-SNAPSHOT'
+group 'io.github.skat'
+archivesBaseName = "as4-client"
+version '1.0.1'
 
 repositories {
     mavenCentral()
@@ -20,6 +23,8 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
     implementation group: 'com.sun.xml.messaging.saaj', name: 'saaj-impl', version: '1.4.0'
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
 // https://medium.com/@shanemyrick/publishing-to-github-packages-with-gradle-and-github-actions-4ad842634c4e
@@ -45,6 +50,69 @@ xjc {
     bindingFiles = project.files("$projectDir/src/main/resources/bindings/binding.xjb")
     //outputJavaDir "here"
     //xjcVersion "2.3.3"
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'AS4 Client'
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                description 'Simple AS4 Client.'
+                url 'http://www.example.com/example-application'
+
+                scm {
+                    connection 'scm:svn:http://foo.googlecode.com/svn/trunk/'
+                    developerConnection 'scm:svn:https://foo.googlecode.com/svn/trunk/'
+                    url 'http://foo.googlecode.com/svn/trunk/'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'cbm'
+                        name 'Christian Mollnitz'
+                        email 'cbm@netcompany.com'
+                    }
+                }
+            }
+        }
+    }
 }
 
 

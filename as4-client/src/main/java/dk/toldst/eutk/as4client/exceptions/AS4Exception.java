@@ -1,4 +1,4 @@
-package dk.toldst.eutk.as4client.userinformation;
+package dk.toldst.eutk.as4client.exceptions;
 
 /**
  * Created by IntelliJ IDEA. Please write your own text here.

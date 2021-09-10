@@ -1,6 +1,5 @@
 package dk.toldst.eutk.as4client.as4;
 
-import dk.toldst.eutk.as4client.userinformation.AS4Exception;
 import org.apache.wss4j.common.WSEncryptionPart;
 import org.apache.wss4j.common.WSS4JConstants;
 import org.apache.wss4j.common.crypto.Crypto;

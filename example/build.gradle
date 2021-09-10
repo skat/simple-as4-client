@@ -24,9 +24,6 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-    implementation 'org.apache.wss4j:wss4j-ws-security-dom:2.3.1'
-    implementation 'org.apache.wss4j:wss4j-ws-security-common:2.3.1'
-    implementation 'org.apache.wss4j:wss4j:2.3.1'
     //implementation "dk.toldst.eutk:as4-client:1.0-SNAPSHOT"
     implementation project(':as4-client')
 }
