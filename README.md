@@ -38,12 +38,11 @@ Maven dependency:
 <dependency>
     <groupId>io.github.skat</groupId>
     <artifactId>as4-client</artifactId>
-    <version>1.0.1</version>
-    <scope>runtime</scope>
+    <version>1.0.2</version>
 </dependency>
 ```
 
 Gradle dependency:
 ```json
-implementation 'io.github.skat:as4-client:1.0.1'
+implementation 'io.github.skat:as4-client:1.0.2'
 ```
