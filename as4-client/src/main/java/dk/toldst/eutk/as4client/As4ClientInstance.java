@@ -6,6 +6,8 @@ import dk.toldst.eutk.as4client.as4.As4Message;
 import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import dk.toldst.eutk.as4client.utilities.JaxbThreadSafe;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
+
+import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -35,49 +37,40 @@ public class As4ClientInstance implements As4Client {
     }
 
     @Override
-    public StatusResponseType executePush(String service, String action, byte[] message) throws AS4Exception {
-        return executePush(service, action, new String(message, StandardCharsets.UTF_8));
+    public String executePush(String service, String action, byte[] message, Map<String, String> messageProperties) throws AS4Exception {
+        return executePush(service, action, new String(message, StandardCharsets.UTF_8), messageProperties);
     }
 
     @Override
-    public StatusResponseType executePush(String service, String action, String message) throws AS4Exception {
+    public String executePush(String service, String action, String message, Map<String, String> messageProperties) throws AS4Exception {
         String messageId = UUID.randomUUID().toString();
 
         As4Message as4Message = new As4Message();
         As4Message.As4Part part = new As4Message.As4Part();
         part.setContent(message);
         part.setProperties(Collections.singletonMap("original-file-name", "declaration.xml"));
-        as4Message.setMessageProperties(Map.of("procedureType", "H7"));
-        as4Message.getAttachments().add(part);
+        as4Message.setMessageProperties(messageProperties);
+        if(message != null && !message.equals(""))
+        {
+            as4Message.getAttachments().add(part);
+        }
+
 
         Messaging messaging = as4DtoCreator.createMessaging(service, action, "placeholder", as4Message, messageId);
 
         SOAPMessage soapMessage;
         try {
             soapMessage = as4HttpClient.sendRequest(messaging, as4Message);
+            return new String(soapMessage.getAttachments().next().getDataHandler().getInputStream().readAllBytes());
         } catch (Exception e) {
             throw new AS4Exception("Failed to send (or receive) message" , e);
         }
-        return getStatus(soapMessage);
+
     }
 
-    private StatusResponseType getStatus(SOAPMessage soapMessage) throws AS4Exception {
-        StatusResponseType responseType;
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance("dk.skat.mft.dms_declaration_status._1");
-            JaxbThreadSafe jaxbThreadSafe = new JaxbThreadSafe(jaxbContext);
-            AttachmentPart attachmentPart = soapMessage.getAttachments().next();
-            var element = (JAXBElement<StatusResponseType>) jaxbThreadSafe.unmarshal(attachmentPart.getDataHandler().getInputStream());
-            responseType = element.getValue();
-        }
-        catch (IOException | SOAPException | JAXBException | ClassCastException e){
-            throw new AS4Exception("Converting message from XML to StatusResponseType failed" , e);
-        }
-        return responseType;
-    }
 
     @Override
-    public StatusResponseType executePull() throws AS4Exception {
+    public String executePull() throws AS4Exception {
         return null;
     }
 }
