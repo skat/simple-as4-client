@@ -3,6 +3,8 @@ package dk.toldst.eutk.as4client;
 import dk.skat.mft.dms_declaration_status._1.StatusResponseType;
 import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 
+import java.util.Map;
+
 public interface As4Client {
     /**
      * Transmits a message, and requests an action from a service.
@@ -12,7 +14,9 @@ public interface As4Client {
      * @return a StatusResponseType object with the reply from the service.
      * @throws AS4Exception
      */
-    StatusResponseType executePush(String service, String action, String message) throws AS4Exception;
+    String executePush(String service, String action, String message, Map<String, String> messageProperties) throws AS4Exception;
+
+    String executePush(String service, String action, Map<String, String> messageProperties) throws AS4Exception;
 
     /**
      * Transmits a message, and requests an action from a service.
@@ -22,6 +26,6 @@ public interface As4Client {
      * @return a StatusResponseType object with the reply from the service.
      * @throws AS4Exception
      */
-    StatusResponseType executePush(String service, String action, byte[] message) throws AS4Exception;
-    StatusResponseType executePull() throws AS4Exception;
+    String executePush(String service, String action, byte[] message, Map<String, String> messageProperties) throws AS4Exception;
+    String executePull() throws AS4Exception;
 }
