@@ -16,6 +16,8 @@ public interface As4Client {
      */
     String executePush(String service, String action, String message, Map<String, String> messageProperties) throws AS4Exception;
 
+    String executePush(String service, String action, Map<String, String> messageProperties) throws AS4Exception;
+
     /**
      * Transmits a message, and requests an action from a service.
      * @param service the service requested from DMS, example: "DMS.Import"

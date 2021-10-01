@@ -2,8 +2,6 @@ package dk.toldst.eutk.as4client.utilities;
 
 import dk.skat.mft.dms_declaration_status._1.StatusResponseType;
 import dk.toldst.eutk.as4client.exceptions.AS4Exception;
-import generated.Notification;
-import generated.NotificationResponse;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -18,20 +16,6 @@ public class Tools {
             JAXBContext jaxbContext = JAXBContext.newInstance("dk.skat.mft.dms_declaration_status._1");
             JaxbThreadSafe jaxbThreadSafe = new JaxbThreadSafe(jaxbContext);
             var element = (JAXBElement<StatusResponseType>) jaxbThreadSafe.unmarshal(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8)));
-            responseType = element.getValue();
-        }
-        catch (JAXBException | ClassCastException e){
-            throw new AS4Exception("Converting message from XML to StatusResponseType failed" , e);
-        }
-        return responseType;
-    }
-
-    public static NotificationResponse getNotifications(String string) throws AS4Exception {
-        NotificationResponse responseType;
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance("generated");
-            JaxbThreadSafe jaxbThreadSafe = new JaxbThreadSafe(jaxbContext);
-            var element = (JAXBElement<NotificationResponse>) jaxbThreadSafe.unmarshal(new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8)));
             responseType = element.getValue();
         }
         catch (JAXBException | ClassCastException e){
