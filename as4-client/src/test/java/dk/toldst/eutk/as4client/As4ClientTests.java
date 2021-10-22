@@ -22,7 +22,7 @@ public class As4ClientTests {
     As4ClientBuilder as4ClientBuilder;
 
     @BeforeEach
-    void Setup() throws AS4Exception {
+    void Setup() {
         SetupBuilder();
     }
 
@@ -39,16 +39,16 @@ public class As4ClientTests {
     }
 
     private void SetupPassword() throws AS4Exception {
-        as4ClientBuilder = TestHelperTools.getAs4ClientBuilder();;
+        as4ClientBuilder = TestHelperTools.getAs4ClientBuilder();
     }
 
 
 
     @Test
+    @DisplayName("Setting to proper URL works")
     void setEndpointToCorrectURLReturnsNotNull() throws AS4Exception {
         //Arrange
         SetupEndpoint();
-
         //Act
         As4SetCrypto crypto = as4SetEndpoint.setEndpoint("nourl.dk");
         //Assert
@@ -56,6 +56,7 @@ public class As4ClientTests {
     }
 
     @Test
+    @DisplayName("Assigning crypto to right file works")
     void setCryptoToCorrectFileReturnsNotNull() throws AS4Exception {
         //Arrange
         SetupEndpoint();
@@ -67,14 +68,13 @@ public class As4ClientTests {
 
 
     @Test
+    @DisplayName("Assigning crypto to wrong file throws")
     void setCryptoToWrongFileFileReturnsThrows() throws AS4Exception {
         //Arrange
         SetupEndpoint();
 
         //Assert
-        Assertions.assertThrows(AS4Exception.class, () -> {
-            as4SetCrypto.setCrypto("file");
-        });
+        Assertions.assertThrows(AS4Exception.class, () -> as4SetCrypto.setCrypto("file"));
     }
 
     @Test
@@ -82,12 +82,11 @@ public class As4ClientTests {
     void setEndpointWrongURLStringThrowsAS4ExceptionTest(){
 
         //Assert
-        Assertions.assertThrows(AS4Exception.class, () -> {
-            as4SetEndpoint.setEndpoint("wr ong");
-        });
+        Assertions.assertThrows(AS4Exception.class, () -> as4SetEndpoint.setEndpoint("wr ong"));
     }
 
     @Test
+    @DisplayName("Setting up crypto returns not null")
     void setAs4SetPasswordTokenDetailsReturnsNotNull() throws AS4Exception {
         //Arrange
         SetupCrypto();
