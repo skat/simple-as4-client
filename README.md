@@ -1,6 +1,9 @@
 # simple-as4-client
 This repository contains the simple-as4 Client, made for the DMS project to help economical operators communicate with the AS4 gateway.
 
+The public DMS project repository can be found here: <br/>
+[Public DMS Github Repository](https://github.com/skat/dms-public) <br/><br/>
+
 ##Quick start guide
 * Add the simple-as4-client dependency to your project.
 * Configure a Client using the ClientBuilder (builder pattern)
