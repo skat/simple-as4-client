@@ -16,18 +16,41 @@ public class ExampleClient {
     public static void main(String[] args) throws AS4Exception {
         As4Client client = SimpleTest();
 
+        //PullAndPrint(client);
+
+        //SendAndPrintDeclarationExample(client);
+
+        //SendAndPrintNotificationExample(client, "DMS.Import2");
+        SendAndPrintNotificationExample(client, "DMS.Import");
+    }
+
+    private static void PullAndPrint(As4Client client) throws AS4Exception {
+        String pullResponse = client.executePull();
+        System.out.println("Result: " + pullResponse);
+    }
+
+    private static void SendAndPrintDeclarationExample(As4Client client) throws AS4Exception {
         StatusResponseType declarationStatus = SubmitDeclarationExample(client);
-
-        //String notificationResult = RetrieveNotificationExample(client);
-
-
         System.out.println("Result: " + declarationStatus.getCode() + (declarationStatus.getMessage() != null ? " and message: " + declarationStatus.getMessage() : ""));
-        //System.out.println("Result: " + notificationResult);
+    }
+
+    private static void SendAndPrintNotificationExample(As4Client client, String service) throws AS4Exception {
+        String notificationResult = RetrieveNotificationExample(client, service);
+        System.out.println("Result: " + notificationResult);
+    }
+
+    private static void SendAndPrintNotificationExample(As4Client client) throws AS4Exception {
+        SendAndPrintNotificationExample(client, "DMS.Import2");
     }
 
     private static String RetrieveNotificationExample(As4Client client) throws AS4Exception {
-        String notificationResult = client.executePush("DMS.Import", "Notification",
-                 Map.of("lang", "EN", "submitterId", "13116482", "dateFrom", "2021-10-01T06:00:00.000", "dateTo", "2021-10-02T06:00:00.000"));
+        return RetrieveNotificationExample(client, "DMS.Import2");
+    }
+
+    private static String RetrieveNotificationExample(As4Client client, String Service) throws AS4Exception {
+        String notificationResult = client.executePush(Service, "Notification",
+                 //Map.of("lang", "EN", "submitterId", "30808460", "dateFrom", "2022-03-22T12:30:00.000", "dateTo", "2022-03-22T12:35:00.000")); // "functionalReferenceId", "CBMFT-16927TFETest2")); //CBM011205 CBMFT-16927TFETest
+                 Map.of("lang", "EN", "submitterId", "30808460", "functionalReferenceId", "CBMTeamDemo01")); //  //CBMDuplicateTest CBMFT-16927TFETest
         return notificationResult;
     }
 
@@ -35,14 +58,13 @@ public class ExampleClient {
         // Submitting a declaration
         String declaration = "";
         try{
-            declaration = new String( ExampleClient.class.getResourceAsStream("decl.xml").readAllBytes() ) ;
+            declaration = new String(ExampleClient.class.getResourceAsStream("base.xml").readAllBytes() ) ;
         }
         catch (IOException e){
 
         }
 
-        String declarationResult = client.executePush("DMS.Import", "Declaration.Submit",
-                declaration.getBytes(StandardCharsets.UTF_8), Map.of("procedureType", "H7"));
+        String declarationResult = client.executePush("DMS.Import", "Declaration.Submit", declaration.getBytes(StandardCharsets.UTF_8), Map.of("procedureType", "H7"));
 
         StatusResponseType declarationStatus =  Tools.getStatus(declarationResult);
         return declarationStatus;
@@ -56,8 +78,15 @@ public class ExampleClient {
     public static As4Client SimpleTest() throws AS4Exception {
         return new As4ClientBuilderInstance().builder()
                 .setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
+                //.setEndpoint("http://localhost:8384")
+                .setCrypto("security/as4crypto-holodeckSt.properties")
+                .setPassword("YDZYalux67")
+
+                /*
                 .setCrypto("security/as4crypto-holodeck.properties")
-                .setPassword("HBNRsvph68").build();
+                .setPassword("HBNRsvph68")*/
+                //.optionals().noSSL()
+                .build();
     }
 
     /**

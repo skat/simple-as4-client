@@ -1,8 +1,16 @@
 package dk.toldst.eutk.as4client.as4;
 
+import com.google.common.io.CharStreams;
+import org.apache.wss4j.common.util.XMLUtils;
+import org.w3c.dom.Document;
+
 import javax.xml.soap.SOAPConnection;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPMessage;
+import javax.xml.soap.SOAPPart;
+import javax.xml.transform.TransformerException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * TODO: It's technically a decorator, but it is more like an interceptor. Name changing in the future?

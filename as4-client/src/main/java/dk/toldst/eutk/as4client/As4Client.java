@@ -27,5 +27,19 @@ public interface As4Client {
      * @throws AS4Exception
      */
     String executePush(String service, String action, byte[] message, Map<String, String> messageProperties) throws AS4Exception;
+
+    /**
+     * Executes a pull request to the default Message Partition Channel (MPC)
+     * @return the response from the AS4-GW MPC in String format.
+     * @throws AS4Exception
+     */
     String executePull() throws AS4Exception;
+
+    /**
+     * Executes a pull request to a Message Partition Channel (MPC)
+     * @param mpc the Message Partition Channel from which a pull is requested
+     * @return the response from the AS4-GW MPC in String format.
+     * @throws AS4Exception
+     */
+    String executePull(String mpc) throws AS4Exception;
 }
