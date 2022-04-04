@@ -80,6 +80,13 @@ public class As4DtoCreator {
         return messaging;
     }
 
+    public Messaging createPullMessaging(String mpc, String messageID){
+        Messaging messaging = new Messaging();
+        messaging.setMustUnderstandAttributeS12(true);
+        messaging.getSignalMessage().add(createPullRequest(mpc, messageID));
+        return messaging;
+    }
+
     private MessageProperties createMessageProperties(Map<String, String> messageProperties) {
         if (messageProperties == null) {
             return null;
