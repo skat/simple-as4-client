@@ -47,6 +47,7 @@ public class SecurityService {
         this.password = password;
         this.crypto = crypto;
         this.properties = properties;
+
         System.setProperty("org.apache.xml.security.ignoreLineBreaks", "true");
         org.apache.xml.security.Init.init();
         if(Security.getProvider(WSConstants.SWA_ATTACHMENT_CONTENT_SIG_TRANS) == null) {
@@ -123,6 +124,7 @@ public class SecurityService {
         wsSecEncrypt.setDigestAlgorithm(WSS4JConstants.SHA256);
         wsSecEncrypt.setMGFAlgorithm(WSS4JConstants.MGF_SHA256);
         wsSecEncrypt.setKeyEncAlgo(WSS4JConstants.KEYTRANSPORT_RSAOAEP_XENC11);
+
     }
 
     private void setupSignature(WSSecSignature wsSecSignature, Properties cryptoProperties) {

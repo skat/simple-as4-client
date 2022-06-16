@@ -34,6 +34,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.List;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
 
 public class As4HttpClient {
 
