@@ -5,11 +5,21 @@ import dk.toldst.eutk.as4client.as4.As4Message;
 import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import org.apache.wss4j.common.util.XMLUtils;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import javax.xml.namespace.QName;
+import javax.xml.soap.Name;
+import javax.xml.soap.SOAPBody;
+import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.util.*;
 
 public class As4ClientInstance implements As4Client {
@@ -83,21 +93,32 @@ public class As4ClientInstance implements As4Client {
         return executePull(defaultMPC);
     }
 
+    public String getNode(Document doc, String xPathString) throws XPathExpressionException {
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        return xPath.evaluate(xPathString, doc);
+    }
+
+
     @Override
     public String executePull(String mpc) throws AS4Exception {
         String messageId = UUID.randomUUID().toString();
         Messaging messaging = as4DtoCreator.createPullMessaging(mpc, messageId);
         SOAPMessage soapMessage = null;
         try {
+
             soapMessage = as4HttpClient.sendRequest(messaging, new As4Message());
-            return new String(soapMessage.getAttachments().next().getDataHandler().getInputStream().readAllBytes());
+            SOAPHeader header = soapMessage.getSOAPHeader();
+
+            //Rewrite using Yammer feedback - Remove Index Offsets
+            // getNode(header.getOwnerDocument(), "")
+            String reftoOriginalID =  header.getElementsByTagNameNS("*","Property").
+                    item(0).getChildNodes().item(0).getNodeValue();
+            return reftoOriginalID +  new String(soapMessage.getAttachments().next().getDataHandler().getInputStream().readAllBytes());
         } catch (Exception e) {
             String debugMessage = null;
             try {
                 debugMessage = XMLUtils.prettyDocumentToString(soapMessage.getSOAPPart().getOwnerDocument());
-            } catch (IOException ex) {
-                throw new AS4Exception("Failed to send (or receive) message" , e);
-            } catch (TransformerException ex) {
+            } catch (IOException | TransformerException ex) {
                 throw new AS4Exception("Failed to send (or receive) message" , e);
             }
             throw new AS4Exception("Failed to send (or receive) message, recieved from server: " + debugMessage , e);
