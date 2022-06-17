@@ -47,8 +47,9 @@ publishing {
 
 xjc {
     bindingFiles = project.files("$projectDir/src/main/resources/bindings/binding.xjb")
+    xjcVersion.set("2.3.3")
     //outputJavaDir "here"
-    //xjcVersion "2.3.3"
+
 }
 
 task javadocJar(type: Jar) {

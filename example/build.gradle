@@ -24,7 +24,7 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-    //implementation "dk.toldst.eutk:as4-client:1.0-SNAPSHOT"
+    //implementation 'io.github.skat:as4-client:1.1.0'
     implementation project(':as4-client')
 }
 
