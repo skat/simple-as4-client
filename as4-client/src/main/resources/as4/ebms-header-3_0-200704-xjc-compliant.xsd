@@ -7,30 +7,30 @@
 	xmlns:tns="http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/" targetNamespace="http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xsd:annotation>
 		<xsd:appinfo>Schema for ebMS-3 XML Infoset</xsd:appinfo>
-		<xsd:documentation xml:lang="en"> 
-			This schema defines the XML Infoset of ebMS-3 headers. These headers are 
-			placed within the SOAP Header element of either a SOAP 1.1 or SOAP 1.2 
+		<xsd:documentation xml:lang="en">
+			This schema defines the XML Infoset of ebMS-3 headers. These headers are
+			placed within the SOAP Header element of either a SOAP 1.1 or SOAP 1.2
 			message.
 		</xsd:documentation>
 	</xsd:annotation>
 	<xsd:import namespace="http://www.w3.org/XML/1998/namespace"
 			   schemaLocation="http://www.w3.org/2001/xml.xsd"/>
-	<xsd:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="http://schemas.xmlsoap.org/soap/envelope/"/>
-	<xsd:import namespace="http://www.w3.org/2003/05/soap-envelope" schemaLocation="http://www.w3.org/2003/05/soap-envelope"/>
+	<xsd:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="https://schemasxmlsoap.azurewebsites.net/soap/envelope/?WSDL"/>
+	<xsd:import namespace="http://www.w3.org/2003/05/soap-envelope" schemaLocation="http://www.w3.org/2003/05/soap-envelope/"/>
 	<xsd:element name="Messaging" type="Messaging"/>
 	<xsd:complexType name="Messaging">
 		<xsd:annotation>
-			<xsd:documentation xml:lang="en"> 
-	The eb:Messaging element is the top element of ebMS-3 headers, and it is 
-	placed within the SOAP Header element (either SOAP 1.1 or SOAP 1.2). The 
-	eb:Messaging element may contain several instances of eb:SignalMessage 
+			<xsd:documentation xml:lang="en">
+	The eb:Messaging element is the top element of ebMS-3 headers, and it is
+	placed within the SOAP Header element (either SOAP 1.1 or SOAP 1.2). The
+	eb:Messaging element may contain several instances of eb:SignalMessage
 	and eb:UserMessage elements. However in the core part of the ebMS-3
-	specification, only one instance of either eb:UserMessage or eb:SignalMessage 
-	must be present. The second part of ebMS-3 specification may need to include 
-	multiple instances of either eb:SignalMessage, eb:UserMessage or both. 
-	Therefore, this schema is allowing multiple instances of eb:SignalMessage 
+	specification, only one instance of either eb:UserMessage or eb:SignalMessage
+	must be present. The second part of ebMS-3 specification may need to include
+	multiple instances of either eb:SignalMessage, eb:UserMessage or both.
+	Therefore, this schema is allowing multiple instances of eb:SignalMessage
 	and eb:UserMessage elements for part 2 of the ebMS-3 specification. Note
-	that the eb:Messaging element cannot be empty (at least one of 
+	that the eb:Messaging element cannot be empty (at least one of
 	eb:SignalMessage or eb:UserMessage element must present).
 			</xsd:documentation>
 		</xsd:annotation>
@@ -43,12 +43,12 @@
 	</xsd:complexType>
 	<xsd:complexType name="SignalMessage">
 		<xsd:annotation>
-			<xsd:documentation xml:lang="en"> 
+			<xsd:documentation xml:lang="en">
 	In the core part of ebMS-3 specification, an eb:Signal Message is allowed to
 	contain eb:MessageInfo and at most one Receipt Signal, at most one eb:PullRequest
-	element, and/or a series of eb:Error elements. In part 2 of the ebMS-3 
-	specification, new signals may be introduced, and for this reason, 
-	an extensibility point is added here to the eb:SignalMessage element to 
+	element, and/or a series of eb:Error elements. In part 2 of the ebMS-3
+	specification, new signals may be introduced, and for this reason,
+	an extensibility point is added here to the eb:SignalMessage element to
 	allow it to contain any elements.
 			</xsd:documentation>
 		</xsd:annotation>
