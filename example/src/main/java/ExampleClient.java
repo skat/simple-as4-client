@@ -5,24 +5,56 @@ import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import dk.toldst.eutk.as4client.utilities.Tools;
 
 
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 public class ExampleClient {
     public static void main(String[] args) throws AS4Exception {
         As4Client client = SimpleTest();
+        try{
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
+            Date date = format.parse("2022-03-22T12:35:00.000");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+
+            String res;
+            for (int i = 0; i < 100; i++) {
+                res = client.executePush("DMS.Import2", "Notification",
+                        Map.of("lang", "EN", "submitterId", "30808460", "dateFrom", "2022-03-22T12:30:00.000", "dateTo", format.format(date)));
+                calendar.add(Calendar.DATE, 1);
+                date = calendar.getTime();
+                System.out.println(res + format.format(date));
+            }
+
+            for (int j = 0; j <100; j++) {
+                client.executePull();
+            }
+
+        }
+        catch (ParseException e){
+            throw new AS4Exception(e.toString());
+        }
+
+
+        /* PullAndPrint(client);
         PullAndPrint(client);
         PullAndPrint(client);
         PullAndPrint(client);
-        PullAndPrint(client);
-        PullAndPrint(client);
+        PullAndPrint(client); */
 
         //SendAndPrintDeclarationExample(client);
-        //SendAndPrintNotificationExample(client, "DMS.Import2");
+        SendAndPrintNotificationExample(client, "DMS.Import");
         //SendAndPrintNotificationExample(client, "DMS.Import");
     }
 
@@ -79,15 +111,15 @@ public class ExampleClient {
      */
     public static As4Client SimpleTest() throws AS4Exception {
         return new As4ClientBuilderInstance().builder()
-                //.setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
-                .setEndpoint("http://localhost:8384")
+                .setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
+                //.setEndpoint("http://localhost:8384")
                 .setCrypto("security/as4crypto-holodeckSt.properties")
                 .setPassword("YDZYalux67")
 
                 /*
                 .setCrypto("security/as4crypto-holodeck.properties")
                 .setPassword("HBNRsvph68")*/
-                .optionals().noSSL()
+                //.optionals().noSSL()
                 .build();
     }
 
