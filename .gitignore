@@ -7,3 +7,10 @@
 /as4-client/src/test/resources/security/
 /as4-client/out/
 /as4-client/src/test/resources/
+example/bin/main/ExampleClient.class
+.gitignore
+example/src/security/as4-holodeck-trust.jks
+example/src/security/as4crypto-holodeck.properties
+example/src/security/staerkdesign-keystore.jks
+as4-client/bin/
+gradle/

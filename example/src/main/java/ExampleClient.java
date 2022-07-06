@@ -1,5 +1,6 @@
 import dk.skat.mft.dms_declaration_status._1.StatusResponseType;
 import dk.toldst.eutk.as4client.As4Client;
+import dk.toldst.eutk.as4client.As4ClientResponseDto;
 import dk.toldst.eutk.as4client.builder.support.As4ClientBuilderInstance;
 import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import dk.toldst.eutk.as4client.utilities.Tools;
@@ -16,7 +17,7 @@ public class ExampleClient {
     public static void main(String[] args) throws AS4Exception {
         As4Client client = SimpleTest();
 
-        //PullAndPrint(client);
+        PullAndPrint(client);
 
         //SendAndPrintDeclarationExample(client);
 
@@ -25,8 +26,8 @@ public class ExampleClient {
     }
 
     private static void PullAndPrint(As4Client client) throws AS4Exception {
-        String pullResponse = client.executePull();
-        System.out.println("Result: " + pullResponse);
+        As4ClientResponseDto pullResponse = client.executePull();
+        System.out.println("FirstAttachment: " + pullResponse.getFirstAttachment()+ " ReftoOriginalID: " + pullResponse.getReftoOriginalID());
     }
 
     private static void SendAndPrintDeclarationExample(As4Client client) throws AS4Exception {
@@ -48,10 +49,10 @@ public class ExampleClient {
     }
 
     private static String RetrieveNotificationExample(As4Client client, String Service) throws AS4Exception {
-        String notificationResult = client.executePush(Service, "Notification",
+        As4ClientResponseDto as4ClientResponseDto = client.executePush(Service, "Notification",
                  //Map.of("lang", "EN", "submitterId", "30808460", "dateFrom", "2022-03-22T12:30:00.000", "dateTo", "2022-03-22T12:35:00.000")); // "functionalReferenceId", "CBMFT-16927TFETest2")); //CBM011205 CBMFT-16927TFETest
                  Map.of("lang", "EN", "submitterId", "30808460", "functionalReferenceId", "CBMTeamDemo01")); //  //CBMDuplicateTest CBMFT-16927TFETest
-        return notificationResult;
+        return as4ClientResponseDto.;
     }
 
     private static StatusResponseType SubmitDeclarationExample(As4Client client) throws AS4Exception {
@@ -64,9 +65,9 @@ public class ExampleClient {
 
         }
 
-        String declarationResult = client.executePush("DMS.Import", "Declaration.Submit", declaration.getBytes(StandardCharsets.UTF_8), Map.of("procedureType", "H7"));
+        As4ClientResponseDto declarationResult = client.executePush("DMS.Import", "Declaration.Submit", declaration.getBytes(StandardCharsets.UTF_8), Map.of("procedureType", "H7"));
 
-        StatusResponseType declarationStatus =  Tools.getStatus(declarationResult);
+        StatusResponseType declarationStatus =  Tools.getStatus(declarationResult.getFirstAttachment());
         return declarationStatus;
     }
 
