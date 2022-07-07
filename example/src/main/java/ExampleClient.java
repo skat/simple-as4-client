@@ -6,28 +6,34 @@ import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import dk.toldst.eutk.as4client.utilities.Tools;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map;
+import java.util.UUID;
 
 public class ExampleClient {
     public static void main(String[] args) throws AS4Exception {
         As4Client client = SimpleTest();
 
-        PullAndPrint(client);
+        SendAndPrintNotificationExample(client, "DMS.Import2");
+        PullsAndPrints(client);
 
-        //SendAndPrintDeclarationExample(client);
+        SendAndPrintDeclarationExample(client);
 
-        //SendAndPrintNotificationExample(client, "DMS.Import2");
+
         SendAndPrintNotificationExample(client, "DMS.Import");
     }
 
-    private static void PullAndPrint(As4Client client) throws AS4Exception {
-        As4ClientResponseDto pullResponse = client.executePull();
-        System.out.println("FirstAttachment: " + pullResponse.getFirstAttachment()+ " ReftoOriginalID: " + pullResponse.getReftoOriginalID());
+    private static void PullsAndPrints(As4Client client) throws AS4Exception {
+        while (true) {
+            As4ClientResponseDto pullResponse = client.executePull();
+            System.out.println("ReftoOriginalID: " + pullResponse.getReftoOriginalID()+ " FirstAttachment: " + pullResponse.getFirstAttachment());
+
+            if (pullResponse.getReftoOriginalID() == null){
+                break;
+            }
+        }
+
     }
 
     private static void SendAndPrintDeclarationExample(As4Client client) throws AS4Exception {
@@ -36,23 +42,21 @@ public class ExampleClient {
     }
 
     private static void SendAndPrintNotificationExample(As4Client client, String service) throws AS4Exception {
-        String notificationResult = RetrieveNotificationExample(client, service);
-        System.out.println("Result: " + notificationResult);
+        String messageId = UUID.randomUUID().toString();
+        As4ClientResponseDto notificationResult = RetrieveNotificationExample(client, "DMS.Import2",messageId);
+        System.out.println("messageId: "+messageId+ "Result: " + notificationResult.getFirstAttachment());
     }
 
     private static void SendAndPrintNotificationExample(As4Client client) throws AS4Exception {
         SendAndPrintNotificationExample(client, "DMS.Import2");
     }
 
-    private static String RetrieveNotificationExample(As4Client client) throws AS4Exception {
-        return RetrieveNotificationExample(client, "DMS.Import2");
-    }
-
-    private static String RetrieveNotificationExample(As4Client client, String Service) throws AS4Exception {
+    private static As4ClientResponseDto RetrieveNotificationExample(As4Client client, String Service, String messageId) throws AS4Exception
+    {
         As4ClientResponseDto as4ClientResponseDto = client.executePush(Service, "Notification",
-                 //Map.of("lang", "EN", "submitterId", "30808460", "dateFrom", "2022-03-22T12:30:00.000", "dateTo", "2022-03-22T12:35:00.000")); // "functionalReferenceId", "CBMFT-16927TFETest2")); //CBM011205 CBMFT-16927TFETest
-                 Map.of("lang", "EN", "submitterId", "30808460", "functionalReferenceId", "CBMTeamDemo01")); //  //CBMDuplicateTest CBMFT-16927TFETest
-        return as4ClientResponseDto.;
+                 Map.of("lang", "EN", "submitterId", "30808460", "dateFrom", "2022-03-22T12:30:00.000", "dateTo", "2022-03-22T12:35:00.000"),messageId ); // "functionalReferenceId", "CBMFT-16927TFETest2")); //CBM011205 CBMFT-16927TFETest
+                 //Map.of("lang", "EN", "submitterId", "30808460", "functionalReferenceId", "CBMTeamDemo01")); //  //CBMDuplicateTest CBMFT-16927TFETest
+        return as4ClientResponseDto;
     }
 
     private static StatusResponseType SubmitDeclarationExample(As4Client client) throws AS4Exception {
