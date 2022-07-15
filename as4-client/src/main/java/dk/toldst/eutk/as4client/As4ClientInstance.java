@@ -30,7 +30,13 @@ public class As4ClientInstance implements As4Client {
     private As4DtoCreator as4DtoCreator;
     private As4HttpClient as4HttpClient;
     private final String defaultMPC = "urn:fdc:dk.skat.mft.DMS/import2/response";
+
+    public void setCompression(boolean compression) {
+        this.compression = compression;
+    }
+
     private boolean compression = false;
+
 
     public As4DtoCreator getAs4DtoCreator() {
         return as4DtoCreator;
@@ -64,15 +70,13 @@ public class As4ClientInstance implements As4Client {
 
         String messageId = UUID.randomUUID().toString();
         As4Message as4Message = new As4Message();
-        byte[] compressedMessage;
-        String decompressedMesssge;
+        byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
         if(includeAttachment) {
             if(compression){
 
-                byte[] data = message.getBytes(StandardCharsets.UTF_8);
+                byte[] data = messageBytes;
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 ByteArrayOutputStream os2 = new ByteArrayOutputStream();
-
 
                 GZIPOutputStream stream;
                 GZIPInputStream inputStream;
@@ -80,20 +84,25 @@ public class As4ClientInstance implements As4Client {
                     stream = Compression.compress(os);
                     stream.write(data);
                     stream.close();
-                    compressedMessage = os.toByteArray();
+
+                    messageBytes = os.toByteArray();
+
+                    /*
+                    Base64.getEncoder().encodeToString();
+
+                    compressedMessage = Base64.getDecoder().decode(base64Message);
 
                     InputStream is = new ByteArrayInputStream(compressedMessage);
 
                     Compression.decompress(os2, is);
 
-                    decompressedMesssge = os2.toString();
+                    decompressedMesssge = os2.toString();*/
 
-                    int i = 0;
                 } catch (IOException e) {
                     throw new AS4Exception("Compression failed");
                 }
             }
-            As4Message.As4Part part = CreatePart(message);
+            As4Message.As4Part part = CreatePart(messageBytes);
             as4Message.getAttachments().add(part);
         }
 
@@ -110,10 +119,18 @@ public class As4ClientInstance implements As4Client {
 
     }
 
-    private As4Message.As4Part CreatePart(String message) {
+
+
+    private As4Message.As4Part CreatePart(byte[] message) throws AS4Exception {
         As4Message.As4Part part = new As4Message.As4Part();
         part.setContent(message);
-        part.setProperties(Collections.singletonMap("original-file-name", "declaration.xml"));
+        if(compression){
+            part.setProperties(Map.of("MimeType", "application/xml", "CharacterSet", "utf-8", "CompressionType", "application/gzip"));
+        }
+        else{
+            part.setProperties(Collections.singletonMap("original-file-name", "declaration.xml"));
+        }
+
         return part;
     }
 

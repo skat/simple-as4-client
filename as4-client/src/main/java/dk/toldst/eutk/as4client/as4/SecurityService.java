@@ -32,6 +32,12 @@ public class SecurityService {
     private Crypto crypto;
     private Properties properties;
 
+    public void setUseBinary(boolean useBinary) {
+        this.useBinary = useBinary;
+    }
+
+    private boolean useBinary = false;
+
 
     public void setUsername(String username) {
         this.username = username;
@@ -81,16 +87,27 @@ public class SecurityService {
     }
 
 
+    /*
+    https://www.tabnine.com/code/java/classes/org.apache.wss4j.common.token.BinarySecurity
+    https://stackoverflow.com/questions/23744513/howto-correct-securitytokenreference-using-wss4j-to-sign-soap
+    https://stackoverflow.com/questions/49077876/signing-soap-message-using-wss4j-in-java
+    ^ This is a great idea I think,
+    sign.setKeyIdentifierType(WSConstants.BST_DIRECT_REFERENCE); // Binary Security Token - SecurityTokenReference
+    https://sourceforge.net/p/signsoaprequest/code/HEAD/tree/SignSOAPRequest/trunk/src/main/java/br/gov/dataprev/soaptools/sign/WSSecurityHandler.java
+     */
     public void signAndEncryptAs4(SOAPMessage soapMessage, String usernameTokenId) {
         try {
             // build header
             WSSecHeader secHeader = new WSSecHeader(soapMessage.getSOAPHeader().getOwnerDocument());
+
             secHeader.insertSecurityHeader();
+
 
             AttachmentCallbackHandler attachmentCallback = createAttachmentCallback(soapMessage.getAttachments());
 
             WSSecSignature wsSecSignature = new WSSecSignature(secHeader);
             setupSignature(wsSecSignature, properties);
+
             wsSecSignature.setAttachmentCallbackHandler(attachmentCallback);
             wsSecSignature.getParts().addAll(getPartsToSign(usernameTokenId));
             wsSecSignature.build(crypto);
@@ -118,6 +135,7 @@ public class SecurityService {
         return new AttachmentCallbackHandler(attachments);
     }
 
+
     private void setupEncryption(WSSecEncrypt wsSecEncrypt, Properties cryptoProperties) {
         wsSecEncrypt.setUserInfo(
                 cryptoProperties.getProperty("org.apache.wss4j.crypto.merlin.truststore.alias"));
@@ -128,8 +146,17 @@ public class SecurityService {
     }
 
     private void setupSignature(WSSecSignature wsSecSignature, Properties cryptoProperties) {
-        wsSecSignature.setKeyIdentifierType(WSConstants.ISSUER_SERIAL);
+        if(useBinary){
+            wsSecSignature.setKeyIdentifierType(WSConstants.BST_DIRECT_REFERENCE);
+            //This changes the token profile according to the specification of Interface Control Document: X509PKIPathv1
+            wsSecSignature.setUseSingleCertificate(false);
+        }
+        else {
+            wsSecSignature.setKeyIdentifierType(WSConstants.ISSUER_SERIAL);
+        }
+
         wsSecSignature.setSignatureAlgorithm(WSS4JConstants.RSA_SHA256);
+
         wsSecSignature.setSigCanonicalization(WSS4JConstants.C14N_EXCL_OMIT_COMMENTS);
         wsSecSignature.setDigestAlgo(WSS4JConstants.SHA256);
         wsSecSignature.setUserInfo(

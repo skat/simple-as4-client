@@ -149,7 +149,7 @@ public class As4HttpClient {
             // gzip the contents before adding it to the attachement (spec: GZIP [RFC1952])
 
             //byte[] data = Base64.getDecoder().decode(attachment.getContent());
-            byte[] data = attachment.getContent().getBytes(StandardCharsets.UTF_8);
+            byte[] data = attachment.getContent(); //.getBytes(StandardCharsets.UTF_8);
             attachmentPart.setRawContent(new ByteArrayInputStream(data), "application/octet-stream");
             attachmentPart.addMimeHeader("Content-Transfer-Encoding", "binary");
             soapMessage.addAttachmentPart(attachmentPart);
