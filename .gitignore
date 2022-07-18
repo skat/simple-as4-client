@@ -7,3 +7,8 @@
 /as4-client/src/test/resources/security/
 /as4-client/out/
 /as4-client/src/test/resources/
+example/bin/main/ExampleClient.class
+.gitignore
+as4-client/bin/
+gradle/
+security/
