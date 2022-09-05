@@ -8,7 +8,7 @@ plugins {
 
 group 'io.github.skat'
 archivesBaseName = "as4-client"
-version '1.1.0'
+version '2.0.0'
 
 repositories {
     mavenCentral()
@@ -74,14 +74,6 @@ uploadArchives {
     repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
 
             pom.project {
                 name 'AS4 Client'
