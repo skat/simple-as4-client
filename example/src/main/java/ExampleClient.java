@@ -12,11 +12,17 @@ import java.util.Map;
 public class ExampleClient {
     public static void main(String[] args) throws AS4Exception {
         As4Client client = SimpleTest();
-
-        /* PullAndPrint(client); */
-
         SendAndPrintDeclarationExample(client);
-        //SendAndPrintNotificationExample(client, "DMS.Import");
+        //client.executePush("", "", null);
+        /*
+        while (true){
+            PullAndPrint(client);
+        }
+        */
+
+
+
+        //SendAndPrintNotificationExample(client, "DMS.Import2");
         //SendAndPrintNotificationExample(client, "DMS.Import");
     }
 
@@ -45,7 +51,7 @@ public class ExampleClient {
 
     private static String RetrieveNotificationExample(As4Client client, String Service) throws AS4Exception {
         String notificationResult = client.executePush(Service, "Notification",
-                 Map.of("lang", "EN", "submitterId", "30808460", "dateFrom", "2022-03-22T12:30:00.000", "dateTo", "2022-03-22T12:35:00.000")); // "functionalReferenceId", "CBMFT-16927TFETest2")); //CBM011205 CBMFT-16927TFETest
+                 Map.of("lang", "EN", "submitterId", "30808460", "dateFrom", "2022-09-22T10:30:00.000", "dateTo", "2022-09-22T14:00:00.000")); // "functionalReferenceId", "CBMFT-16927TFETest2")); //CBM011205 CBMFT-16927TFETest
                  //Map.of("lang", "EN", "submitterId", "30808460", "functionalReferenceId", "CBMTeamDemo01")); //  //CBMDuplicateTest CBMFT-16927TFETest
         return notificationResult;
     }
@@ -60,7 +66,7 @@ public class ExampleClient {
 
         }
         String action =  "Declaration.Submit";
-        String declarationResult = client.executePush("DMS.Import", "Declaration.Submit", declaration.getBytes(StandardCharsets.UTF_8), Map.of("procedureType", "H7"));
+        String declarationResult = client.executePush("DMS.Import", action, declaration.getBytes(StandardCharsets.UTF_8), Map.of("procedureType", "H7"));
 
         StatusResponseType declarationStatus =  Tools.getStatus(declarationResult);
         return declarationStatus;
@@ -73,16 +79,25 @@ public class ExampleClient {
      */
     public static As4Client SimpleTest() throws AS4Exception {
         return new As4ClientBuilderInstance().builder()
-                //.setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
-                .setEndpoint("http://localhost:8384")
+                .setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
+                //.setEndpoint("http://localhost:8384")
                 .setCrypto("security/as4crypto-holodeckSt.properties")
                 .setPassword("YDZYalux67")
 
                 /*
                 .setCrypto("security/as4crypto-holodeck.properties")
                 .setPassword("HBNRsvph68")*/
+
+
+                .build();
+    }
+
+    public static As4Client ICS2Client() throws AS4Exception {
+        return new As4ClientBuilderInstance().builder()
+                .setEndpoint("https://customs.ec.europa.eu:8445/domibus/services/msh")
+                .setCrypto("security/as4crypto-holodeck.properties")
+                .setPassword("HBNRsvph68")
                 .optionals().useCompression().useBinarySecurityToken()
-                .noSSL()
                 .build();
     }
 

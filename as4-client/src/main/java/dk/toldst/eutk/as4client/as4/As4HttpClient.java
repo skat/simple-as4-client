@@ -5,12 +5,7 @@ import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.*;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
@@ -27,10 +22,14 @@ import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.transform.dom.DOMResult;
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyStore;
+import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.List;
@@ -53,6 +52,7 @@ public class As4HttpClient {
     private URI endpointURI;
 
     private Boolean disableSSL = false;
+    private Boolean twoWaySSL = false;
 
     public Boolean getDisableSSL() {
         return disableSSL;
@@ -85,27 +85,50 @@ public class As4HttpClient {
     public SOAPMessage sendRequest(Messaging messaging, As4Message as4Message) throws Exception {
         // The code below is to avoid the certificate check on SIT01
         if(!disableSSL) {
-            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
 
-                public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                }
+            //Two way ssl https://stackoverflow.com/questions/70243058/two-way-mutual-ssl-authentication
+            if(twoWaySSL){
+                KeyStore store = KeyStore.getInstance("JKS");
+                InputStream ksStream = new FileInputStream("");
+                store.load(ksStream, "".toCharArray());
 
-                public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                }
+                KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+                keyManagerFactory.init(store, "".toCharArray());
+
+                SSLContext context = SSLContext.getInstance("TLS");
+                context.init(keyManagerFactory.getKeyManagers(), null, new SecureRandom());
+                SSLSocketFactory sslSocketFactory = context.getSocketFactory();
+
+                HttpsURLConnection.setDefaultSSLSocketFactory(sslSocketFactory);
+                HttpsURLConnection.setDefaultHostnameVerifier(new TrustAllHosts());
+                HttpsURLConnection httpsConnection;
+                java.net.URL url = endpointURI.toURL();
+                httpsConnection = (HttpsURLConnection) url.openConnection();
+                httpsConnection.setHostnameVerifier(new TrustAllHosts());
+                httpsConnection.connect();
+
             }
-            };
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            HttpsURLConnection.setDefaultHostnameVerifier(new TrustAllHosts());
-            HttpsURLConnection httpsConnection;
-            java.net.URL url = endpointURI.toURL();
-            httpsConnection = (HttpsURLConnection) url.openConnection();
-            httpsConnection.setHostnameVerifier(new TrustAllHosts());
-            httpsConnection.connect();
+            else{
+                TrustManager[] trustAllCerts = new TrustManager[]{
+                        new X509TrustManager() {
+                            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                                return null;
+                            }
+                            public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+                            public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+                        }
+                };
+                SSLContext sc = SSLContext.getInstance("SSL");
+                sc.init(null, trustAllCerts, new java.security.SecureRandom());
+                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+                HttpsURLConnection.setDefaultHostnameVerifier(new TrustAllHosts());
+                HttpsURLConnection httpsConnection;
+                java.net.URL url = endpointURI.toURL();
+                httpsConnection = (HttpsURLConnection) url.openConnection();
+                httpsConnection.setHostnameVerifier(new TrustAllHosts());
+                httpsConnection.connect();
+            }
+
         }
 
         SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();

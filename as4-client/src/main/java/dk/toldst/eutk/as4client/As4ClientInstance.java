@@ -52,23 +52,39 @@ public class As4ClientInstance implements As4Client {
     }
 
     @Override
+    public String executePush(String service, String action, byte[] message, Map<String, String> messageProperties, String messageId) throws AS4Exception {
+        return executePush(service, action, new String(message, StandardCharsets.UTF_8), messageProperties, UUID.randomUUID().toString());
+    }
+
+    @Override
     public String executePush(String service, String action, byte[] message, Map<String, String> messageProperties) throws AS4Exception {
-        return executePush(service, action, new String(message, StandardCharsets.UTF_8), messageProperties);
+        return executePush(service,action,message,messageProperties, UUID.randomUUID().toString());
+    }
+
+    @Override
+    public String executePush(String service, String action, Map<String, String> messageProperties, String messageId) throws AS4Exception {
+        return internalPush(service, action, "", messageProperties, false, UUID.randomUUID().toString());
     }
 
     @Override
     public String executePush(String service, String action, Map<String, String> messageProperties) throws AS4Exception {
-        return internalPush(service, action, "", messageProperties, false);
+        return  executePush(service,action,messageProperties, UUID.randomUUID().toString());
+    }
+
+
+    @Override
+    public String executePush(String service, String action, String message, Map<String, String> messageProperties, String messageId) throws AS4Exception {
+        return internalPush(service, action, message, messageProperties, true, UUID.randomUUID().toString());
     }
 
     @Override
     public String executePush(String service, String action, String message, Map<String, String> messageProperties) throws AS4Exception {
-        return internalPush(service, action, message, messageProperties, true);
+        return executePush(service,action,message,messageProperties, UUID.randomUUID().toString());
     }
 
-    private String internalPush(String service, String action, String message, Map<String, String> messageProperties, Boolean includeAttachment) throws AS4Exception {
 
-        String messageId = UUID.randomUUID().toString();
+    private String internalPush(String service, String action, String message, Map<String, String> messageProperties, Boolean includeAttachment, String messageId) throws AS4Exception {
+
         As4Message as4Message = new As4Message();
         byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
         if(includeAttachment) {
