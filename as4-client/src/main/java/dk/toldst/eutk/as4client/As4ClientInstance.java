@@ -58,7 +58,7 @@ public class As4ClientInstance implements As4Client {
     @Override
     public As4ClientResponseDto executePush(String service, String action, byte[] message, String fileName, Map<String, String> messageProperties) throws AS4Exception {
         String messageId = UUID.randomUUID().toString();
-        return internalPush(service, action, new String(message, StandardCharsets.UTF_8), fileName, messageProperties, false, messageId);
+        return internalPush(service, action, new String(message, StandardCharsets.UTF_8), fileName, messageProperties, true, messageId);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class As4ClientInstance implements As4Client {
 
     @Override
     public As4ClientResponseDto executePush(String service, String action, String message, Map<String, String> messageProperties, String messageId) throws AS4Exception {
-        return internalPush(service, action, message, "declaration.xml", messageProperties, false, messageId);
+        return internalPush(service, action, message, "declaration.xml", messageProperties, true, messageId);
     }
 
     @Override
@@ -89,7 +89,6 @@ public class As4ClientInstance implements As4Client {
     }
 
     private As4ClientResponseDto internalPush(String service, String action, String message, String fileName, Map<String, String> messageProperties, Boolean includeAttachment, String messageId ) throws AS4Exception {
-
         As4Message as4Message = new As4Message();
 
         if(includeAttachment)
@@ -116,7 +115,7 @@ public class As4ClientInstance implements As4Client {
     private As4Message.As4Part CreatePart(String message, String fileName) {
         As4Message.As4Part part = new As4Message.As4Part();
         part.setContent(message);
-        part.setProperties(Collections.singletonMap("original-file-name", fileName));//"declaration.xml"));
+        part.setProperties(Collections.singletonMap("original-file-name", fileName));
         return part;
     }
 

@@ -15,8 +15,8 @@ public class ExampleClient {
     public static void main(String[] args) throws AS4Exception {
         As4Client client = SimpleTest();
 
-        SendAndPrintNotificationExample(client, "DMS.Export2");
-        PullsAndPrints(client);
+        //SendAndPrintNotificationExample(client, "DMS.Export2");
+        //PullsAndPrints(client);
 
         SendAndPrintDeclarationExample(client);
 
@@ -66,7 +66,6 @@ public class ExampleClient {
             declaration = new String(ExampleClient.class.getResourceAsStream("base.xml").readAllBytes() ) ;
         }
         catch (IOException e){
-
         }
         var declarationBytes= declaration.getBytes(StandardCharsets.UTF_8);
 
