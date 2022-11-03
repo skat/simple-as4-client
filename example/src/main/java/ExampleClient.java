@@ -15,13 +15,13 @@ public class ExampleClient {
     public static void main(String[] args) throws AS4Exception {
         As4Client client = SimpleTest();
 
-        SendAndPrintNotificationExample(client, "DMS.Import2");
-        PullsAndPrints(client);
+        //SendAndPrintNotificationExample(client, "DMS.Export2");
+        //PullsAndPrints(client);
 
         SendAndPrintDeclarationExample(client);
 
 
-        SendAndPrintNotificationExample(client, "DMS.Import");
+        //SendAndPrintNotificationExample(client, "DMS.Import");
     }
 
     private static void PullsAndPrints(As4Client client) throws AS4Exception {
@@ -43,12 +43,12 @@ public class ExampleClient {
 
     private static void SendAndPrintNotificationExample(As4Client client, String service) throws AS4Exception {
         String messageId = UUID.randomUUID().toString();
-        As4ClientResponseDto notificationResult = RetrieveNotificationExample(client, "DMS.Import2",messageId);
+        As4ClientResponseDto notificationResult = RetrieveNotificationExample(client, "DMS.Export2",messageId);
         System.out.println("messageId: "+messageId+ "Result: " + notificationResult.getFirstAttachment());
     }
 
     private static void SendAndPrintNotificationExample(As4Client client) throws AS4Exception {
-        SendAndPrintNotificationExample(client, "DMS.Import2");
+        SendAndPrintNotificationExample(client, "DMS.Export2");
     }
 
     private static As4ClientResponseDto RetrieveNotificationExample(As4Client client, String Service, String messageId) throws AS4Exception
@@ -66,10 +66,11 @@ public class ExampleClient {
             declaration = new String(ExampleClient.class.getResourceAsStream("base.xml").readAllBytes() ) ;
         }
         catch (IOException e){
-
         }
+        var declarationBytes= declaration.getBytes(StandardCharsets.UTF_8);
 
-        As4ClientResponseDto declarationResult = client.executePush("DMS.Import", "Declaration.Submit", declaration.getBytes(StandardCharsets.UTF_8), Map.of("procedureType", "H7"));
+        var  declarationResult = client.executePush("DMS.Export2", "Declaration.Submit",
+                declarationBytes, "declaration.xml", Map.of("procedureType", "C1"));
 
         StatusResponseType declarationStatus =  Tools.getStatus(declarationResult.getFirstAttachment());
         return declarationStatus;

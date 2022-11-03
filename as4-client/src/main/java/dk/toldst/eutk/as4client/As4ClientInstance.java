@@ -36,43 +36,64 @@ public class As4ClientInstance implements As4Client {
 
     @Override
     public As4ClientResponseDto executePush(String service, String action, byte[] message, Map<String, String> messageProperties) throws AS4Exception {
-        return executePush(service, action, new String(message, StandardCharsets.UTF_8), messageProperties);
+        return executePush(service, action, new String(message, StandardCharsets.UTF_8), "declaration.xml", messageProperties);
     }
 
     @Override
     public As4ClientResponseDto executePush(String service, String action, Map<String, String> messageProperties) throws AS4Exception {
         String messageId = UUID.randomUUID().toString();
-        return internalPush(service, action, "", messageProperties, false, messageId);
+        return internalPush(service, action, "", "Declaration.xml", messageProperties, false, messageId);
+    }
+
+    @Override
+    public As4ClientResponseDto executePush(String service, String action, byte[] message, String fileName, Map<String, String> messageProperties, String messageId) throws AS4Exception {
+        return internalPush(service, action, new String(message, StandardCharsets.UTF_8), fileName, messageProperties, false, messageId);
     }
 
     @Override
     public As4ClientResponseDto executePush(String service, String action, byte[] message, Map<String, String> messageProperties, String messageId) throws AS4Exception {
-        return executePush(service, action, new String(message, StandardCharsets.UTF_8), messageProperties, messageId);
+        return executePush(service, action, new String(message, StandardCharsets.UTF_8), "Declaration.xml", messageProperties, messageId);
+    }
+
+    @Override
+    public As4ClientResponseDto executePush(String service, String action, byte[] message, String fileName, Map<String, String> messageProperties) throws AS4Exception {
+        String messageId = UUID.randomUUID().toString();
+        return internalPush(service, action, new String(message, StandardCharsets.UTF_8), fileName, messageProperties, true, messageId);
+    }
+
+    @Override
+    public As4ClientResponseDto executePush(String service, String action, String message, String fileName, Map<String, String> messageProperties, String messageId) throws AS4Exception {
+        return internalPush(service, action, message, fileName, messageProperties, true,messageId);
     }
 
     @Override
     public As4ClientResponseDto executePush(String service, String action, String message, Map<String, String> messageProperties, String messageId) throws AS4Exception {
-        return internalPush(service, action, message, messageProperties, true,messageId);
+        return internalPush(service, action, message, "declaration.xml", messageProperties, true, messageId);
+    }
+
+    @Override
+    public As4ClientResponseDto executePush(String service, String action, String message, String fileName, Map<String, String> messageProperties) throws AS4Exception {
+        String messageId = UUID.randomUUID().toString();
+        return internalPush(service, action, message, fileName, messageProperties, true, messageId);
     }
 
     @Override
     public As4ClientResponseDto executePush(String service, String action, String message, Map<String, String> messageProperties) throws AS4Exception {
         String messageId = UUID.randomUUID().toString();
-        return internalPush(service, action, message, messageProperties, true, messageId);
+        return internalPush(service, action, message, "declaration.xml", messageProperties, false, messageId);
     }
 
     @Override
     public As4ClientResponseDto executePush(String service, String action, Map<String, String> messageProperties, String messageId) throws AS4Exception {
-        return internalPush(service, action, "", messageProperties, false, messageId);
+        return internalPush(service, action, "", "Declaration.xml", messageProperties, false, messageId);
     }
 
-    private As4ClientResponseDto internalPush(String service, String action, String message, Map<String, String> messageProperties, Boolean includeAttachment, String messageId ) throws AS4Exception {
-
+    private As4ClientResponseDto internalPush(String service, String action, String message, String fileName, Map<String, String> messageProperties, Boolean includeAttachment, String messageId ) throws AS4Exception {
         As4Message as4Message = new As4Message();
 
         if(includeAttachment)
         {
-            As4Message.As4Part part = CreatePart(message);
+            As4Message.As4Part part = CreatePart(message, fileName);
             as4Message.getAttachments().add(part);
         }
 
@@ -91,10 +112,10 @@ public class As4ClientInstance implements As4Client {
 
     }
 
-    private As4Message.As4Part CreatePart(String message) {
+    private As4Message.As4Part CreatePart(String message, String fileName) {
         As4Message.As4Part part = new As4Message.As4Part();
         part.setContent(message);
-        part.setProperties(Collections.singletonMap("original-file-name", "declaration.xml"));
+        part.setProperties(Collections.singletonMap("original-file-name", fileName));
         return part;
     }
 

@@ -11,11 +11,14 @@ public interface As4Client {
      * @param service the service requested from DMS, example: "DMS.Import"
      * @param action the action requested from DMS, example: "Declaration.Submit"
      * @param message the XML message to be sent to DMS, in the form of a String
+     * @param fileName the name of the file you are sending in, in the form of a string
      * @param messageId the messageId to be sent to DMS, in the form of a String  example:  70a4c99c-c321-4265-b3a6-eebfceae9fdd
      * @return a StatusResponseType object with the reply from the service.
      * @throws AS4Exception
      */
+    As4ClientResponseDto executePush(String service, String action, String message, String fileName, Map<String, String> messageProperties, String messageId ) throws AS4Exception;
     As4ClientResponseDto executePush(String service, String action, String message, Map<String, String> messageProperties, String messageId ) throws AS4Exception;
+    As4ClientResponseDto executePush(String service, String action, String message, String fileName, Map<String, String> messageProperties) throws AS4Exception;
     As4ClientResponseDto executePush(String service, String action, String message, Map<String, String> messageProperties) throws AS4Exception;
     As4ClientResponseDto executePush(String service, String action, Map<String, String> messageProperties, String messageId ) throws AS4Exception;
     As4ClientResponseDto executePush(String service, String action, Map<String, String> messageProperties) throws AS4Exception;
@@ -25,11 +28,14 @@ public interface As4Client {
      * @param service the service requested from DMS, example: "DMS.Import"
      * @param action the action requested from DMS, example: "Declaration.Submit"
      * @param message the XML message to be sent to DMS, in the form of a byte stream
+     * @param fileName the name of the file you are sending in, in the form of a string
      * @param messageId the messageId to be sent to DMS, in the form of a String  example:  70a4c99c-c321-4265-b3a6-eebfceae9fdd
      * @return a StatusResponseType object with the reply from the service.
      * @throws AS4Exception
      */
+    As4ClientResponseDto executePush(String service, String action, byte[] message, String fileName, Map<String, String> messageProperties, String messageId) throws AS4Exception;
     As4ClientResponseDto executePush(String service, String action, byte[] message, Map<String, String> messageProperties, String messageId) throws AS4Exception;
+    As4ClientResponseDto executePush(String service, String action, byte[] message, String fileName, Map<String, String> messageProperties) throws AS4Exception;
     As4ClientResponseDto executePush(String service, String action, byte[] message, Map<String, String> messageProperties) throws AS4Exception;
     /**
      * Executes a pull request to the default Message Partition Channel (MPC)
