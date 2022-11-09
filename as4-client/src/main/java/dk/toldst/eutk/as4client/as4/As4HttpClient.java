@@ -89,11 +89,11 @@ public class As4HttpClient {
             //Two way ssl https://stackoverflow.com/questions/70243058/two-way-mutual-ssl-authentication
             if(twoWaySSL){
                 KeyStore store = KeyStore.getInstance("JKS");
-                InputStream ksStream = new FileInputStream("");
-                store.load(ksStream, "".toCharArray());
+                InputStream ksStream = new FileInputStream(""); // Your file here - or however you want to integrate your
+                store.load(ksStream, "".toCharArray()); // Password here
 
                 KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-                keyManagerFactory.init(store, "".toCharArray());
+                keyManagerFactory.init(store, "".toCharArray()); // Password here
 
                 SSLContext context = SSLContext.getInstance("TLS");
                 context.init(keyManagerFactory.getKeyManagers(), null, new SecureRandom());
@@ -106,7 +106,6 @@ public class As4HttpClient {
                 httpsConnection = (HttpsURLConnection) url.openConnection();
                 httpsConnection.setHostnameVerifier(new TrustAllHosts());
                 httpsConnection.connect();
-
             }
             else{
                 TrustManager[] trustAllCerts = new TrustManager[]{

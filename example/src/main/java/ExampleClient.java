@@ -14,11 +14,11 @@ public class ExampleClient {
         As4Client client = SimpleTest();
         SendAndPrintDeclarationExample(client);
         //client.executePush("", "", null);
-        /*
-        while (true){
-            PullAndPrint(client);
-        }
-        */
+
+        //while (true){
+        //PullAndPrint(client);
+        //}
+
 
 
 
@@ -66,7 +66,7 @@ public class ExampleClient {
 
         }
         String action =  "Declaration.Submit";
-        String declarationResult = client.executePush("DMS.Import", action, declaration.getBytes(StandardCharsets.UTF_8), Map.of("procedureType", "H7"));
+        String declarationResult = client.executePush("DMS.Import2", action, declaration.getBytes(StandardCharsets.UTF_8), Map.of("procedureType", "H7"));
 
         StatusResponseType declarationStatus =  Tools.getStatus(declarationResult);
         return declarationStatus;
