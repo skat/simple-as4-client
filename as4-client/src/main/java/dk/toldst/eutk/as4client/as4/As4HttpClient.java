@@ -52,7 +52,7 @@ public class As4HttpClient {
     private URI endpointURI;
 
     private Boolean disableSSL = false;
-    private Boolean twoWaySSL = false;
+    private Boolean twoWaySSL = true;
 
     public Boolean getDisableSSL() {
         return disableSSL;
@@ -88,26 +88,32 @@ public class As4HttpClient {
 
             //Two way ssl https://stackoverflow.com/questions/70243058/two-way-mutual-ssl-authentication
             if(twoWaySSL){
+
                 KeyStore store = KeyStore.getInstance("JKS");
-                InputStream ksStream = new FileInputStream(""); // Your file here - or however you want to integrate your
-                store.load(ksStream, "".toCharArray()); // Password here
+                InputStream ksStream = new FileInputStream( "C:\\Repos\\simple-as4-client\\as4-client\\src\\main\\resources\\security\\StaerkISC2ConfTestSi.jks"); // Your file here - or however you want to integrate your
+                //InputStream ksStream = new FileInputStream( "C:\\Repos\\simple-as4-client\\as4-client\\src\\main\\resources\\SDSharedTrader.jks"); // Your file here - or however you want to integrate your
+                store.load(ksStream, "Test1234".toCharArray()); // Password here
 
                 KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-                keyManagerFactory.init(store, "".toCharArray()); // Password here
+                keyManagerFactory.init(store, "Test1234".toCharArray()); // Password here
 
                 SSLContext context = SSLContext.getInstance("TLS");
                 context.init(keyManagerFactory.getKeyManagers(), null, new SecureRandom());
                 SSLSocketFactory sslSocketFactory = context.getSocketFactory();
 
+
+
                 HttpsURLConnection.setDefaultSSLSocketFactory(sslSocketFactory);
-                HttpsURLConnection.setDefaultHostnameVerifier(new TrustAllHosts());
-                HttpsURLConnection httpsConnection;
-                java.net.URL url = endpointURI.toURL();
-                httpsConnection = (HttpsURLConnection) url.openConnection();
-                httpsConnection.setHostnameVerifier(new TrustAllHosts());
-                httpsConnection.connect();
+                //HttpsURLConnection.setDefaultHostnameVerifier(new TrustAllHosts());
+                //HttpsURLConnection httpsConnection;
+                //java.net.URL url = endpointURI.toURL();
+                //httpsConnection = (HttpsURLConnection) url.openConnection();
+                //httpsConnection.setHostnameVerifier(new TrustAllHosts());
+                //httpsConnection.connect();
             }
-            else{
+            else {
+
+
                 TrustManager[] trustAllCerts = new TrustManager[]{
                         new X509TrustManager() {
                             public java.security.cert.X509Certificate[] getAcceptedIssuers() {
@@ -126,16 +132,17 @@ public class As4HttpClient {
                 httpsConnection = (HttpsURLConnection) url.openConnection();
                 httpsConnection.setHostnameVerifier(new TrustAllHosts());
                 httpsConnection.connect();
+
             }
 
         }
-
         SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory.newInstance();
         SOAPConnection soapConnection = new As4SecurityDecorator(
                 soapConnectionFactory.createConnection(), securityService);
 
         SOAPMessage soapMessage = createSOAPMessage(messaging, as4Message);
         return soapConnection.call(soapMessage, endpointURI.toURL());
+
     }
 
     private SOAPMessage createSOAPMessage(Messaging messaging, As4Message as4Message) throws Exception {

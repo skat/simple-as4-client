@@ -1,4 +1,5 @@
 package dk.toldst.eutk.as4client;
+import com.sun.xml.messaging.saaj.util.JAXMStreamSource;
 import dk.toldst.eutk.as4client.as4.As4DtoCreator;
 import dk.toldst.eutk.as4client.as4.As4HttpClient;
 import dk.toldst.eutk.as4client.as4.As4Message;
@@ -8,6 +9,8 @@ import org.apache.wss4j.common.util.XMLUtils;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+
+import com.sun.xml.messaging.saaj.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -128,7 +131,13 @@ public class As4ClientInstance implements As4Client {
         SOAPMessage soapMessage;
         try {
             soapMessage = as4HttpClient.sendRequest(messaging, as4Message);
-            return new String(soapMessage.getAttachments().next().getDataHandler().getInputStream().readAllBytes());
+            javax.xml.soap.SOAPPart part = soapMessage.getSOAPPart();
+            com.sun.xml.messaging.saaj.util.JAXMStreamSource sc = (JAXMStreamSource) part.getContent();
+
+            String a = new String(sc.getInputStream().readAllBytes());
+            int i = 0;
+            return a;
+            //return new String(soapMessage.getAttachments().next().getDataHandler().getInputStream().readAllBytes());
         } catch (Exception e) {
             throw new AS4Exception("Failed to send (or receive) message" , e);
         }

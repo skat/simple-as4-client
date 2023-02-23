@@ -1,20 +1,6 @@
 package dk.toldst.eutk.as4client.as4;
 
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.CollaborationInfo;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.From;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.MessageInfo;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.MessageProperties;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.PartInfo;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.PartProperties;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.PartyId;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.PartyInfo;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.PayloadInfo;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Property;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.PullRequest;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.SignalMessage;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.To;
-import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.UserMessage;
+import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.*;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -37,7 +23,9 @@ public class As4DtoCreator {
 
     public void setToParty(String toPartyIdentifier, String toPartyRole) {
         PartyId toParty = new PartyId();
-        toParty.setType("string");
+        //TODO: Hard coding this for testing purposes
+        toParty.setType("urn:oasis:names:tc:ebcore:partyid-type:unregistered:eu-customs:auth");
+        //toParty.setType("string");
         toParty.setValue(toPartyIdentifier);
 
         To to = new To();
@@ -49,7 +37,9 @@ public class As4DtoCreator {
 
     public void setFromParty(String fromPartyIdentifier, String fromPartyRole) {
         PartyId fromParty = new PartyId();
-        fromParty.setType("string");
+        //TODO: Hard coding this for testing purposes
+        fromParty.setType("urn:oasis:names:tc:ebcore:partyid-type:unregistered:eu-customs:EORI");
+        //fromParty.setType("string");
         fromParty.setValue(fromPartyIdentifier);
 
         From from = new From();
@@ -151,13 +141,19 @@ public class As4DtoCreator {
     private CollaborationInfo createCollaborationInfo(String service, String action, String conversationId) {
         org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Service serviceElement =
                 new org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Service();
-        serviceElement.setType("string");
+        //TODO: hardcoded
+        //serviceElement.setType("eu-customs-service-type");
         serviceElement.setValue(service);
 
         CollaborationInfo collaborationInfo = new CollaborationInfo();
         collaborationInfo.setAction(action);
         collaborationInfo.setService(serviceElement);
         collaborationInfo.setConversationId(conversationId);
+        //TODO: Hardcoded
+        AgreementRef agreementRef = new AgreementRef();
+        agreementRef.setValue("EU-ICS2-TI-V2.0");
+        agreementRef.setType("ics2-interface-version");
+        collaborationInfo.setAgreementRef(agreementRef);
 
         return collaborationInfo;
     }

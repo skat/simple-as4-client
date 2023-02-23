@@ -11,17 +11,41 @@ import java.util.Map;
 
 public class ExampleClient {
     public static void main(String[] args) throws AS4Exception {
-        As4Client client = SimpleTest();
-        SendAndPrintDeclarationExample(client);
-        //client.executePush("", "", null);
+        As4Client client = new As4ClientBuilderInstance().builder()
+                //.setEndpoint("https://customs.ec.europa.eu:8445/domibus/services/msh")
+                .setEndpoint("https://conformance.customs.ec.europa.eu:8445/domibus/services/msh")
+                //.setEndpoint("http://localhost:8384")
+                .setCrypto("security/eu2.properties")
+                .setPassword("")
+                .optionals()
+                .useCompression()
+                .useBinarySecurityToken()
+                .toParty("sti-taxud","Customs")
+                .fromParty("DK13116482", "Trader")
+
+                //.noSSL()
+                //.setAbsoluteURI("https://customs.ec.europa.eu:8445/domibus/services/msh")
+                .setAbsoluteURI("https://conformance.customs.ec.europa.eu:8445/domibus/services/msh")
+                //.setAbsoluteURI("http://localhost:8384")
+                .build();
+
+        String res = client.executePush(
+                "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/service",
+                "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/test",
+                null);
+
+        System.out.println(res);
+
+
+
+
+
+
+
 
         //while (true){
         //PullAndPrint(client);
         //}
-
-
-
-
         //SendAndPrintNotificationExample(client, "DMS.Import2");
         //SendAndPrintNotificationExample(client, "DMS.Import");
     }
@@ -95,9 +119,10 @@ public class ExampleClient {
     public static As4Client ICS2Client() throws AS4Exception {
         return new As4ClientBuilderInstance().builder()
                 .setEndpoint("https://customs.ec.europa.eu:8445/domibus/services/msh")
-                .setCrypto("security/as4crypto-holodeck.properties")
-                .setPassword("HBNRsvph68")
+                .setCrypto("security/eu.properties")
+                .setPassword("")
                 .optionals().useCompression().useBinarySecurityToken()
+                .setAbsoluteURI("https://customs.ec.europa.eu:8445/domibus/services/msh")
                 .build();
     }
 
