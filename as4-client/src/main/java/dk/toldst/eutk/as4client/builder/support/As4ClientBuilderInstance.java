@@ -244,17 +244,19 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
                             final String cvr = matcherSN.group(1);
                             userInformation = new As4UserInformation(As4UserInformationType.NID, null, cvr);
                         } else {
-                            matcherSN = Pattern.compile("SERIALNUMBER=UI:DK-E:C:(\\w+)").matcher(serialNumber);
+                            matcherSN = Pattern.compile("([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})").matcher(serialNumber);
                             if(matcherSN.find())
                             {
                                 final String uuid = matcherSN.group(1);
-                                matcherSN = Pattern.compile("ORD_ID=NTRDK-(\\w+)").matcher(serialNumber);
+                                matcherSN = Pattern.compile("O=UFST (\\w+)").matcher(serialNumber);
+                                matcherSN.find();
+                                int i = 0;
                                 final String cvr = matcherSN.group(1);
-                                userInformation = new As4UserInformation(As4UserInformationType.UUID, cvr, uuid);
+                                userInformation = new As4UserInformation(As4UserInformationType.UI, uuid, cvr );
                             }
                             else{
                                 // This is probably not an OCES certificate
-                                throw new AS4Exception("Could not find a supported OCES type (RID, UID, PID, FID or UUID) in the serial number: " + serialNumber);
+                                throw new AS4Exception("Could not find a supported OCES type (RID, UID, PID, FID or UI) in the serial number: " + serialNumber);
                             }
 
                         }

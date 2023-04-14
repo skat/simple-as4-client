@@ -63,14 +63,14 @@ public class ExampleClient {
         // Submitting a declaration
         String declaration = "";
         try{
-            declaration = new String(ExampleClient.class.getResourceAsStream("base.xml").readAllBytes() ) ;
+            declaration = new String(ExampleClient.class.getResourceAsStream("saga.xml").readAllBytes() ) ;
         }
         catch (IOException e){
         }
         var declarationBytes= declaration.getBytes(StandardCharsets.UTF_8);
 
-        var  declarationResult = client.executePush("DMS.Export2", "Declaration.Submit",
-                declarationBytes, "declaration.xml", Map.of("procedureType", "C1"));
+        var  declarationResult = client.executePush("DMS.Export", "Declaration.Submit",
+                declarationBytes, "declaration.xml", Map.of("procedureType", "B1"));
 
         StatusResponseType declarationStatus =  Tools.getStatus(declarationResult.getFirstAttachment());
         return declarationStatus;
@@ -85,8 +85,8 @@ public class ExampleClient {
         return new As4ClientBuilderInstance().builder()
                 .setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
                 //.setEndpoint("http://localhost:8384")
-                .setCrypto("security/as4crypto-holodeckSt.properties")
-                .setPassword("YDZYalux67")
+                .setCrypto("security/as4crypto-holodeck-saga.properties")
+                .setPassword("KTYTffxp82")
 
                 /*
                 .setCrypto("security/as4crypto-holodeck.properties")
