@@ -97,7 +97,8 @@ public class As4ClientInstance implements As4Client {
             as4Message.getAttachments().add(part);
         }
 
-        as4Message.setMessageProperties(messageProperties);
+        messageProperties = null;
+        //as4Message.setMessageProperties(messageProperties);
         Messaging messaging = as4DtoCreator.createMessaging(service, action, "placeholder", as4Message, messageId);
         As4ClientResponseDto as4ClientResponseDto = new As4ClientResponseDto();
 
