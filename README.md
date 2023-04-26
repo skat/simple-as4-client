@@ -57,7 +57,7 @@ Hit Ctrl+Alt+S, go to settings Languages and Frameworks, then under Schemas and 
 
 http://www.w3.org/2001/xml.xsd - %LocalPathToRepository%/simple-as4-client/XSDs/xml.xsd
 
-http://www.w3.org/2003/05/soap-envelope/ - %LocalPathToRepository%/simple-as4-client/XSDs/soap-envelope.xsd
+https://www.w3.org/2003/05/soap-envelope/ - %LocalPathToRepository%/simple-as4-client/XSDs/soap-envelope.xsd
 
 https://schemasxmlsoap.azurewebsites.net/soap/envelope/?WSDL - %LocalPathToRepository%/simple-as4-client/XSDs/schemasxmlsoap.xsd - 
 
