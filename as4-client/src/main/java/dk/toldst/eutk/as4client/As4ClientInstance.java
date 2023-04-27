@@ -97,8 +97,8 @@ public class As4ClientInstance implements As4Client {
             as4Message.getAttachments().add(part);
         }
 
-        messageProperties = null;
-        //as4Message.setMessageProperties(messageProperties);
+        //messageProperties = null;
+        as4Message.setMessageProperties(messageProperties);
         Messaging messaging = as4DtoCreator.createMessaging(service, action, "placeholder", as4Message, messageId);
         As4ClientResponseDto as4ClientResponseDto = new As4ClientResponseDto();
 
@@ -110,7 +110,6 @@ public class As4ClientInstance implements As4Client {
         } catch (Exception e) {
             throw new AS4Exception("Failed to send (or receive) message" , e);
         }
-
     }
 
     private As4Message.As4Part CreatePart(String message, String fileName) {

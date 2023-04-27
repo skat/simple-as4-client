@@ -5,7 +5,6 @@ import dk.toldst.eutk.as4client.builder.support.As4ClientBuilderInstance;
 import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import dk.toldst.eutk.as4client.utilities.Tools;
 
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -13,13 +12,13 @@ import java.util.UUID;
 
 public class ExampleClient {
     public static void main(String[] args) throws AS4Exception {
-        As4Client client = GetAs4ClientWithUser30808460();//SimpleTest();
+        As4Client client = SimpleTestTilo();
+        //As4Client client = GetAs4ClientWithUser30808460();
 
         //SendAndPrintNotificationExample(client, "DMS.Export2");
-        //PullsAndPrints(client);
 
         SendAndPrintDeclarationExample(client);
-
+        //PullsAndPrints(client);
 
         //SendAndPrintNotificationExample(client, "DMS.Import");
     }
@@ -43,7 +42,7 @@ public class ExampleClient {
 
     private static void SendAndPrintNotificationExample(As4Client client, String service) throws AS4Exception {
         String messageId = UUID.randomUUID().toString();
-        As4ClientResponseDto notificationResult = RetrieveNotificationExample(client, "DMS.Export2",messageId);
+        As4ClientResponseDto notificationResult = RetrieveNotificationExample(client, "DMS.Export",messageId);
         System.out.println("messageId: "+messageId+ "Result: " + notificationResult.getFirstAttachment());
     }
 
@@ -54,7 +53,7 @@ public class ExampleClient {
     private static As4ClientResponseDto RetrieveNotificationExample(As4Client client, String Service, String messageId) throws AS4Exception
     {
         As4ClientResponseDto as4ClientResponseDto = client.executePush(Service, "Notification",
-                Map.of("lang", "EN", "submitterId", "30808460", "dateFrom", "2022-03-22T12:30:00.000", "dateTo", "2022-03-22T12:35:00.000"), messageId); // "functionalReferenceId", "CBMFT-16927TFETest2")); //CBM011205 CBMFT-16927TFETest
+                Map.of("lang", "EN", "submitterId", "30808460", "dateFrom", "2023-04-18T08:30:00.000", "dateTo", "2023-04-18T18:35:00.000"), messageId); // "functionalReferenceId", "CBMFT-16927TFETest2")); //CBM011205 CBMFT-16927TFETest
                  //Map.of("lang", "EN", "submitterId", "30808460", "functionalReferenceId", "CBMTeamDemo01")); //  //CBMDuplicateTest CBMFT-16927TFETest
         return as4ClientResponseDto;
     }
@@ -63,13 +62,13 @@ public class ExampleClient {
         // Submitting a declaration
         String declaration = "";
         try{
-            declaration = new String(ExampleClient.class.getResourceAsStream("ie507.xml").readAllBytes() ) ;
+            declaration = new String(ExampleClient.class.getResourceAsStream("saga.xml").readAllBytes() ) ;
         }
         catch (IOException e){
         }
         var declarationBytes= declaration.getBytes(StandardCharsets.UTF_8);
 
-        var  declarationResult = client.executePush("DMS.Export2", "Declaration.ArrivalNotification",
+        var  declarationResult = client.executePush("DMS.Export", "Declaration.Submit",
                 declarationBytes, "declaration.xml", Map.of("procedureType", "B1"));
 
 
@@ -82,12 +81,30 @@ public class ExampleClient {
      * @return
      * @throws AS4Exception
      */
+
+    // 38977229
+    // 30808460
     public static As4Client SimpleTest() throws AS4Exception {
         return new As4ClientBuilderInstance().builder()
                 .setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
                 //.setEndpoint("http://localhost:8384")
                 .setCrypto("security/as4crypto-holodeck-saga.properties")
                 .setPassword("KTYTffxp82")
+
+                /*
+                .setCrypto("security/as4crypto-holodeck.properties")
+                .setPassword("HBNRsvph68")*/
+                //.optionals().noSSL()
+                .build();
+    }
+
+    // 13116482
+    public static As4Client SimpleTestTilo() throws AS4Exception {
+        return new As4ClientBuilderInstance().builder()
+                .setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
+                //.setEndpoint("http://localhost:8384")
+                .setCrypto("security/as4crypto-holodeck-tilo.properties")
+                .setPassword("SZXFbuht86")
 
                 /*
                 .setCrypto("security/as4crypto-holodeck.properties")
