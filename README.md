@@ -14,6 +14,10 @@ This is not an "out-of-the-box-solution" as our certificates and passwords are n
 
 <font size="5" color="red">**It is _not_ recommended to use this AS4 implementation for production environments**</font>
 
+## Contributions
+
+As of right now, we dont accept PRs for this project. This is due to the status and intention of the project.
+
 ## Quick start guide
 * Add the simple-as4-client dependency to your project.
 * Configure a Client using the ClientBuilder (builder pattern)
