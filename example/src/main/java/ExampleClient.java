@@ -18,7 +18,9 @@ public class ExampleClient {
         //SendAndPrintNotificationExample(client, "DMS.Export2");
         //PullsAndPrints(client);
 
-        SendAndPrintDeclarationExample(client);
+        SendAndPrintDocumentExample(client);
+
+       // SendAndPrintDeclarationExample(client);
 
 
         //SendAndPrintNotificationExample(client, "DMS.Import");
@@ -41,6 +43,10 @@ public class ExampleClient {
         System.out.println("Result: " + declarationStatus.getCode() + (declarationStatus.getMessage() != null ? " and message: " + declarationStatus.getMessage() : ""));
     }
 
+    private static void SendAndPrintDocumentExample(As4Client client) throws AS4Exception {
+        StatusResponseType declarationStatus = SubmitDocumentExample(client);
+        System.out.println("Result: " + declarationStatus.getCode() + (declarationStatus.getMessage() != null ? " and message: " + declarationStatus.getMessage() : ""));
+    }
     private static void SendAndPrintNotificationExample(As4Client client, String service) throws AS4Exception {
         String messageId = UUID.randomUUID().toString();
         As4ClientResponseDto notificationResult = RetrieveNotificationExample(client, "DMS.Export2",messageId);
@@ -63,14 +69,31 @@ public class ExampleClient {
         // Submitting a declaration
         String declaration = "";
         try{
-            declaration = new String(ExampleClient.class.getResourceAsStream("ie507.xml").readAllBytes() ) ;
+            declaration = new String(ExampleClient.class.getResourceAsStream("base.xml").readAllBytes() ) ;
         }
         catch (IOException e){
         }
         var declarationBytes= declaration.getBytes(StandardCharsets.UTF_8);
 
-        var  declarationResult = client.executePush("DMS.Export2", "Declaration.ArrivalNotification",
-                declarationBytes, "declaration.xml", Map.of("procedureType", "B1"));
+        var  declarationResult = client.executePush("DMS.Export2", "Declaration.Submit",
+                declarationBytes, "declaration.xml", Map.of("procedureType", "C1"));
+
+        StatusResponseType declarationStatus =  Tools.getStatus(declarationResult.getFirstAttachment());
+        return declarationStatus;
+    }
+
+    private static StatusResponseType SubmitDocumentExample(As4Client client) throws AS4Exception {
+        // Submitting a declaration
+        String declaration = "";
+        try{
+            declaration = new String(ExampleClient.class.getResourceAsStream("lrnsforSIT05.txt").readAllBytes() ) ;
+        }
+        catch (IOException e){
+        }
+        var declarationBytes= declaration.getBytes(StandardCharsets.UTF_8);
+
+        var  declarationResult = client.executeDocumentPush("DMS.Shared2", "Document.Upload", declarationBytes,
+                "lrnsforSIT05.txt", Map.of("fileName", "lrnsforSIT05.txt", "lrn", "EM230220232069", "additionalDocumentId", "weapons457", "goodsItemsSequenceNumeric", "1", "docType", "Y901", "docStructureType", "ADDITIONAL_REFERENCE_DOCUMENT"));
 
 
         StatusResponseType declarationStatus =  Tools.getStatus(declarationResult.getFirstAttachment());
