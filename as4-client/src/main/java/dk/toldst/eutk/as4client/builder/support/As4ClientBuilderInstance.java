@@ -132,9 +132,7 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
                         .getProperties(filepath, CryptoFactory.class.getClassLoader());
                 crypto = CryptoFactory.getInstance(cryptoProperties);
 
-                var certificates = new X509Certificate[] { (X509Certificate)(((Merlin) crypto).getKeyStore().getCertificate(cryptoProperties.getProperty("org.apache.wss4j.crypto.merlin.keystore.alias"))) };
-                var userInfo = mapCertificateToUserInformation(certificates);
-                username = mapUserInformationToUsernameString(userInfo);
+                setUsernameFromCertificate(crypto, cryptoProperties);
             } catch (WSSecurityException | KeyStoreException | AS4Exception e) {
                 throw new AS4Exception("Creating crypto and crypto properties failed" , e);
             }
@@ -144,15 +142,30 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
 
         /**
          * Use this to set the crypto, if your project has the ability to load resources.
-         * @param cryptoProps
-         * @return
+         * @param crypto The crypto object, supplying certificate and Private Key
+         * @param cryptoProperties Additional properties required for processing
+         * @return Next step in the builder pattern.
          */
+        @Override
+        public As4SetPasswordTokenDetails setCrypto(Merlin crypto, Properties cryptoProperties) throws AS4Exception {
+            try {
+                this.cryptoProperties = cryptoProperties;
+                this.crypto = crypto;
 
-        public As4SetPasswordTokenDetails setCrypto(Crypto cryptoProps) {
-            crypto = cryptoProps;
+                setUsernameFromCertificate(crypto, cryptoProperties);
+            } catch (KeyStoreException | AS4Exception e) {
+                throw new AS4Exception("Creating crypto and crypto properties failed" , e);
+            }
 
             as4SetUsernameTokenDetailsInstance = new As4SetPasswordTokenDetailsInstance();
             return as4SetUsernameTokenDetailsInstance;
+        }
+
+        private void setUsernameFromCertificate(Crypto crypto, Properties cryptoProperties) throws KeyStoreException, AS4Exception {
+            var certificates = new X509Certificate[] { (X509Certificate)(((Merlin) crypto).getKeyStore()
+                    .getCertificate(cryptoProperties.getProperty("org.apache.wss4j.crypto.merlin.keystore.alias"))) };
+            var userInfo = mapCertificateToUserInformation(certificates);
+            username = mapUserInformationToUsernameString(userInfo);
         }
     }
 
