@@ -1,8 +1,22 @@
-# simple-as4-client
-This repository contains the simple-as4 Client, made for the DMS project to help economical operators communicate with the AS4 gateway.
+# Simple-as4-client
+This repository contains the simple-as4 Client, made for the DMS project to help economical operators communicate with the AS4 gateway. 
 
-The public DMS project repository can be found here: <br/>
-[Public DMS Github Repository](https://github.com/skat/dms-public) <br/><br/>
+It is important to read section [How to use](#how-to-use)
+
+The public DMS project repository can be found here: [Public DMS Github Repository](https://github.com/skat/dms-public) <br/>
+
+## How to use
+As this is a **non-working** example of a AS4 client a couple of things have to be taken into consideration.
+
+This is only for testing purposes and is not supposed to be a solution for AS4 communication in an environment. The goal of this AS4 client is to only help you as a company to verify connectivity between your certificate and the AS4 gateway.
+
+This is not an "out-of-the-box-solution" as our certificates and passwords are not shared in any way or form. However, To test with your own certificates this has to be setup as noted in section [requirements.](#requirements)
+
+<font size="5" color="red">**It is _not_ recommended to use this AS4 implementation for production environments**</font>
+
+## Contributions
+
+As of right now, we dont accept PRs for this project. This is due to the status and intention of the project.
 
 ## Quick start guide
 * Add the simple-as4-client dependency to your project.
