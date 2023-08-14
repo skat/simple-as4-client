@@ -1,5 +1,9 @@
 package dk.toldst.eutk.as4client.as4;
 
+import dk.toldst.eutk.as4client.exceptions.AS4Exception;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +38,7 @@ public class As4Message {
     }
 
     public static class As4Part {
-        private String content;
+        private byte[] content;
         private Map<String, String> properties;
 
         private String id;
@@ -47,11 +51,15 @@ public class As4Message {
             this.id = id;
         }
 
-        public String getContent() {
+        public byte[] getContent() {
             return content;
         }
 
-        public void setContent(String content) {
+        public void setContent(String content)  {
+            setContent(content.getBytes(StandardCharsets.UTF_8));
+        }
+
+        public void setContent(byte[] content){
             this.content = content;
         }
 

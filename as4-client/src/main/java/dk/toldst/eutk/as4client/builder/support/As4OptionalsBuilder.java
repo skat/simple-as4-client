@@ -20,6 +20,10 @@ public class As4OptionalsBuilder implements As4Optionals {
     private URI uri;
     private boolean disableSSl = false;
 
+    private boolean useCompression = false;
+
+    private boolean useBinarySecurity = false;
+
     public As4OptionalsBuilder(As4ClientBuilder as4ClientBuilderInstance) {
         this.as4ClientBuilderInstance = as4ClientBuilderInstance;
     }
@@ -45,6 +49,18 @@ public class As4OptionalsBuilder implements As4Optionals {
     @Override
     public As4Optionals setUsername(String username) {
         this.username = username;
+        return this;
+    }
+
+    @Override
+    public As4Optionals useCompression() {
+        this.useCompression = true;
+        return this;
+    }
+
+    @Override
+    public As4Optionals useBinarySecurityToken() {
+        this.useBinarySecurity = true;
         return this;
     }
 
@@ -98,6 +114,15 @@ public class As4OptionalsBuilder implements As4Optionals {
         if(username != null){
             client.getAs4HttpClient().getSecurityService().setUsername(username);
         }
+
+        if(useCompression){
+            client.setCompression(useCompression);
+        }
+
+        if(useBinarySecurity){
+            client.getAs4HttpClient().getSecurityService().setUseBinary(useBinarySecurity);
+        }
+
         return client;
     }
 }

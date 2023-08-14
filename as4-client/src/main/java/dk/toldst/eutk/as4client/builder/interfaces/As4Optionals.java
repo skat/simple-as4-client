@@ -55,6 +55,10 @@ public interface As4Optionals {
     As4Optionals setAbsoluteURI(String uri) throws AS4Exception;
     As4Optionals setUsername(String username);
 
+    As4Optionals useCompression();
+
+    As4Optionals useBinarySecurityToken();
+
     /**
      * Calls the underlying build function on the builder object.
      * @return the client

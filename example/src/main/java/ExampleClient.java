@@ -1,39 +1,52 @@
 import dk.skat.mft.dms_declaration_status._1.StatusResponseType;
 import dk.toldst.eutk.as4client.As4Client;
-import dk.toldst.eutk.as4client.As4ClientResponseDto;
 import dk.toldst.eutk.as4client.builder.support.As4ClientBuilderInstance;
 import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import dk.toldst.eutk.as4client.utilities.Tools;
-
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.UUID;
 
 public class ExampleClient {
     public static void main(String[] args) throws AS4Exception {
-        As4Client client = SimpleTest();
+        As4Client client = new As4ClientBuilderInstance().builder()
+                //.setEndpoint("https://customs.ec.europa.eu:8445/domibus/services/msh")
+                .setEndpoint("https://conformance.customs.ec.europa.eu:8445/domibus/services/msh")
+                //.setEndpoint("https://147.67.18.14:8445/domibus/services/msh")
+                //.setEndpoint("http://localhost:8384")
+                .setCrypto("security/eu2.properties")
+                .setPassword("")
+                .optionals()
+                .useCompression()
+                .useBinarySecurityToken()
+                .toParty("sti-taxud","Customs")
+                .fromParty("DK13116482", "Trader")
 
-        //SendAndPrintNotificationExample(client, "DMS.Export2");
-        //PullsAndPrints(client);
+                //.noSSL()
+                //.setAbsoluteURI("https://customs.ec.europa.eu:8445/domibus/services/msh")
+                .setAbsoluteURI("https://conformance.customs.ec.europa.eu:8445/domibus/services/msh")
+                //.setAbsoluteURI("https://147.67.18.14:8445/domibus/services/msh")
+                //.setAbsoluteURI("http://localhost:8384")
+                .build();
+        
+        String res = client.executePush(
+                "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/service",
+                "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/test",
+                null);
 
-        SendAndPrintDeclarationExample(client);
+        System.out.println(res);
 
-
+        //while (true){
+        //PullAndPrint(client);
+        //}
+        //SendAndPrintNotificationExample(client, "DMS.Import2");
         //SendAndPrintNotificationExample(client, "DMS.Import");
     }
 
-    private static void PullsAndPrints(As4Client client) throws AS4Exception {
-        while (true) {
-            As4ClientResponseDto pullResponse = client.executePull();
-            System.out.println("ReftoOriginalID: " + pullResponse.getReftoOriginalID()+ " FirstAttachment: " + pullResponse.getFirstAttachment());
-
-            if (pullResponse.getReftoOriginalID() == null){
-                break;
-            }
-        }
-
+    private static void PullAndPrint(As4Client client) throws AS4Exception {
+        String pullResponse = client.executePull();
+        System.out.println("Result: " + pullResponse);
     }
 
     private static void SendAndPrintDeclarationExample(As4Client client) throws AS4Exception {
@@ -42,37 +55,38 @@ public class ExampleClient {
     }
 
     private static void SendAndPrintNotificationExample(As4Client client, String service) throws AS4Exception {
-        String messageId = UUID.randomUUID().toString();
-        As4ClientResponseDto notificationResult = RetrieveNotificationExample(client, "DMS.Export2",messageId);
-        System.out.println("messageId: "+messageId+ "Result: " + notificationResult.getFirstAttachment());
+        String notificationResult = RetrieveNotificationExample(client, service);
+        System.out.println("Result: " + notificationResult);
     }
 
     private static void SendAndPrintNotificationExample(As4Client client) throws AS4Exception {
-        SendAndPrintNotificationExample(client, "DMS.Export2");
+        SendAndPrintNotificationExample(client, "DMS.Import2");
     }
 
-    private static As4ClientResponseDto RetrieveNotificationExample(As4Client client, String Service, String messageId) throws AS4Exception
-    {
-        As4ClientResponseDto as4ClientResponseDto = client.executePush(Service, "Notification",
-                 Map.of("lang", "EN", "submitterId", "30808460", "dateFrom", "2022-03-22T12:30:00.000", "dateTo", "2022-03-22T12:35:00.000"),messageId ); // "functionalReferenceId", "CBMFT-16927TFETest2")); //CBM011205 CBMFT-16927TFETest
+    private static String RetrieveNotificationExample(As4Client client) throws AS4Exception {
+        return RetrieveNotificationExample(client, "DMS.Import2");
+    }
+
+    private static String RetrieveNotificationExample(As4Client client, String Service) throws AS4Exception {
+        String notificationResult = client.executePush(Service, "Notification",
+                 Map.of("lang", "EN", "submitterId", "30808460", "dateFrom", "2022-09-22T10:30:00.000", "dateTo", "2022-09-22T14:00:00.000")); // "functionalReferenceId", "CBMFT-16927TFETest2")); //CBM011205 CBMFT-16927TFETest
                  //Map.of("lang", "EN", "submitterId", "30808460", "functionalReferenceId", "CBMTeamDemo01")); //  //CBMDuplicateTest CBMFT-16927TFETest
-        return as4ClientResponseDto;
+        return notificationResult;
     }
 
     private static StatusResponseType SubmitDeclarationExample(As4Client client) throws AS4Exception {
         // Submitting a declaration
         String declaration = "";
         try{
-            declaration = new String(ExampleClient.class.getResourceAsStream("base.xml").readAllBytes() ) ;
+            declaration = new String(ExampleClient.class.getResourceAsStream("smoke.xml").readAllBytes() ) ;
         }
         catch (IOException e){
+
         }
-        var declarationBytes= declaration.getBytes(StandardCharsets.UTF_8);
+        String action =  "Declaration.Submit";
+        String declarationResult = client.executePush("DMS.Import2", action, declaration.getBytes(StandardCharsets.UTF_8), Map.of("procedureType", "H7"));
 
-        var  declarationResult = client.executePush("DMS.Export2", "Declaration.Submit",
-                declarationBytes, "declaration.xml", Map.of("procedureType", "C1"));
-
-        StatusResponseType declarationStatus =  Tools.getStatus(declarationResult.getFirstAttachment());
+        StatusResponseType declarationStatus =  Tools.getStatus(declarationResult);
         return declarationStatus;
     }
 
@@ -91,7 +105,18 @@ public class ExampleClient {
                 /*
                 .setCrypto("security/as4crypto-holodeck.properties")
                 .setPassword("HBNRsvph68")*/
-                //.optionals().noSSL()
+
+
+                .build();
+    }
+
+    public static As4Client ICS2Client() throws AS4Exception {
+        return new As4ClientBuilderInstance().builder()
+                .setEndpoint("https://customs.ec.europa.eu:8445/domibus/services/msh")
+                .setCrypto("security/eu.properties")
+                .setPassword("")
+                .optionals().useCompression().useBinarySecurityToken()
+                .setAbsoluteURI("https://customs.ec.europa.eu:8445/domibus/services/msh")
                 .build();
     }
 
@@ -116,7 +141,4 @@ public class ExampleClient {
                 .setUsername("CVR_13116482_UID_50151991")
                 .build();
     }
-
-
-
 }

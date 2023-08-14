@@ -158,10 +158,10 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
 
     //Endpoint -> Crypto
     private class As4SetEndpointInstance implements As4SetEndpoint {
-        private java.net.URI urlBase;
+        private URI urlBase;
 
         @Override
-        public As4SetCrypto setEndpoint(java.net.URI url) {
+        public As4SetCrypto setEndpoint(URI url) {
             this.urlBase = url;
             as4SetCryptoInstance = new As4SetCryptoInstance();
             return as4SetCryptoInstance;
