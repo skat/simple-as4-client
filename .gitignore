@@ -12,3 +12,4 @@ example/bin/main/ExampleClient.class
 as4-client/bin/
 gradle/
 security/
+/as4-client/src/main/resources/SDSharedTrader.jks
