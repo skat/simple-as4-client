@@ -18,9 +18,9 @@ public class ExampleClient {
         //SendAndPrintNotificationExample(client, "DMS.Export2");
         //PullsAndPrints(client);
 
-        SendAndPrintDocumentExample(client);
+        //SendAndPrintDocumentExample(client);
 
-       // SendAndPrintDeclarationExample(client);
+        SendAndPrintDeclarationExample(client);
 
 
         //SendAndPrintNotificationExample(client, "DMS.Import");
@@ -76,7 +76,7 @@ public class ExampleClient {
         var declarationBytes= declaration.getBytes(StandardCharsets.UTF_8);
 
         var  declarationResult = client.executePush("DMS.Export2", "Declaration.Submit",
-                declarationBytes, "declaration.xml", Map.of("procedureType", "C1"));
+                declarationBytes, "base.xml", Map.of("procedureType", "B1"));
 
         StatusResponseType declarationStatus =  Tools.getStatus(declarationResult.getFirstAttachment());
         return declarationStatus;
