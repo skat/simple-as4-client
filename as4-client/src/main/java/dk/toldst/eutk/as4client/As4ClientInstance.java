@@ -146,8 +146,6 @@ public class As4ClientInstance implements As4Client {
         As4Message.As4Part part = new As4Message.As4Part();
         part.setContent(message);
         part.setProperties(Collections.singletonMap("original-file-name", file));
-       // part.setProperties(Collections.singletonMap("fileName", ));
-
         return part;
     }
 

@@ -56,8 +56,6 @@ public class As4ClientBuilderInstance implements As4ClientBuilder {
             throw new AS4Exception("Failed to establish JAXBContext" , e);
         }
 
-        //as4SetCryptoInstance.username = "CVR_38977229_UI_37cf741a-e9e1-4482-b42d-8c95d5c01df9";
-
         SecurityService securityService = new SecurityService(
                 as4SetCryptoInstance.username,
                 as4SetUsernameTokenDetailsInstance.password,
