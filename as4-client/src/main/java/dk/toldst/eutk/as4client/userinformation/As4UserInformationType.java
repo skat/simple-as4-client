@@ -7,5 +7,5 @@ package dk.toldst.eutk.as4client.userinformation;
  */
 
 public enum As4UserInformationType {
-    RID, UID, PID, FID, NID
+    RID, UID, PID, FID, NID, UI
 }
