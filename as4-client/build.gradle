@@ -8,7 +8,7 @@ plugins {
 
 group 'io.github.skat'
 archivesBaseName = "as4-client"
-version '2.0.0'
+version '2.1.0'
 
 repositories {
     mavenCentral()
@@ -47,7 +47,7 @@ publishing {
 
 xjc {
     bindingFiles = project.files("$projectDir/src/main/resources/bindings/binding.xjb")
-    xjcVersion.set("2.3.3")
+    //xjcVersion.set("2.3.3")
     //outputJavaDir "here"
 
 }
@@ -70,10 +70,20 @@ signing {
     sign configurations.archives
 }
 
-uploadArchives {
+//This step is required in order to deploy maven package through Sonotype, don't touch!
+/*uploadArchives {
     repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+
+            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
 
             pom.project {
                 name 'AS4 Client'
@@ -105,7 +115,7 @@ uploadArchives {
             }
         }
     }
-}
+}*/
 
 
 test {

@@ -14,8 +14,8 @@
 		</xsd:documentation>
 	</xsd:annotation>
 	<xsd:import namespace="http://www.w3.org/XML/1998/namespace"
-			   schemaLocation="http://www.w3.org/2001/xml.xsd"/>
-	<xsd:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="https://schemasxmlsoap.azurewebsites.net/soap/envelope/?WSDL"/>
+				schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+	<xsd:import namespace="http://schemas.xmlsoap.org/soap/envelope/" schemaLocation="https://schemas.xmlsoap.org/soap/envelope/"/>
 	<xsd:import namespace="http://www.w3.org/2003/05/soap-envelope" schemaLocation="https://www.w3.org/2003/05/soap-envelope/"/>
 	<xsd:element name="Messaging" type="Messaging"/>
 	<xsd:complexType name="Messaging">
