@@ -8,6 +8,7 @@ import dk.toldst.eutk.as4client.utilities.Tools;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
@@ -109,8 +110,10 @@ public class ExampleClient {
      */
     public static As4Client SimpleTest() throws AS4Exception {
         Properties prop = new Properties();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
-            prop.load(new FileInputStream("security/certificatePassword.properties"));
+            InputStream stream = loader.getResourceAsStream("security/certificatePassword.properties");
+            prop.load(stream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -131,8 +134,10 @@ public class ExampleClient {
      */
     public static As4Client AdvancedTest() throws AS4Exception {
         Properties prop = new Properties();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
-            prop.load(new FileInputStream("security/certificatePassword.properties"));
+            InputStream stream = loader.getResourceAsStream("security/certificatePassword.properties");
+            prop.load(stream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -152,8 +157,10 @@ public class ExampleClient {
 
     public static As4Client GetAs4ClientWithUser30808460() throws AS4Exception {
         Properties prop = new Properties();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
-            prop.load(new FileInputStream("security/certificatePassword.properties"));
+            InputStream stream = loader.getResourceAsStream("security/certificatePassword.properties");
+            prop.load(stream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
