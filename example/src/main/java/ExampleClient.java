@@ -6,9 +6,11 @@ import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import dk.toldst.eutk.as4client.utilities.Tools;
 
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 public class ExampleClient {
@@ -106,16 +108,17 @@ public class ExampleClient {
      * @throws AS4Exception
      */
     public static As4Client SimpleTest() throws AS4Exception {
+        Properties prop = new Properties();
+        try {
+            prop.load(new FileInputStream("security/certificatePassword.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return new As4ClientBuilderInstance().builder()
                 .setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
                 //.setEndpoint("http://localhost:8384")
                 .setCrypto("security/as4crypto-holodeck-saga.properties")
-                .setPassword("KTYTffxp82")
-
-                /*
-                .setCrypto("security/as4crypto-holodeck.properties")
-                .setPassword("HBNRsvph68")*/
-                //.optionals().noSSL()
+                .setPassword(prop.getProperty("simpleTestPassword"))
                 .build();
     }
 
@@ -127,10 +130,16 @@ public class ExampleClient {
      * @throws AS4Exception
      */
     public static As4Client AdvancedTest() throws AS4Exception {
+        Properties prop = new Properties();
+        try {
+            prop.load(new FileInputStream("security/certificatePassword.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return new As4ClientBuilderInstance().builder()
                 .setEndpoint("http://wrongurlfortest.com:8384")
                 .setCrypto("security/as4crypto-holodeck.properties")
-                .setPassword("HBNRsvph68")
+                .setPassword(prop.getProperty("advancedTestPassword"))
                 .optionals()
                 .noSSL()
                 .fromParty("CVR_13116482_UID_50151991" + "_AS4", "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator")
@@ -142,12 +151,16 @@ public class ExampleClient {
     }
 
     public static As4Client GetAs4ClientWithUser30808460() throws AS4Exception {
+        Properties prop = new Properties();
+        try {
+            prop.load(new FileInputStream("security/certificatePassword.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return new As4ClientBuilderInstance().builder()
                 .setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
-                //.setEndpoint("http://localhost:8384")
-                //	CVR_30808460_UID_25351738
                 .setCrypto("security/as4crypto-holodeckSt.properties")
-                .setPassword("YDZYalux67")
+                .setPassword(prop.getProperty("Client30808460Password"))
                 .build();
     }
 
