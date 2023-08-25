@@ -1,5 +1,6 @@
 import dk.skat.mft.dms_declaration_status._1.StatusResponseType;
 import dk.toldst.eutk.as4client.As4Client;
+import dk.toldst.eutk.as4client.As4ClientResponseDto;
 import dk.toldst.eutk.as4client.builder.support.As4ClientBuilderInstance;
 import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import dk.toldst.eutk.as4client.utilities.Tools;
@@ -30,7 +31,7 @@ public class ExampleClient {
                 //.setAbsoluteURI("http://localhost:8384")
                 .build();
         
-        String res = client.executePush(
+        As4ClientResponseDto res = client.executePush(
                 "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/service",
                 "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/test",
                 null);
@@ -45,7 +46,7 @@ public class ExampleClient {
     }
 
     private static void PullAndPrint(As4Client client) throws AS4Exception {
-        String pullResponse = client.executePull();
+        As4ClientResponseDto pullResponse = client.executePull();
         System.out.println("Result: " + pullResponse);
     }
 
@@ -55,7 +56,7 @@ public class ExampleClient {
     }
 
     private static void SendAndPrintNotificationExample(As4Client client, String service) throws AS4Exception {
-        String notificationResult = RetrieveNotificationExample(client, service);
+        As4ClientResponseDto notificationResult = RetrieveNotificationExample(client, service);
         System.out.println("Result: " + notificationResult);
     }
 
@@ -63,12 +64,12 @@ public class ExampleClient {
         SendAndPrintNotificationExample(client, "DMS.Import2");
     }
 
-    private static String RetrieveNotificationExample(As4Client client) throws AS4Exception {
+    private static As4ClientResponseDto RetrieveNotificationExample(As4Client client) throws AS4Exception {
         return RetrieveNotificationExample(client, "DMS.Import2");
     }
 
-    private static String RetrieveNotificationExample(As4Client client, String Service) throws AS4Exception {
-        String notificationResult = client.executePush(Service, "Notification",
+    private static As4ClientResponseDto RetrieveNotificationExample(As4Client client, String Service) throws AS4Exception {
+        As4ClientResponseDto notificationResult = client.executePush(Service, "Notification",
                  Map.of("lang", "EN", "submitterId", "30808460", "dateFrom", "2022-09-22T10:30:00.000", "dateTo", "2022-09-22T14:00:00.000")); // "functionalReferenceId", "CBMFT-16927TFETest2")); //CBM011205 CBMFT-16927TFETest
                  //Map.of("lang", "EN", "submitterId", "30808460", "functionalReferenceId", "CBMTeamDemo01")); //  //CBMDuplicateTest CBMFT-16927TFETest
         return notificationResult;
@@ -84,9 +85,9 @@ public class ExampleClient {
 
         }
         String action =  "Declaration.Submit";
-        String declarationResult = client.executePush("DMS.Import2", action, declaration.getBytes(StandardCharsets.UTF_8), Map.of("procedureType", "H7"));
+        As4ClientResponseDto declarationResult = client.executePush("DMS.Import2", action, declaration.getBytes(StandardCharsets.UTF_8), Map.of("procedureType", "H7"));
 
-        StatusResponseType declarationStatus =  Tools.getStatus(declarationResult);
+        StatusResponseType declarationStatus =  Tools.getStatus(declarationResult.getFirstAttachment());
         return declarationStatus;
     }
 

@@ -1,4 +1,5 @@
 package dk.toldst.eutk.as4client;
+import com.sun.xml.messaging.saaj.util.JAXMStreamSource;
 import dk.toldst.eutk.as4client.as4.As4DtoCreator;
 import dk.toldst.eutk.as4client.as4.As4HttpClient;
 import dk.toldst.eutk.as4client.as4.As4Message;
@@ -25,6 +26,7 @@ import javax.xml.xpath.XPathFactory;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import dk.toldst.eutk.as4client.as4.Compression;
 
 public class As4ClientInstance implements As4Client {
 
@@ -71,6 +73,11 @@ public class As4ClientInstance implements As4Client {
     @Override
     public As4ClientResponseDto executePush(String service, String action, byte[] message, Map<String, String> messageProperties, String messageId) throws AS4Exception {
         return executePush(service, action, new String(message, StandardCharsets.UTF_8), "Declaration.xml", messageProperties, messageId);
+    }
+
+    @Override
+    public As4ClientResponseDto executeDocumentPush(String service, String action, byte[] message, String file, Map<String, String> messageProperties) throws AS4Exception {
+        return null;
     }
 
     @Override
@@ -140,7 +147,7 @@ public class As4ClientInstance implements As4Client {
                     throw new AS4Exception("Compression failed");
                 }
             }
-            As4Message.As4Part part = CreatePart(messageBytes);
+            As4Message.As4Part part = CreatePart(messageBytes, "placeholder".getBytes());
             as4Message.getAttachments().add(part);
         }
 
@@ -156,7 +163,8 @@ public class As4ClientInstance implements As4Client {
 
             String a = new String(sc.getInputStream().readAllBytes());
             int i = 0;
-            return a;
+
+            return new As4ClientResponseDto();
             //return new String(soapMessage.getAttachments().next().getDataHandler().getInputStream().readAllBytes());
         } catch (Exception e) {
             throw new AS4Exception("Failed to send (or receive) message" , e);
@@ -166,25 +174,30 @@ public class As4ClientInstance implements As4Client {
     private As4ClientResponseDto internalDocumentPush(String service, String action, String message, String file, Map<String, String> messageProperties, Boolean includeAttachment, String messageId ) throws AS4Exception {
         As4Message as4Message = new As4Message();
 
-        if(includeAttachment)
-        {
+        if (includeAttachment) {
             As4Message.As4Part part = CreatePart(message, file);
             as4Message.getAttachments().add(part);
         }
+        //TODO: Fix
+        return null;
+    }
 
 
-
-    private As4Message.As4Part CreatePart(byte[] message) throws AS4Exception {
+    private As4Message.As4Part CreatePart(byte[] message, byte[] file) throws AS4Exception {
         As4Message.As4Part part = new As4Message.As4Part();
         part.setContent(message);
         if(compression){
             part.setProperties(Map.of("MimeType", "application/xml", "CharacterSet", "utf-8", "CompressionType", "application/gzip"));
         }
         else{
-            part.setProperties(Collections.singletonMap("original-file-name", "declaration.xml"));
+            part.setProperties(Collections.singletonMap("original-file-name", new String(file, StandardCharsets.UTF_8)));
         }
 
         return part;
+    }
+
+    private As4Message.As4Part CreatePart(String message, String file) throws AS4Exception {
+        return CreatePart(message.getBytes(), file.getBytes());
     }
 
 
@@ -208,13 +221,15 @@ public class As4ClientInstance implements As4Client {
         try {
             soapMessage = as4HttpClient.sendRequest(messaging, new As4Message());
             SOAPHeader header = soapMessage.getSOAPHeader();
-            String reftoOriginalID =  tryGetReftoOriginalID(soapMessage);
+            //String reftoOriginalID =  tryGetReftoOriginalID(soapMessage);
 
             //Rewrite using Yammer feedback - Remove Index Offsets
             // getNode(header.getOwnerDocument(), "")
             String reftoOriginalID =  header.getElementsByTagNameNS("*","Property").
                     item(0).getChildNodes().item(0).getNodeValue();
-            return reftoOriginalID +  new String(soapMessage.getAttachments().next().getDataHandler().getInputStream().readAllBytes());
+            String a = reftoOriginalID +  new String(soapMessage.getAttachments().next().getDataHandler().getInputStream().readAllBytes());
+            return new As4ClientResponseDto();
+
         } catch (Exception e) {
             String debugMessage = null;
             try {
