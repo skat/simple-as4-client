@@ -77,7 +77,9 @@ public class As4ClientInstance implements As4Client {
 
     @Override
     public As4ClientResponseDto executeDocumentPush(String service, String action, byte[] message, String file, Map<String, String> messageProperties) throws AS4Exception {
-        return null;
+        String messageId = UUID.randomUUID().toString();
+        return internalDocumentPush(service, action, new String(message, StandardCharsets.UTF_8), file, messageProperties, false, messageId);
+
     }
 
     @Override
@@ -163,8 +165,10 @@ public class As4ClientInstance implements As4Client {
 
             String a = new String(sc.getInputStream().readAllBytes());
             int i = 0;
+            var ret = new As4ClientResponseDto();
+            ret.setFirstAttachment(a);
 
-            return new As4ClientResponseDto();
+            return ret;
             //return new String(soapMessage.getAttachments().next().getDataHandler().getInputStream().readAllBytes());
         } catch (Exception e) {
             throw new AS4Exception("Failed to send (or receive) message" , e);

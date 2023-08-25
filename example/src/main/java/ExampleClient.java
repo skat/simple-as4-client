@@ -16,7 +16,7 @@ public class ExampleClient {
                 .setEndpoint("https://conformance.customs.ec.europa.eu:8445/domibus/services/msh")
                 //.setEndpoint("https://147.67.18.14:8445/domibus/services/msh")
                 //.setEndpoint("http://localhost:8384")
-                .setCrypto("security/eu2.properties")
+                .setCrypto("security/eu3.properties")
                 .setPassword("")
                 .optionals()
                 .useCompression()
@@ -36,7 +36,7 @@ public class ExampleClient {
                 "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/test",
                 null);
 
-        System.out.println(res);
+        System.out.println(res.getFirstAttachment());
 
         //while (true){
         //PullAndPrint(client);
