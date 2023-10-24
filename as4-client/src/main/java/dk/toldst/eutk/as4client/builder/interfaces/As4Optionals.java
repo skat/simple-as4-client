@@ -24,20 +24,27 @@ public interface As4Optionals {
 
     /**
      * Overrides the toParty - defaults to SKAT-MFT-AS4
+     *
      * @param toPartyName
      * @param toPartyRole
+     * @param toPartyType
      * @return
      */
+    As4Optionals toParty(String toPartyName, String toPartyRole, String toPartyType);
+
     As4Optionals toParty(String toPartyName, String toPartyRole);
 
     /**
      * Overrides the fromParty - defaults to certificate CVR and RID.
+     *
      * @param fromParty
      * @param fromPartyRole
+     * @param fromPartyType
      * @return
      */
-    As4Optionals fromParty(String fromParty, String fromPartyRole);
+    As4Optionals fromParty(String fromParty, String fromPartyRole, String fromPartyType);
 
+    As4Optionals fromParty(String fromParty, String fromPartyRole);
 
     /**
      * Sets the absolute URI of the client.

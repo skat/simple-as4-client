@@ -7,20 +7,13 @@ import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import org.apache.wss4j.common.util.XMLUtils;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-
-import com.sun.xml.messaging.saaj.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import javax.xml.namespace.QName;
-import javax.xml.soap.Name;
-import javax.xml.soap.SOAPBody;
 import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.util.*;
@@ -54,6 +47,10 @@ public class As4ClientInstance implements As4Client {
         this.as4HttpClient = as4HttpClient;
     }
 
+    @Override
+    public As4ClientResponseDto executePush(String serviceValue, String serviceType, String action, byte[] message, Map<String, String> messageProperties) throws AS4Exception {
+        return executePush(serviceValue, serviceType, action, new String(message, StandardCharsets.UTF_8), "declaration.xml", messageProperties);
+    }
     @Override
     public As4ClientResponseDto executePush(String service, String action, byte[] message, Map<String, String> messageProperties) throws AS4Exception {
         return executePush(service, action, new String(message, StandardCharsets.UTF_8), "declaration.xml", messageProperties);
@@ -100,8 +97,13 @@ public class As4ClientInstance implements As4Client {
 
     @Override
     public As4ClientResponseDto executePush(String service, String action, String message, String fileName, Map<String, String> messageProperties) throws AS4Exception {
+        return executePush(service, "", action, message, fileName, messageProperties);
+    }
+
+    @Override
+    public As4ClientResponseDto executePush(String serviceValue, String serviceType, String action, String message, String fileName, Map<String, String> messageProperties) throws AS4Exception {
         String messageId = UUID.randomUUID().toString();
-        return internalPush(service, action, message, fileName, messageProperties, true, messageId);
+        return internalPush(serviceValue, serviceType, action, message, fileName, messageProperties, true, messageId);
     }
 
     @Override
@@ -115,13 +117,18 @@ public class As4ClientInstance implements As4Client {
         return internalPush(service, action, "", "Declaration.xml", messageProperties, false, messageId);
     }
 
+
     private As4ClientResponseDto internalPush(String service, String action, String message, String fileName, Map<String, String> messageProperties, Boolean includeAttachment, String messageId ) throws AS4Exception {
+        return internalPush(service, "", action, message, fileName, messageProperties,includeAttachment, messageId);
+    }
+
+    private As4ClientResponseDto internalPush(String serviceValue, String serviceType, String action, String message, String fileName, Map<String, String> messageProperties, Boolean includeAttachment, String messageId ) throws AS4Exception {
         As4Message as4Message = new As4Message();
-        byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
+        byte[] messageBytes;
         if(includeAttachment) {
             if(compression){
 
-                byte[] data = messageBytes;
+                byte[] data = message.getBytes(StandardCharsets.UTF_8);
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 ByteArrayOutputStream os2 = new ByteArrayOutputStream();
 
@@ -149,12 +156,16 @@ public class As4ClientInstance implements As4Client {
                     throw new AS4Exception("Compression failed");
                 }
             }
+            else {
+                messageBytes = message.getBytes(StandardCharsets.UTF_8);
+            }
             As4Message.As4Part part = CreatePart(messageBytes, "placeholder".getBytes());
             as4Message.getAttachments().add(part);
         }
 
+
         as4Message.setMessageProperties(messageProperties);
-        Messaging messaging = as4DtoCreator.createMessaging(service, action, "placeholder", as4Message, messageId);
+        Messaging messaging = as4DtoCreator.createMessaging(serviceValue, serviceType, action, "placeholder", as4Message, messageId);
         As4ClientResponseDto as4ClientResponseDto = new As4ClientResponseDto();
 
         SOAPMessage soapMessage;
@@ -173,7 +184,9 @@ public class As4ClientInstance implements As4Client {
         } catch (Exception e) {
             throw new AS4Exception("Failed to send (or receive) message" , e);
         }
+
     }
+
 
     private As4ClientResponseDto internalDocumentPush(String service, String action, String message, String file, Map<String, String> messageProperties, Boolean includeAttachment, String messageId ) throws AS4Exception {
         As4Message as4Message = new As4Message();

@@ -14,8 +14,10 @@ public class As4OptionalsBuilder implements As4Optionals {
     private String actor;
     private String toPartyIdentifier;
     private String toPartyRole;
+    private String toPartyType;
     private String fromPartyIdentifier;
     private String fromPartyRole;
+    private String fromPartyType;
     private String username;
     private URI uri;
     private boolean disableSSl = false;
@@ -23,6 +25,7 @@ public class As4OptionalsBuilder implements As4Optionals {
     private boolean useCompression = false;
 
     private boolean useBinarySecurity = false;
+
 
     public As4OptionalsBuilder(As4ClientBuilder as4ClientBuilderInstance) {
         this.as4ClientBuilderInstance = as4ClientBuilderInstance;
@@ -77,17 +80,28 @@ public class As4OptionalsBuilder implements As4Optionals {
     }
 
     @Override
-    public As4Optionals toParty(String toPartyName, String toPartyRole) {
+    public As4Optionals toParty(String toPartyName, String toPartyRole, String toPartyType) {
         this.toPartyIdentifier = toPartyName;
         this.toPartyRole = toPartyRole;
+        this.toPartyType = toPartyType;
         return this;
     }
 
     @Override
-    public As4Optionals fromParty(String fromPartyName, String fromPartyRole) {
+    public As4Optionals fromParty(String fromPartyName, String fromPartyRole, String fromPartyType) {
         this.fromPartyIdentifier = fromPartyName;
         this.fromPartyRole = fromPartyRole;
+        this.fromPartyType = fromPartyType;
         return this;
+    }
+
+    @Override
+    public As4Optionals toParty(String toPartyName, String toPartyRole) {
+        return toParty(toPartyName, toPartyRole, "");
+    }
+    @Override
+    public As4Optionals fromParty(String fromPartyName, String fromPartyRole) {
+        return fromParty(fromPartyName, fromPartyRole, "");
     }
 
     @Override
@@ -103,10 +117,10 @@ public class As4OptionalsBuilder implements As4Optionals {
             client.getAs4HttpClient().getSecurityService().setActor(actor);
         }
         if(fromPartyIdentifier != null && fromPartyRole != null){
-            client.getAs4DtoCreator().setFromParty(fromPartyIdentifier, fromPartyRole);
+            client.getAs4DtoCreator().setFromParty(fromPartyIdentifier, fromPartyRole, fromPartyType);
         }
         if(toPartyIdentifier != null && toPartyRole != null){
-            client.getAs4DtoCreator().setToParty(toPartyIdentifier, toPartyRole);
+            client.getAs4DtoCreator().setToParty(toPartyIdentifier, toPartyRole, toPartyType);
         }
         if(uri != null){
             client.getAs4HttpClient().setEndpointURI(uri);

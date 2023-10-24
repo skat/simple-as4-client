@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.apache.wss4j.common.WSS4JConstants.ELEM_BODY;
 import static org.apache.wss4j.common.WSS4JConstants.URI_SOAP12_ENV;
@@ -101,8 +103,7 @@ public class SecurityService {
             WSSecHeader secHeader = new WSSecHeader(soapMessage.getSOAPHeader().getOwnerDocument());
 
             secHeader.insertSecurityHeader();
-
-
+            
             AttachmentCallbackHandler attachmentCallback = createAttachmentCallback(soapMessage.getAttachments());
 
             WSSecSignature wsSecSignature = new WSSecSignature(secHeader);
@@ -110,6 +111,7 @@ public class SecurityService {
 
             wsSecSignature.setAttachmentCallbackHandler(attachmentCallback);
             wsSecSignature.getParts().addAll(getPartsToSign(usernameTokenId));
+
             wsSecSignature.build(crypto);
 
 

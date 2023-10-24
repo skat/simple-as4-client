@@ -18,6 +18,9 @@ public interface As4Client {
     As4ClientResponseDto executePush(String service, String action, String message, String file, Map<String, String> messageProperties, String messageId ) throws AS4Exception;
     As4ClientResponseDto executePush(String service, String action, String message, Map<String, String> messageProperties, String messageId ) throws AS4Exception;
     As4ClientResponseDto executePush(String service, String action, String message, String file, Map<String, String> messageProperties) throws AS4Exception;
+
+    As4ClientResponseDto executePush(String serviceValue, String serviceType, String action, String message, String fileName, Map<String, String> messageProperties) throws AS4Exception;
+
     As4ClientResponseDto executePush(String service, String action, String message, Map<String, String> messageProperties) throws AS4Exception;
     As4ClientResponseDto executePush(String service, String action, Map<String, String> messageProperties, String messageId ) throws AS4Exception;
     As4ClientResponseDto executePush(String service, String action, Map<String, String> messageProperties) throws AS4Exception;
@@ -38,6 +41,9 @@ public interface As4Client {
     As4ClientResponseDto executeDocumentPush(String service, String action, byte[] message, String file, Map<String, String> messageProperties) throws AS4Exception;
 
     As4ClientResponseDto executePush(String service, String action, byte[] message, String file, Map<String, String> messageProperties) throws AS4Exception;
+
+    As4ClientResponseDto executePush(String serviceValue, String serviceType, String action, byte[] message, Map<String, String> messageProperties) throws AS4Exception;
+
     As4ClientResponseDto executePush(String service, String action, byte[] message, Map<String, String> messageProperties) throws AS4Exception;
     /**
      * Executes a pull request to the default Message Partition Channel (MPC)

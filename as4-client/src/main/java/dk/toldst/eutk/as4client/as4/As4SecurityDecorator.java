@@ -1,6 +1,7 @@
 package dk.toldst.eutk.as4client.as4;
 
 import com.google.common.io.CharStreams;
+import org.apache.jcp.xml.dsig.internal.dom.DOMReference;
 import org.apache.wss4j.common.util.XMLUtils;
 import org.w3c.dom.Document;
 
@@ -19,8 +20,6 @@ public class As4SecurityDecorator extends SOAPConnection {
 
     private final SOAPConnection soapConnection;
     private final SecurityService securityService;
-    //private final static Logger LOGGER = LogManager.getLogger(As4SecurityDecorator.class.getName());
-
     public As4SecurityDecorator(SOAPConnection soapConnection, SecurityService securityService) {
         this.soapConnection = soapConnection;
         this.securityService = securityService;

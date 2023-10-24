@@ -6,7 +6,6 @@ import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import dk.toldst.eutk.as4client.utilities.Tools;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.Map;
 
 public class ExampleClient {
@@ -21,8 +20,8 @@ public class ExampleClient {
                 .optionals()
                 .useCompression()
                 .useBinarySecurityToken()
-                .toParty("sti-taxud","Customs")
-                .fromParty("DK13116482", "Trader")
+                .toParty("sti-taxud","Customs", "urn:oasis:names:tc:ebcore:partyid-type:unregistered:eu-customs:auth")
+                .fromParty("DK13116482", "Trader", "urn:oasis:names:tc:ebcore:partyid-type:unregistered:eu-customs:EORI")
 
                 //.noSSL()
                 //.setAbsoluteURI("https://customs.ec.europa.eu:8445/domibus/services/msh")
@@ -30,11 +29,18 @@ public class ExampleClient {
                 //.setAbsoluteURI("https://147.67.18.14:8445/domibus/services/msh")
                 //.setAbsoluteURI("http://localhost:8384")
                 .build();
-        
-        As4ClientResponseDto res = client.executePush(
-                "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/service",
-                "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/test",
-                null);
+
+        As4ClientResponseDto res = null;
+        try {
+            res = client.executePush(
+                    "eu_ics2_t2c",
+                    "eu-customs-service-type",
+                    "IE3F21",
+                    ExampleClient.class.getResourceAsStream("F21-Test10.xml").readAllBytes(),
+                    null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         System.out.println(res.getFirstAttachment());
 
@@ -45,6 +51,13 @@ public class ExampleClient {
         //SendAndPrintNotificationExample(client, "DMS.Import");
     }
 
+    private static void PingTest(As4Client client) throws AS4Exception {
+        client.executePush(
+                "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/service",
+                "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/test",
+
+                null);
+    }
     private static void PullAndPrint(As4Client client) throws AS4Exception {
         As4ClientResponseDto pullResponse = client.executePull();
         System.out.println("Result: " + pullResponse);
@@ -135,8 +148,8 @@ public class ExampleClient {
                 .setPassword("HBNRsvph68")
                 .optionals()
                 .noSSL()
-                .fromParty("CVR_13116482_UID_50151991" + "_AS4", "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator")
-                .toParty("SKAT-MFT-AS4","http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder")
+                .fromParty("CVR_13116482_UID_50151991" + "_AS4", "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator", "")
+                .toParty("SKAT-MFT-AS4","http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder", "")
                 .setActor("ebms")
                 .setAbsoluteURI("http://localhost:8384/exchange/CVR_13116482_UID_50151991")
                 .setUsername("CVR_13116482_UID_50151991")

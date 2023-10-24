@@ -13,7 +13,7 @@ class As4DtoCreatorTest {
     @DisplayName("Messaging can be created")
     void createMessagingTest() {
         As4DtoCreator as4DtoCreator = new As4DtoCreator("a","b");
-        Messaging msg = as4DtoCreator.createMessaging("a","b","c", new As4Message(), "d");
+        Messaging msg = as4DtoCreator.createMessaging("a","b","c", "d", new As4Message(), "e");
         Assertions.assertNotNull(msg);
     }
 }

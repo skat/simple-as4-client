@@ -8,7 +8,6 @@ import java.util.UUID;
 
 
 public class As4DtoCreator {
-
     PartyInfo partyInfo;
 
     public As4DtoCreator(String from, String to) {
@@ -17,15 +16,17 @@ public class As4DtoCreator {
     }
 
     private void setPartyInfo(String fromPartyIdentifier, String toPartyIdentifier) {
-        setFromParty(fromPartyIdentifier, "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator");
-        setToParty(toPartyIdentifier, "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder");
+        setFromParty(fromPartyIdentifier, "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator", "");
+        setToParty(toPartyIdentifier, "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder", "");
     }
 
-    public void setToParty(String toPartyIdentifier, String toPartyRole) {
+    public void setToParty(String toPartyIdentifier, String toPartyRole, String toPartyType) {
         PartyId toParty = new PartyId();
         //TODO: Hard coding this for testing purposes
-        toParty.setType("urn:oasis:names:tc:ebcore:partyid-type:unregistered:eu-customs:auth");
-        //toParty.setType("string");
+        if(toPartyType != null && !toPartyType.equals("")) {
+            toParty.setType(toPartyType);
+
+        }
         toParty.setValue(toPartyIdentifier);
 
         To to = new To();
@@ -35,11 +36,12 @@ public class As4DtoCreator {
         partyInfo.setTo(to);
     }
 
-    public void setFromParty(String fromPartyIdentifier, String fromPartyRole) {
+    public void setFromParty(String fromPartyIdentifier, String fromPartyRole, String fromPartyType) {
         PartyId fromParty = new PartyId();
         //TODO: Hard coding this for testing purposes
-        fromParty.setType("urn:oasis:names:tc:ebcore:partyid-type:unregistered:eu-customs:EORI");
-        //fromParty.setType("string");
+        if(fromPartyType != null && !fromPartyType.equals("")) {
+            fromParty.setType(fromPartyType);
+        }
         fromParty.setValue(fromPartyIdentifier);
 
         From from = new From();
@@ -49,10 +51,10 @@ public class As4DtoCreator {
         partyInfo.setFrom(from);
     }
 
-    public Messaging createMessaging(String service, String action, String conversationId, As4Message payload,
+    public Messaging createMessaging(String serviceValue, String serviceType, String action, String conversationId, As4Message payload,
                                      String messageId) {
         MessageInfo messageInfo = createMessageInfo(messageId);
-        CollaborationInfo collaborationInfo = createCollaborationInfo(service, action, conversationId);
+        CollaborationInfo collaborationInfo = createCollaborationInfo(serviceValue, serviceType, action, conversationId);
         MessageProperties messageProperties = createMessageProperties(payload.getMessageProperties());
         PayloadInfo payloadInfo = createPayloadInfo(payload, messageId);
 
@@ -138,12 +140,16 @@ public class As4DtoCreator {
         return partProperties;
     }
 
-    private CollaborationInfo createCollaborationInfo(String service, String action, String conversationId) {
+    private CollaborationInfo createCollaborationInfo(String serviceValue, String serviceType, String action, String conversationId) {
         org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Service serviceElement =
                 new org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Service();
-        //TODO: hardcoded
-        //serviceElement.setType("eu-customs-service-type");
-        serviceElement.setValue(service);
+        if(serviceType != null && !serviceType.equals(""))
+        {
+            serviceElement.setType(serviceType);
+        }
+
+
+        serviceElement.setValue(serviceValue);
 
         CollaborationInfo collaborationInfo = new CollaborationInfo();
         collaborationInfo.setAction(action);

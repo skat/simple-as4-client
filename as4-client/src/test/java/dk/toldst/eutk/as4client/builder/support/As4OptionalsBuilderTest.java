@@ -2,7 +2,6 @@ package dk.toldst.eutk.as4client.builder.support;
 
 import dk.toldst.eutk.as4client.TestHelperTools;
 import dk.toldst.eutk.as4client.builder.interfaces.As4Optionals;
-import dk.toldst.eutk.as4client.builder.interfaces.As4SetPasswordTokenDetails;
 import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,8 +36,8 @@ class As4OptionalsBuilderTest {
                 .setUsername("NotAUsername")
                 .setAbsoluteURI("nowhere.com")
                 .setActor("NotAnActor")
-                .toParty("toName", "toRole")
-                .fromParty("fromName", "fromRole");
+                .toParty("toName", "toRole", "")
+                .fromParty("fromName", "fromRole", "");
 
         Assertions.assertNotNull(as4Optionals.build());
     }
