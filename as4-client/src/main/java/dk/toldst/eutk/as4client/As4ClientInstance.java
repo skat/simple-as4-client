@@ -10,6 +10,7 @@ import org.w3c.dom.Document;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import javax.xml.soap.AttachmentPart;
 import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.transform.TransformerException;
@@ -25,7 +26,7 @@ public class As4ClientInstance implements As4Client {
 
     private As4DtoCreator as4DtoCreator;
     private As4HttpClient as4HttpClient;
-    private final String defaultMPC = "urn:fdc:dk.skat.mft.DMS/import2/response";
+    private final String defaultMPC = "urn:fdc:ec.europa.eu:2019:eu_ics2_c2t/EORI/DK13116482"; //"urn:fdc:dk.skat.mft.DMS/import2/response";
 
     public void setCompression(boolean compression) {
         this.compression = compression;
@@ -237,15 +238,31 @@ public class As4ClientInstance implements As4Client {
         As4ClientResponseDto as4ClientResponseDto = new As4ClientResponseDto();
         try {
             soapMessage = as4HttpClient.sendRequest(messaging, new As4Message());
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            soapMessage.writeTo(out);
+            String A = new String(out.toByteArray());
+
+            //Could check here if the attachment is compressed, somehow
+            //https://stackoverflow.com/questions/56076631/capturing-attachment-from-soap-response-in-java
+            if(soapMessage.getAttachments().hasNext() && "application/gzip".equals(soapMessage.getAttachments().next().getContentType())){
+                AttachmentPart attachmentPart = (AttachmentPart)soapMessage.getAttachments().next();
+                A += attachmentPart.getContent();
+                InputStream is = (InputStream)attachmentPart.getContent();
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                Compression.decompress(os, is);
+                A += os.toString();
+            }
+
             SOAPHeader header = soapMessage.getSOAPHeader();
             //String reftoOriginalID =  tryGetReftoOriginalID(soapMessage);
 
             //Rewrite using Yammer feedback - Remove Index Offsets
             // getNode(header.getOwnerDocument(), "")
-            String reftoOriginalID =  header.getElementsByTagNameNS("*","Property").
-                    item(0).getChildNodes().item(0).getNodeValue();
-            String a = reftoOriginalID +  new String(soapMessage.getAttachments().next().getDataHandler().getInputStream().readAllBytes());
-            return new As4ClientResponseDto();
+            //String reftoOriginalID =  header.getElementsByTagNameNS("*","Property").
+                    //item(0).getChildNodes().item(0).getNodeValue();
+            //String a = reftoOriginalID +  new String(soapMessage.getAttachments().next().getDataHandler().getInputStream().readAllBytes());
+            as4ClientResponseDto.setFirstAttachment(A);
+            return as4ClientResponseDto;
 
         } catch (Exception e) {
             String debugMessage = null;

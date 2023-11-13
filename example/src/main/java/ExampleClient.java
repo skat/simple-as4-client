@@ -31,24 +31,23 @@ public class ExampleClient {
                 .build();
 
         As4ClientResponseDto res = null;
+
+        res = client.executePull();
+
+        /*
         try {
             res = client.executePush(
                     "eu_ics2_t2c",
                     "eu-customs-service-type",
                     "IE3F21",
-                    ExampleClient.class.getResourceAsStream("F21-Test10.xml").readAllBytes(),
+                    ExampleClient.class.getResourceAsStream("F21-AI/F21-DK-AI-1-01.xml").readAllBytes(),
                     null);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
+        } */
 
         System.out.println(res.getFirstAttachment());
 
-        //while (true){
-        //PullAndPrint(client);
-        //}
-        //SendAndPrintNotificationExample(client, "DMS.Import2");
-        //SendAndPrintNotificationExample(client, "DMS.Import");
     }
 
     private static void PingTest(As4Client client) throws AS4Exception {
