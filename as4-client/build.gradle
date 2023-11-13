@@ -71,7 +71,7 @@ signing {
 }
 
 //This step is required in order to deploy maven package through Sonotype, don't touch!
-/*uploadArchives {
+uploadArchives {
     repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
@@ -115,7 +115,7 @@ signing {
             }
         }
     }
-}*/
+}
 
 
 test {
