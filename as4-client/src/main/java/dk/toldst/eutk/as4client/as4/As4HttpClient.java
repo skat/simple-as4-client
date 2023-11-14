@@ -33,6 +33,7 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.List;
+import java.util.Properties;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
@@ -90,26 +91,21 @@ public class As4HttpClient {
             if(twoWaySSL){
 
                 KeyStore store = KeyStore.getInstance("JKS");
-                InputStream ksStream = new FileInputStream( "C:\\Repos\\simple-as4-client\\as4-client\\src\\main\\resources\\security\\StaerkISC2ConfTestSi.jks"); // Your file here - or however you want to integrate your
-                //InputStream ksStream = new FileInputStream( "C:\\Repos\\simple-as4-client\\as4-client\\src\\main\\resources\\SDSharedTrader.jks"); // Your file here - or however you want to integrate your
-                store.load(ksStream, "Test1234".toCharArray()); // Password here
+                Properties prop = new Properties();
+                prop.load(getClass().getResourceAsStream("/security/tls.properties"));
+                String path =  prop.getProperty("tls.path");
+                String pass = prop.getProperty("tls.pass");
+                InputStream ksStream = getClass().getResourceAsStream(path);
+                store.load(ksStream, pass.toCharArray());
 
                 KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-                keyManagerFactory.init(store, "Test1234".toCharArray()); // Password here
+                keyManagerFactory.init(store, pass.toCharArray());
 
                 SSLContext context = SSLContext.getInstance("TLS");
                 context.init(keyManagerFactory.getKeyManagers(), null, new SecureRandom());
                 SSLSocketFactory sslSocketFactory = context.getSocketFactory();
 
-
-
                 HttpsURLConnection.setDefaultSSLSocketFactory(sslSocketFactory);
-                //HttpsURLConnection.setDefaultHostnameVerifier(new TrustAllHosts());
-                //HttpsURLConnection httpsConnection;
-                //java.net.URL url = endpointURI.toURL();
-                //httpsConnection = (HttpsURLConnection) url.openConnection();
-                //httpsConnection.setHostnameVerifier(new TrustAllHosts());
-                //httpsConnection.connect();
             }
             else {
 
@@ -177,7 +173,6 @@ public class As4HttpClient {
             // insert functionality that checks for the "CompressionType=application/gzip" property and
             // gzip the contents before adding it to the attachement (spec: GZIP [RFC1952])
 
-            //byte[] data = Base64.getDecoder().decode(attachment.getContent());
             byte[] data = attachment.getContent(); //.getBytes(StandardCharsets.UTF_8);
             attachmentPart.setRawContent(new ByteArrayInputStream(data), "application/octet-stream");
             attachmentPart.addMimeHeader("Content-Transfer-Encoding", "binary");
