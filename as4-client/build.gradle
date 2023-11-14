@@ -8,19 +8,19 @@ plugins {
 
 group 'io.github.skat'
 archivesBaseName = "as4-client"
-version '2.1.0'
+version '3.0.0'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation 'org.apache.wss4j:wss4j-ws-security-dom:2.3.1'
+    implementation 'org.apache.wss4j:wss4j-ws-security-dom:2.3.4'
     implementation 'org.apache.wss4j:wss4j-ws-security-common:2.3.1'
     implementation group: 'com.migesok', name: 'jaxb-java-time-adapters', version: '1.1.3'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
-    implementation group: 'com.sun.xml.messaging.saaj', name: 'saaj-impl', version: '1.4.0'
+    implementation group: 'com.sun.xml.messaging.saaj', name: 'saaj-impl', version: '1.5.1'
     implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
@@ -71,7 +71,7 @@ signing {
 }
 
 //This step is required in order to deploy maven package through Sonotype, don't touch!
-/*uploadArchives {
+uploadArchives {
     repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
@@ -115,7 +115,7 @@ signing {
             }
         }
     }
-}*/
+}
 
 
 test {
