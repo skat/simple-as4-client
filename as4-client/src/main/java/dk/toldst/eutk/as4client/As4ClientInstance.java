@@ -238,9 +238,7 @@ public class As4ClientInstance implements As4Client {
         As4ClientResponseDto as4ClientResponseDto = new As4ClientResponseDto();
         try {
             soapMessage = as4HttpClient.sendRequest(messaging, new As4Message());
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            soapMessage.writeTo(out);
-            String A = new String(out.toByteArray());
+            String A = "";
 
             //Could check here if the attachment is compressed, somehow
             //https://stackoverflow.com/questions/56076631/capturing-attachment-from-soap-response-in-java
@@ -250,6 +248,12 @@ public class As4ClientInstance implements As4Client {
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 Compression.decompress(os, is);
                 A += os.toString();
+            }
+            //If no attachment - then print whole body
+            else{
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                soapMessage.writeTo(out);
+                A = out.toString();
             }
 
             SOAPHeader header = soapMessage.getSOAPHeader();
@@ -261,6 +265,7 @@ public class As4ClientInstance implements As4Client {
                     //item(0).getChildNodes().item(0).getNodeValue();
             //String a = reftoOriginalID +  new String(soapMessage.getAttachments().next().getDataHandler().getInputStream().readAllBytes());
             as4ClientResponseDto.setFirstAttachment(A);
+
             return as4ClientResponseDto;
 
         } catch (Exception e) {

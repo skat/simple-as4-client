@@ -28,7 +28,15 @@ public class ExampleClient {
         As4ClientResponseDto res;
         res = client.executePull();
 
-        /*
+
+        //res = CTPush(client);
+        System.out.println(res.getFirstAttachment());
+
+
+    }
+
+    private static As4ClientResponseDto CTPush(As4Client client) throws AS4Exception {
+        As4ClientResponseDto res;
         try {
             res = client.executePush(
                     "eu_ics2_t2c",
@@ -38,10 +46,8 @@ public class ExampleClient {
                     null);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } */
-        System.out.println(res.getFirstAttachment());
-
-
+        }
+        return res;
     }
 
     private static void PingTest(As4Client client) throws AS4Exception {
