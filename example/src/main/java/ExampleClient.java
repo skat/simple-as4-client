@@ -11,9 +11,7 @@ import java.util.Map;
 public class ExampleClient {
     public static void main(String[] args) throws AS4Exception {
         As4Client client = new As4ClientBuilderInstance().builder()
-                //.setEndpoint("https://customs.ec.europa.eu:8445/domibus/services/msh")
                 .setEndpoint("https://conformance.customs.ec.europa.eu:8445/domibus/services/msh")
-                //.setEndpoint("https://147.67.18.14:8445/domibus/services/msh")
                 //.setEndpoint("http://localhost:8384")
                 .setCrypto("security/eu3.properties")
                 .setPassword("")
@@ -24,14 +22,10 @@ public class ExampleClient {
                 .fromParty("DK13116482", "Trader", "urn:oasis:names:tc:ebcore:partyid-type:unregistered:eu-customs:EORI")
 
                 //.noSSL()
-                //.setAbsoluteURI("https://customs.ec.europa.eu:8445/domibus/services/msh")
                 .setAbsoluteURI("https://conformance.customs.ec.europa.eu:8445/domibus/services/msh")
-                //.setAbsoluteURI("https://147.67.18.14:8445/domibus/services/msh")
                 //.setAbsoluteURI("http://localhost:8384")
                 .build();
-
-        As4ClientResponseDto res = null;
-
+        As4ClientResponseDto res;
         res = client.executePull();
 
         /*
@@ -39,14 +33,14 @@ public class ExampleClient {
             res = client.executePush(
                     "eu_ics2_t2c",
                     "eu-customs-service-type",
-                    "IE3F21",
-                    ExampleClient.class.getResourceAsStream("F21-AI/F21-DK-AI-1-01.xml").readAllBytes(),
+                    "IE3F13",
+                    ExampleClient.class.getResourceAsStream("F13.xml").readAllBytes(),
                     null);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } */
-
         System.out.println(res.getFirstAttachment());
+
 
     }
 

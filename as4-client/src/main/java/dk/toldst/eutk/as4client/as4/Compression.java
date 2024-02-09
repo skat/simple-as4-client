@@ -16,8 +16,6 @@ import javax.activation.DataHandler;
 //https://stackoverflow.com/questions/16351668/compression-and-decompression-of-string-data-in-java
 public class Compression {
 
-
-
     public static GZIPOutputStream compress(OutputStream outputStream) throws IOException {
         GZIPOutputStream gzipOutputStream = new GZIPOutputStream(outputStream);
         return gzipOutputStream;

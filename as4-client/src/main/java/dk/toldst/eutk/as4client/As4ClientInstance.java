@@ -246,8 +246,7 @@ public class As4ClientInstance implements As4Client {
             //https://stackoverflow.com/questions/56076631/capturing-attachment-from-soap-response-in-java
             if(soapMessage.getAttachments().hasNext() && "application/gzip".equals(soapMessage.getAttachments().next().getContentType())){
                 AttachmentPart attachmentPart = (AttachmentPart)soapMessage.getAttachments().next();
-                A += attachmentPart.getContent();
-                InputStream is = (InputStream)attachmentPart.getContent();
+                InputStream is = (InputStream)attachmentPart.getRawContent();
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 Compression.decompress(os, is);
                 A += os.toString();
