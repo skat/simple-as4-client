@@ -3,6 +3,22 @@ plugins {
     id "application"
     id 'maven-publish'
 }
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'dk.toldst.eutk.example.ExampleClient',
+                'Class-Path': 'as4-client-2.1.0.jar'
+        )
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/resources"
+        }
+    }
+}
 
 group 'dk.toldst.eutk'
 version '1.0-SNAPSHOT'
@@ -26,10 +42,11 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     //implementation 'io.github.skat:as4-client:1.1.0'
     implementation project(':as4-client')
+    compile project(':as4-client')
 }
 
 ext {
-    javaMainClass = "ExampleClient"
+    javaMainClass = "dk.toldst.eutk.example.ExampleClient"
 }
 application {
     mainClassName = javaMainClass

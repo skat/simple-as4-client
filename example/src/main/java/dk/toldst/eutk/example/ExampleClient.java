@@ -1,3 +1,5 @@
+package dk.toldst.eutk.example;
+
 import dk.skat.mft.dms_declaration_status._1.StatusResponseType;
 import dk.toldst.eutk.as4client.As4Client;
 import dk.toldst.eutk.as4client.As4ClientResponseDto;
@@ -10,9 +12,11 @@ import java.util.Map;
 
 public class ExampleClient {
     public static void main(String[] args) throws AS4Exception {
+
+
+
         As4Client client = new As4ClientBuilderInstance().builder()
                 .setEndpoint("https://conformance.customs.ec.europa.eu:8445/domibus/services/msh")
-                //.setEndpoint("http://localhost:8384")
                 .setCrypto("security/eu3.properties")
                 .setPassword("")
                 .optionals()
@@ -21,18 +25,59 @@ public class ExampleClient {
                 .toParty("sti-taxud","Customs", "urn:oasis:names:tc:ebcore:partyid-type:unregistered:eu-customs:auth")
                 .fromParty("DK13116482", "Trader", "urn:oasis:names:tc:ebcore:partyid-type:unregistered:eu-customs:EORI")
 
-                //.noSSL()
                 .setAbsoluteURI("https://conformance.customs.ec.europa.eu:8445/domibus/services/msh")
-                //.setAbsoluteURI("http://localhost:8384")
                 .build();
+
         As4ClientResponseDto res;
-        res = client.executePull();
-
-
+        for(String arg: args)
+        {
+            System.out.println("pushing " + arg);
+            res = PushArg(client, arg);
+            System.out.println(res.getFirstAttachment());
+        }
         //res = CTPush(client);
-        System.out.println(res.getFirstAttachment());
+        //System.out.println(res.getFirstAttachment());
 
 
+    }
+
+    private static As4ClientResponseDto PushArg(As4Client client, String arg) throws AS4Exception {
+        As4ClientResponseDto res;
+        try {
+            res = client.executePush(
+                    "eu_ics2_t2c",
+                    "eu-customs-service-type",
+                    "IE3A13",
+                    ExampleClient.class.getResource(arg).openStream().readAllBytes(),
+                    null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return res;
+    }
+    private static As4ClientResponseDto EmptyQueue(As4Client client) throws AS4Exception{
+        //Vi laver en resultat variabel og en stringbuilder (Den kan lave strings hurtigt)
+        As4ClientResponseDto res = new As4ClientResponseDto();
+        var sb = new StringBuilder();
+
+        //Teorien for denne do while er at vi kører den en gang, tjekker om der står 'EmptyMessagePartitionChannel'
+        // nogen steder, og hvis der ikke gør det så gentager vi indtil der gør.
+        do {
+            var temp = client.executePull();
+            sb.append(temp.getFirstAttachment());
+        } while (sb.indexOf("EmptyMessagePartitionChannel") == -1);
+
+        //Når der så står det overføre vi ALT den data vi har fået til et objekt og skriver det ud.
+        res.setFirstAttachment(sb.toString());
+        return res;
+    }
+
+    private static As4ClientResponseDto PingTest(As4Client client) throws AS4Exception {
+        return client.executePush(
+                "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/service",
+                "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/test",
+
+                null);
     }
 
     private static As4ClientResponseDto CTPush(As4Client client) throws AS4Exception {
@@ -41,8 +86,9 @@ public class ExampleClient {
             res = client.executePush(
                     "eu_ics2_t2c",
                     "eu-customs-service-type",
-                    "IE3F13",
-                    ExampleClient.class.getResourceAsStream("F13.xml").readAllBytes(),
+                    "IE3A13",
+                    ExampleClient.class.getResource("/Carrier/F13/Most Common/F13.xml").openStream().readAllBytes() ,
+                    //ExampleClient.class.getResourceAsStream("Carrier/F13/Most Common/F13.xml").readAllBytes(),
                     null);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -50,13 +96,7 @@ public class ExampleClient {
         return res;
     }
 
-    private static void PingTest(As4Client client) throws AS4Exception {
-        client.executePush(
-                "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/service",
-                "http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/test",
 
-                null);
-    }
     private static void PullAndPrint(As4Client client) throws AS4Exception {
         As4ClientResponseDto pullResponse = client.executePull();
         System.out.println("Result: " + pullResponse);
