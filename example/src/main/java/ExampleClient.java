@@ -9,24 +9,29 @@ import dk.toldst.eutk.as4client.utilities.Tools;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 public class ExampleClient {
     public static void main(String[] args) throws AS4Exception {
-        As4Client client = GetAs4ClientWithUser30808460();//SimpleTest();
+        As4Client client = GetAs4ClientWithUser19552101();//SimpleTest();
 
         //SendAndPrintNotificationExample(client, "DMS.Export2");
         //PullsAndPrints(client);
 
         //SendAndPrintDocumentExample(client);
 
-        SendAndPrintDeclarationExample(client);
+        //SendAndPrintDeclarationExample(client);
+
+        //SendAndPrintNotificationExample(client, "DMS.Export");
 
 
-        //SendAndPrintNotificationExample(client, "DMS.Import");
+        //testEADAndTAD(client);
+
+        //PullsAndPrintPDF(client);
+        PullsAndPrints(client);
     }
 
     private static void PullsAndPrints(As4Client client) throws AS4Exception {
@@ -41,6 +46,21 @@ public class ExampleClient {
 
     }
 
+    private static void PullsAndPrintPDF(As4Client client) throws AS4Exception {
+        //List<As4ClientResponseDto> Responses = new ArrayList<>();
+        while (true) {
+            As4ClientResponseDto pullResponse = client.executePullPDF();
+            System.out.println("ReftoOriginalID: " + pullResponse.getReftoOriginalID()+ " FirstAttachment: " + pullResponse.getFirstAttachment());
+
+            //Responses.add(pullResponse);
+
+            if (pullResponse.getReftoOriginalID() == null) {
+                break;
+            }
+        }
+        //return Responses;
+    }
+
     private static void SendAndPrintDeclarationExample(As4Client client) throws AS4Exception {
         StatusResponseType declarationStatus = SubmitDeclarationExample(client);
         System.out.println("Result: " + declarationStatus.getCode() + (declarationStatus.getMessage() != null ? " and message: " + declarationStatus.getMessage() : ""));
@@ -52,19 +72,19 @@ public class ExampleClient {
     }
     private static void SendAndPrintNotificationExample(As4Client client, String service) throws AS4Exception {
         String messageId = UUID.randomUUID().toString();
-        As4ClientResponseDto notificationResult = RetrieveNotificationExample(client, "DMS.Export2",messageId);
+        As4ClientResponseDto notificationResult = RetrieveNotificationExample(client, service, messageId);
         System.out.println("messageId: "+messageId+ "Result: " + notificationResult.getFirstAttachment());
     }
 
     private static void SendAndPrintNotificationExample(As4Client client) throws AS4Exception {
-        SendAndPrintNotificationExample(client, "DMS.Export2");
+        SendAndPrintNotificationExample(client, "DMS.Export");
     }
 
     private static As4ClientResponseDto RetrieveNotificationExample(As4Client client, String Service, String messageId) throws AS4Exception
     {
         As4ClientResponseDto as4ClientResponseDto = client.executePush(Service, "Notification",
-                Map.of("lang", "EN", "submitterId", "30808460", "dateFrom", "2022-03-22T12:30:00.000", "dateTo", "2022-03-22T12:35:00.000"), messageId); // "functionalReferenceId", "CBMFT-16927TFETest2")); //CBM011205 CBMFT-16927TFETest
-                 //Map.of("lang", "EN", "submitterId", "30808460", "functionalReferenceId", "CBMTeamDemo01")); //  //CBMDuplicateTest CBMFT-16927TFETest
+                Map.of("lang", "EN", "submitterId", "19552101", "dateFrom", "2022-03-22T12:30:00.000", "dateTo", "2022-03-22T12:35:00.000"), messageId); // "functionalReferenceId", "CBMFT-16927TFETest2")); //CBM011205 CBMFT-16927TFETest
+                 //Map.of("lang", "EN", "submitterId", "19552101", "functionalReferenceId", "CBMTeamDemo01")); //  //CBMDuplicateTest CBMFT-16927TFETest
         return as4ClientResponseDto;
     }
 
@@ -72,14 +92,14 @@ public class ExampleClient {
         // Submitting a declaration
         String declaration = "";
         try{
-            declaration = new String(ExampleClient.class.getResourceAsStream("base.xml").readAllBytes() ) ;
+            declaration = new String(ExampleClient.class.getResourceAsStream("base0.xml").readAllBytes() ) ;
         }
         catch (IOException e){
         }
         var declarationBytes= declaration.getBytes(StandardCharsets.UTF_8);
 
-        var  declarationResult = client.executePush("DMS.Export2", "Declaration.Submit",
-                declarationBytes, "base.xml", Map.of("procedureType", "B1"));
+        var  declarationResult = client.executePush("DMS.Export", "Declaration.Submit",
+                declarationBytes, "base0.xml", Map.of("procedureType", "B1"));
 
         StatusResponseType declarationStatus =  Tools.getStatus(declarationResult.getFirstAttachment());
         return declarationStatus;
@@ -169,6 +189,102 @@ public class ExampleClient {
                 .setCrypto("security/as4crypto-holodeckSt.properties")
                 .setPassword(prop.getProperty("Client30808460Password"))
                 .build();
+    }
+
+    public static As4Client GetAs4ClientWithUser19552101() throws AS4Exception {
+        Properties prop = new Properties();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+        try {
+            InputStream stream = loader.getResourceAsStream("security/certificatePassword.properties");
+            prop.load(stream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new As4ClientBuilderInstance().builder()
+                .setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
+                .setCrypto("security/as4crypto-holodeck-mitid.properties")
+                .setPassword(prop.getProperty("Client19552101Password"))
+                .build();
+    }
+
+    private static void testEADAndTAD(As4Client client) throws AS4Exception {
+//        System.out.println("Getting EAD");
+//        getEAD(client, "24DKTOYEOPS4RKUBA6");
+//        System.out.println();
+//
+//        System.out.println("Getting TAD with mrn and lrn");
+//        getTAD(client, "24DK005600XP7VVBJ4", true);
+//        getTAD(client, "emma280520241347", false);
+//        System.out.println();
+//
+//        System.out.println("---------------------------------------------");
+//
+//        System.out.println("Getting EAD for declaration made with user 13421730");
+//        getEAD(client, "24DKEAS1QOAWPRPOA5");
+//        System.out.println();
+//
+//        System.out.println("Getting TAD with mrn and lrn for declaration made using 13421730");
+//        getTAD(client, "24DK005600T4TZAQJ0", true);
+//        getTAD(client, "emma280520241350", false);
+//        System.out.println();
+//
+//        System.out.println("Sending push for testing wrong mrn error");
+//        getEAD(client, "24DKEAS1QOAWPRPOA6");
+//        getTAD(client, "24DK0056005LDTB7J8", true);
+//        System.out.println();
+//
+//        System.out.println("Sending push for testing wrong lrn error");
+//        getTAD(client, "emma280520241334", false);
+//        System.out.println();
+//
+//        System.out.println("Sending push for testing invalid mrn error");
+//        getEAD(client, "hello");
+//        getTAD(client, "goodbye", true);
+//        System.out.println();
+//
+//        System.out.println("Getting EAD with mrn left empty");
+//        getEAD(client, "");
+//        System.out.println();
+//
+//        System.out.println("Getting TAD with mrn and lrn left empty");
+//        getTAD(client, "", true);
+//        getTAD(client, "", false);
+//        System.out.println();
+
+        System.out.println("Getting EAD with mrn as some garbage");
+        getEAD(client, "!?_+'#%&=£@$¤´|~^¨*-:;,.µ§½<>)(][/");
+        getEAD(client, "{");
+        getEAD(client, "}");
+        getEAD(client, "{}");
+        getEAD(client, "}{");
+        System.out.println();
+
+        System.out.println("Getting TAD with mrn and lrn as some garbage");
+        getTAD(client, "!?_+'#%&=@£$¤´|~^¨*-:;,.µ§½<>)(][/", true);
+        getTAD(client, "!?_+'<>#%&=@£$)(][/¤´|~^¨*-:;,.µ§½", false);
+        getTAD(client, "!?_+'#%&=£@$¤´|~^¨*-:;,.µ§½<>)(][/", false);
+        getTAD(client, "{", true);
+        getTAD(client, "}", true);
+        getTAD(client, "{}", true);
+        getTAD(client, "}{", true);
+        getTAD(client, "{", false);
+        getTAD(client, "}", false);
+        getTAD(client, "{}", false);
+        getTAD(client, "}{", false);
+    }
+
+    private static void getEAD(As4Client client, String mrn) throws AS4Exception {
+        String messageId = UUID.randomUUID().toString();
+        As4ClientResponseDto as4ClientResponseDto = client.executePush("DMS.Export", "Declaration.GetEad", Map.of("mrn", mrn), messageId);
+        System.out.println("messageId: " + messageId + "Result: " + as4ClientResponseDto.getFirstAttachment());
+    }
+
+    private static void getTAD(As4Client client, String decID, boolean isMrn) throws AS4Exception {
+        String messageId = UUID.randomUUID().toString();
+        As4ClientResponseDto as4ClientResponseDto = client.executePush("DMS.Transit", "Declaration.GetTad", ((isMrn) ? Map.of("mrn", decID) : Map.of("lrn", decID) ), messageId);
+        System.out.println("messageId: "+messageId+ "Result: " + as4ClientResponseDto.getFirstAttachment());
     }
 
 }

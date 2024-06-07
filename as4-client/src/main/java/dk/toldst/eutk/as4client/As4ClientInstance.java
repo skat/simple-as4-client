@@ -6,7 +6,7 @@ import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import org.apache.wss4j.common.util.XMLUtils;
 import org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.Messaging;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
@@ -17,7 +17,7 @@ public class As4ClientInstance implements As4Client {
 
     private As4DtoCreator as4DtoCreator;
     private As4HttpClient as4HttpClient;
-    private final String defaultMPC = "urn:fdc:dk.skat.mft.DMS/import2/response";
+    private final String defaultMPC = "urn:fdc:dk.skat.mft.DMS/response/CVR_19552101";
 
     public As4DtoCreator getAs4DtoCreator() {
         return as4DtoCreator;
@@ -156,6 +156,11 @@ public class As4ClientInstance implements As4Client {
     }
 
     @Override
+    public As4ClientResponseDto executePullPDF() throws AS4Exception {
+        return executePullPDF(defaultMPC);
+    }
+
+    @Override
     public As4ClientResponseDto executePull(String mpc) throws AS4Exception {
         String messageId = UUID.randomUUID().toString();
         Messaging messaging = as4DtoCreator.createPullMessaging(mpc, messageId);
@@ -185,9 +190,63 @@ public class As4ClientInstance implements As4Client {
         }
     }
 
+    public As4ClientResponseDto executePullPDF(String mpc) throws AS4Exception {
+        String messageId = UUID.randomUUID().toString();
+        Messaging messaging = as4DtoCreator.createPullMessaging(mpc, messageId);
+        SOAPMessage soapMessage = null;
+        As4ClientResponseDto as4ClientResponseDto = new As4ClientResponseDto();
+        try {
+            soapMessage = as4HttpClient.sendRequest(messaging, new As4Message());
+            SOAPHeader header = soapMessage.getSOAPHeader();
+            String reftoOriginalID =  tryGetReftoOriginalID(soapMessage);
+
+            String stringAttachment = tryGetFirstAttachment(soapMessage);
+            as4ClientResponseDto.setReftoOriginalID(reftoOriginalID);
+            as4ClientResponseDto.setFirstAttachment(stringAttachment);
+
+            InputStream stream = tryGetFirstAttachmentAsStream(soapMessage);
+
+            if (stream != null) {
+                String first4chars = stringAttachment.substring(0, Math.min(stringAttachment.length(), 4));
+                if (first4chars.equals("%PDF")) {
+                    try (OutputStream output = new FileOutputStream(reftoOriginalID + "_out.pdf")) {
+                        stream.transferTo(output);
+                    } catch (IOException e) {
+                        System.out.println("ReftoOriginalID: " + reftoOriginalID + ". could not be made into pdf error: " + e);
+                    }
+                }
+            } else {
+                System.out.println("ReftoOriginalID: " + reftoOriginalID + ". could not be made into pdf as stream is null");
+            }
+
+            return as4ClientResponseDto;
+        } catch (Exception e) {
+            String debugMessage = null;
+            try {
+                if (soapMessage != null && soapMessage.getSOAPPart() != null && soapMessage.getSOAPPart().getOwnerDocument() != null) {
+                    debugMessage = XMLUtils.prettyDocumentToString(soapMessage.getSOAPPart().getOwnerDocument());
+                }
+            } catch (IOException ex) {
+                throw new AS4Exception("Failed to send (or receive) message" , e);
+            } catch (TransformerException ex) {
+                throw new AS4Exception("Failed to send (or receive) message" , e);
+            }
+            throw new AS4Exception("Failed to send (or receive) message, recieved from server: " + debugMessage , e);
+        }
+    }
+
     private String tryGetFirstAttachment(SOAPMessage soapMessage) {
         try {
             return new String(soapMessage.getAttachments().next().getDataHandler().getInputStream().readAllBytes());
+        }
+        catch (Exception e){
+            return null;
+        }
+    }
+
+    private InputStream tryGetFirstAttachmentAsStream(SOAPMessage soapMessage) {
+        try {
+            return soapMessage.getAttachments().next().getDataHandler().getInputStream();
         }
         catch (Exception e){
             return null;

@@ -47,6 +47,14 @@ public interface As4Client {
     As4ClientResponseDto executePull() throws AS4Exception;
 
     /**
+     * Executes a pull request to the default Message Partition Channel (MPC)
+     * It tries to create a pdf file of the pulled payload
+     * @return the response from the AS4-GW MPC in String format.
+     * @throws AS4Exception
+     */
+    As4ClientResponseDto executePullPDF() throws AS4Exception;
+
+    /**
      * Executes a pull request to a Message Partition Channel (MPC)
      * @param mpc the Message Partition Channel from which a pull is requested
      * @return the response from the AS4-GW MPC in String format.
