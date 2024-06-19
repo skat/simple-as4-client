@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class ExampleClient {
-    public static void main(String[] args) throws AS4Exception {
+    public static void main(String[] args) throws AS4Exception, InterruptedException {
         As4Client client = GetAs4ClientWithUser19552101();//SimpleTest();
 
         //SendAndPrintNotificationExample(client, "DMS.Export2");
@@ -27,10 +27,9 @@ public class ExampleClient {
 
         //SendAndPrintNotificationExample(client, "DMS.Export");
 
+        EADandTADtestrun();
 
-        //testEADAndTAD(client);
-
-        //PullsAndPrintPDF(client);
+        PullsAndPrintPDF(client);
         PullsAndPrints(client);
     }
 
@@ -84,7 +83,7 @@ public class ExampleClient {
     {
         As4ClientResponseDto as4ClientResponseDto = client.executePush(Service, "Notification",
                 Map.of("lang", "EN", "submitterId", "19552101", "dateFrom", "2022-03-22T12:30:00.000", "dateTo", "2022-03-22T12:35:00.000"), messageId); // "functionalReferenceId", "CBMFT-16927TFETest2")); //CBM011205 CBMFT-16927TFETest
-                 //Map.of("lang", "EN", "submitterId", "19552101", "functionalReferenceId", "CBMTeamDemo01")); //  //CBMDuplicateTest CBMFT-16927TFETest
+        //Map.of("lang", "EN", "submitterId", "19552101", "functionalReferenceId", "CBMTeamDemo01")); //  //CBMDuplicateTest CBMFT-16927TFETest
         return as4ClientResponseDto;
     }
 
@@ -209,70 +208,96 @@ public class ExampleClient {
                 .build();
     }
 
+    public static As4Client GetAs4ClientWithUser19552101(String URL) throws AS4Exception {
+        Properties prop = new Properties();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+        try {
+            InputStream stream = loader.getResourceAsStream("security/certificatePassword.properties");
+            prop.load(stream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new As4ClientBuilderInstance().builder()
+                .setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
+                .setCrypto("security/as4crypto-holodeck-mitid.properties")
+                .setPassword(prop.getProperty("Client19552101Password"))
+                .optionals()
+                .setAbsoluteURI(URL)
+                .build();
+    }
+
+    private static void EADandTADtestrun() throws AS4Exception, InterruptedException {
+        As4Client client = GetAs4ClientWithUser19552101("https://secureftpgatewaytest.skat.dk:6384/exchange/shared");
+        testEADAndTAD(client);
+        Thread.sleep(30000);
+    }
+
     private static void testEADAndTAD(As4Client client) throws AS4Exception {
 //        System.out.println("Getting EAD");
 //        getEAD(client, "24DKTOYEOPS4RKUBA6");
 //        System.out.println();
-//
+
 //        System.out.println("Getting TAD with mrn and lrn");
 //        getTAD(client, "24DK005600XP7VVBJ4", true);
 //        getTAD(client, "emma280520241347", false);
 //        System.out.println();
-//
-//        System.out.println("---------------------------------------------");
-//
+
+        System.out.println("---------------------------------------------");
+
 //        System.out.println("Getting EAD for declaration made with user 13421730");
 //        getEAD(client, "24DKEAS1QOAWPRPOA5");
 //        System.out.println();
-//
+
 //        System.out.println("Getting TAD with mrn and lrn for declaration made using 13421730");
 //        getTAD(client, "24DK005600T4TZAQJ0", true);
 //        getTAD(client, "emma280520241350", false);
 //        System.out.println();
-//
+
 //        System.out.println("Sending push for testing wrong mrn error");
 //        getEAD(client, "24DKEAS1QOAWPRPOA6");
 //        getTAD(client, "24DK0056005LDTB7J8", true);
 //        System.out.println();
-//
+
 //        System.out.println("Sending push for testing wrong lrn error");
 //        getTAD(client, "emma280520241334", false);
 //        System.out.println();
-//
+
 //        System.out.println("Sending push for testing invalid mrn error");
 //        getEAD(client, "hello");
 //        getTAD(client, "goodbye", true);
 //        System.out.println();
-//
+
 //        System.out.println("Getting EAD with mrn left empty");
 //        getEAD(client, "");
 //        System.out.println();
-//
+
 //        System.out.println("Getting TAD with mrn and lrn left empty");
 //        getTAD(client, "", true);
 //        getTAD(client, "", false);
 //        System.out.println();
 
         System.out.println("Getting EAD with mrn as some garbage");
-        getEAD(client, "!?_+'#%&=£@$¤´|~^¨*-:;,.µ§½<>)(][/");
+//        getEAD(client, "!?_+'#%&=£@$¤´|~^¨*-:;,.µ§½<>)(][/");
         getEAD(client, "{");
         getEAD(client, "}");
         getEAD(client, "{}");
         getEAD(client, "}{");
         System.out.println();
-
-        System.out.println("Getting TAD with mrn and lrn as some garbage");
-        getTAD(client, "!?_+'#%&=@£$¤´|~^¨*-:;,.µ§½<>)(][/", true);
-        getTAD(client, "!?_+'<>#%&=@£$)(][/¤´|~^¨*-:;,.µ§½", false);
-        getTAD(client, "!?_+'#%&=£@$¤´|~^¨*-:;,.µ§½<>)(][/", false);
-        getTAD(client, "{", true);
-        getTAD(client, "}", true);
-        getTAD(client, "{}", true);
-        getTAD(client, "}{", true);
-        getTAD(client, "{", false);
-        getTAD(client, "}", false);
-        getTAD(client, "{}", false);
-        getTAD(client, "}{", false);
+//
+//        System.out.println("Getting TAD with mrn and lrn as some garbage");
+//        getTAD(client, "!?_+'#%&=@£$¤´|~^¨*-:;,.µ§½<>)(][/", true);
+//        getTAD(client, "!?_+'<>#%&=@£$)(][/¤´|~^¨*-:;,.µ§½", false);
+//        getTAD(client, "!?_+'#%&=£@$¤´|~^¨*-:;,.µ§½<>)(][/", false);
+//        getTAD(client, "{", true);
+//        getTAD(client, "}", true);
+//        getTAD(client, "{}", true);
+//        getTAD(client, "}{", true);
+//        getTAD(client, "{", false);
+//        getTAD(client, "}", false);
+//        getTAD(client, "{}", false);
+//        getTAD(client, "}{", false);
     }
 
     private static void getEAD(As4Client client, String mrn) throws AS4Exception {
