@@ -25,7 +25,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
-
+/*
 // https://medium.com/@shanemyrick/publishing-to-github-packages-with-gradle-and-github-actions-4ad842634c4e
 publishing {
     repositories {
@@ -44,7 +44,7 @@ publishing {
         }
     }
 }
-
+*/
 xjc {
     bindingFiles = project.files("$projectDir/src/main/resources/bindings/binding.xjb")
     //xjcVersion.set("2.3.3")
@@ -70,6 +70,7 @@ signing {
     sign configurations.archives
 }
 
+/*
 //This step is required in order to deploy maven package through Sonotype, don't touch!
 uploadArchives {
     repositories {
@@ -116,7 +117,7 @@ uploadArchives {
         }
     }
 }
-
+*/
 
 test {
     useJUnitPlatform()

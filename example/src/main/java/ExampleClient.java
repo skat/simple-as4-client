@@ -6,7 +6,6 @@ import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import dk.toldst.eutk.as4client.utilities.Tools;
 
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -16,8 +15,7 @@ import java.util.UUID;
 
 public class ExampleClient {
     public static void main(String[] args) throws AS4Exception {
-        As4Client client = GetAs4ClientWithUser30808460();//SimpleTest();
-
+        As4Client client = GetAs4ClientWithUser19552101("https://secureftpgatewaytest.skat.dk:6384");//SimpleTest();
         //SendAndPrintNotificationExample(client, "DMS.Export2");
         //PullsAndPrints(client);
 
@@ -25,6 +23,7 @@ public class ExampleClient {
 
         SendAndPrintDeclarationExample(client);
 
+//        SendAndPrintMultipleDeclarationExample(client);
 
         //SendAndPrintNotificationExample(client, "DMS.Import");
     }
@@ -44,6 +43,10 @@ public class ExampleClient {
     private static void SendAndPrintDeclarationExample(As4Client client) throws AS4Exception {
         StatusResponseType declarationStatus = SubmitDeclarationExample(client);
         System.out.println("Result: " + declarationStatus.getCode() + (declarationStatus.getMessage() != null ? " and message: " + declarationStatus.getMessage() : ""));
+    }
+
+    private static void SendAndPrintMultipleDeclarationExample(As4Client client) throws AS4Exception {
+        SubmitMultipleDeclarationExample(client);
     }
 
     private static void SendAndPrintDocumentExample(As4Client client) throws AS4Exception {
@@ -72,17 +75,36 @@ public class ExampleClient {
         // Submitting a declaration
         String declaration = "";
         try{
-            declaration = new String(ExampleClient.class.getResourceAsStream("base.xml").readAllBytes() ) ;
+            declaration = new String(ExampleClient.class.getResourceAsStream("base0.xml").readAllBytes() ) ;
         }
         catch (IOException e){
         }
         var declarationBytes= declaration.getBytes(StandardCharsets.UTF_8);
 
-        var  declarationResult = client.executePush("DMS.Export2", "Declaration.Submit",
-                declarationBytes, "base.xml", Map.of("procedureType", "B1"));
+        var  declarationResult = client.executePush("DMS.Export", "Declaration.Submit",
+                declarationBytes, "base0.xml", Map.of("procedureType", "B1"));
 
         StatusResponseType declarationStatus =  Tools.getStatus(declarationResult.getFirstAttachment());
         return declarationStatus;
+    }
+    private static Boolean SubmitMultipleDeclarationExample(As4Client client) throws AS4Exception {
+        // Submitting several declarations
+        String declaration = "";
+        String [] declarations = new String[3];
+        for(int i = 0; i<3; i++){
+            try{
+                declaration = new String(ExampleClient.class.getResourceAsStream("base"+ i + ".xml").readAllBytes() ) ;
+            }
+            catch (IOException e){
+            }
+            declarations[i] = declaration;
+        }
+
+
+        var  declarationResult = client.executePush("DMS.Export", "Declaration.Submit",
+                declarations, new String[]{"base0.xml","base1.xml", "base2.xml"}, Map.of("procedureType", "B1"));
+
+        return true;
     }
 
     private static StatusResponseType SubmitDocumentExample(As4Client client) throws AS4Exception {
@@ -168,6 +190,39 @@ public class ExampleClient {
                 .setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
                 .setCrypto("security/as4crypto-holodeckSt.properties")
                 .setPassword(prop.getProperty("Client30808460Password"))
+                .build();
+    }
+
+    public static As4Client GetAs4ClientWithUser19552101() throws AS4Exception {
+        Properties prop = new Properties();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        try {
+            InputStream stream = loader.getResourceAsStream("security/certificatePassword.properties");
+            prop.load(stream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new As4ClientBuilderInstance().builder()
+                .setEndpoint("https://secureftpgatewaytest.skat.dk:6384")
+                .setCrypto("security/as4crypto-holodeck-mitid.properties")
+                .setPassword(prop.getProperty("Client19552101Password"))
+                .build();
+    }
+    public static As4Client GetAs4ClientWithUser19552101(String endpoint) throws AS4Exception {
+        Properties prop = new Properties();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        try {
+            InputStream stream = loader.getResourceAsStream("security/certificatePassword.properties");
+            prop.load(stream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new As4ClientBuilderInstance().builder()
+                .setEndpoint(endpoint)
+                .setCrypto("security/as4crypto-holodeck-mitid.properties")
+                .setPassword(prop.getProperty("Client19552101Password"))
+                .optionals()
+//                .setAbsoluteURI("https://secureftpgatewaytest.skat.dk:6384/exchange/shared")
                 .build();
     }
 

@@ -64,6 +64,11 @@ public class As4ClientInstance implements As4Client {
         String messageId = UUID.randomUUID().toString();
         return internalPush(service, action, new String(message, StandardCharsets.UTF_8), file, messageProperties, true, messageId);
     }
+    @Override
+    public As4ClientResponseDto executePush(String service, String action, String[] message, String[] file, Map<String, String> messageProperties) throws AS4Exception {
+        String messageId = UUID.randomUUID().toString();
+        return internalPushMultiple(service, action, message, file, messageProperties, true, messageId);
+    }
 
     @Override
     public As4ClientResponseDto executePush(String service, String action, String message, String file, Map<String, String> messageProperties, String messageId) throws AS4Exception {
@@ -117,6 +122,32 @@ public class As4ClientInstance implements As4Client {
         }
     }
 
+    private As4ClientResponseDto internalPushMultiple(String service, String action, String[] message, String[] file, Map<String, String> messageProperties, Boolean includeAttachment, String messageId ) throws AS4Exception {
+        As4Message as4Message = new As4Message();
+
+        if(includeAttachment)
+        {
+            for(int i = 0; i < message.length; i++){
+                As4Message.As4Part part = CreatePart(message[i], file[i],"attachment-id_" + UUID.randomUUID());
+                as4Message.getAttachments().add(part);
+            }
+        }
+
+        //messageProperties = null;
+        as4Message.setMessageProperties(messageProperties);
+        Messaging messaging = as4DtoCreator.createMessaging(service, action, "placeholder", as4Message, messageId);
+        As4ClientResponseDto as4ClientResponseDto = new As4ClientResponseDto();
+
+        SOAPMessage soapMessage;
+        try {
+            soapMessage = as4HttpClient.sendRequest(messaging, as4Message);
+            as4ClientResponseDto.setReftoOriginalID(soapMessage.getSOAPBody().toString());
+            return as4ClientResponseDto;
+        } catch (Exception e) {
+            throw new AS4Exception("Failed to send (or receive) message" , e);
+        }
+    }
+
     private As4ClientResponseDto internalDocumentPush(String service, String action, String message, String file, Map<String, String> messageProperties, Boolean includeAttachment, String messageId ) throws AS4Exception {
         As4Message as4Message = new As4Message();
 
@@ -146,6 +177,15 @@ public class As4ClientInstance implements As4Client {
         As4Message.As4Part part = new As4Message.As4Part();
         part.setContent(message);
         part.setProperties(Collections.singletonMap("original-file-name", file));
+        return part;
+    }
+    private As4Message.As4Part CreatePart(String message, String file, String attachmentId) {
+        As4Message.As4Part part = new As4Message.As4Part();
+        part.setContent(message);
+        Map<String,String> properties = new HashMap<>();
+        properties.put("original-file-name", file);
+        properties.put("attachment-id", attachmentId);
+        part.setProperties(properties);
         return part;
     }
 

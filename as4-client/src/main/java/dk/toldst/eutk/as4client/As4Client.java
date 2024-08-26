@@ -5,6 +5,9 @@ import dk.toldst.eutk.as4client.exceptions.AS4Exception;
 import java.util.Map;
 
 public interface As4Client {
+    As4ClientResponseDto executePush(String service, String action, String[] message, String[] file, Map<String,
+            String> messageProperties) throws AS4Exception;
+
     /**
      * Transmits a message, and requests an action from a service.
      * @param service the service requested from DMS, example: "DMS.Import"
